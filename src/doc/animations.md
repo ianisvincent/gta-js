@@ -1,16 +1,16 @@
 #### character animations
 
-- drop_idle
+- drop_idle x
 - drop_running_roll
 - drop_running
 - falling
-- idle
+- idle x 
 - rotate_left
 - rotate_right
-- jump_idle
-- jump_running
+- jump_idle // TODO: need to be fix
+- jump_running x
 - sprint
-- run
+- run x
 - close_door_sitting_left
 - close_door_sitting_right
 - close_door_standing_left
