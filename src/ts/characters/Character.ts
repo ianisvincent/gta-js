@@ -114,6 +114,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			'right': new KeyBinding('KeyD'),
 			'run': new KeyBinding('ShiftLeft'),
 			'jump': new KeyBinding('Space'),
+			'punch': new KeyBinding('KeyP'),
 			'use': new KeyBinding('KeyE'),
 			'enter': new KeyBinding('KeyF'),
 			'enter_passenger': new KeyBinding('KeyG'),
@@ -465,6 +466,10 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			{
 				keys: ['Space'],
 				desc: 'Jump'
+			},
+			{
+				keys: ['P'],
+				desc: 'Punch'
 			},
 			{
 				keys: ['F', 'or', 'G'],

@@ -17,3 +17,4 @@ export * from './StartWalkForward';
 export * from './StartWalkLeft';
 export * from './StartWalkRight';
 export * from './Walk';
+export * from './Punch';
