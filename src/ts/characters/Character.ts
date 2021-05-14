@@ -501,7 +501,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 		
 	}
 
-	public setAnimation(clipName: string, fadeIn: number): number
+	public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean): number
 	{
 		if (this.mixer !== undefined)
 		{
@@ -513,6 +513,10 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			{
 				console.error(`Animation ${clipName} not found!`);
 				return 0;
+			}
+
+			if (runOnlyOnce) {
+				action.setLoop(THREE.LoopOnce, 1);
 			}
 
 			this.mixer.stopAllAction();

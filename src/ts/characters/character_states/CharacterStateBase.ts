@@ -163,8 +163,8 @@ export abstract class CharacterStateBase implements ICharacterState
 		}
 	}
 
-	protected playAnimation(animName: string, fadeIn: number): void
+	protected playAnimation(animName: string, fadeIn: number, runOnlyOnce?: boolean): void
 	{
-		this.animationLength = this.character.setAnimation(animName, fadeIn);
+		this.animationLength = this.character.setAnimation(animName, fadeIn, runOnlyOnce);
 	}
 }
