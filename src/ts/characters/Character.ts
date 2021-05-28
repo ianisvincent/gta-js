@@ -27,6 +27,8 @@ import { GroundImpactData } from './GroundImpactData';
 import { ClosestObjectFinder } from '../core/ClosestObjectFinder';
 import { Object3D } from 'three';
 import { EntityType } from '../enums/EntityType';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { BodyPart } from "../enums/BodyPart";
 
 export class Character extends THREE.Object3D implements IWorldEntity
 {
@@ -60,7 +62,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 	public viewVector: THREE.Vector3;
 	public actions: { [action: string]: KeyBinding };
 	public characterCapsule: CapsuleCollider;
-	
+
 	// Ray casting
 	public rayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
 	public rayHasHit: boolean = false;
@@ -70,17 +72,19 @@ export class Character extends THREE.Object3D implements IWorldEntity
 	public initJumpSpeed: number = -1;
 	public groundImpactData: GroundImpactData = new GroundImpactData();
 	public raycastBox: THREE.Mesh;
-	
+
 	public world: World;
 	public charState: ICharacterState;
 	public behaviour: ICharacterAI;
-	
+
 	// Vehicles
 	public controlledObject: IControllable;
 	public occupyingSeat: VehicleSeat = null;
 	public vehicleEntryInstance: VehicleEntryInstance = null;
-	
+
 	private physicsEnabled: boolean = true;
+
+	public hasWeapon: boolean = false;
 
 	constructor(gltf: any)
 	{
@@ -114,6 +118,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			'right': new KeyBinding('KeyD'),
 			'run': new KeyBinding('ShiftLeft'),
 			'jump': new KeyBinding('Space'),
+            'load_gun': new KeyBinding('KeyT'),
 			'punch': new KeyBinding('KeyP'),
 			'use': new KeyBinding('KeyE'),
 			'enter': new KeyBinding('KeyF'),
@@ -180,7 +185,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 
 	/**
 	 * Set state to the player. Pass state class (function) name.
-	 * @param {function} State 
+	 * @param {function} State
 	 */
 	public setState(state: ICharacterState): void
 	{
@@ -228,7 +233,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 	{
 		let lookVector = new THREE.Vector3().copy(vector).setY(0).normalize();
 		this.orientationTarget.copy(lookVector);
-		
+
 		if (instantly)
 		{
 			this.orientation.copy(lookVector);
@@ -300,7 +305,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 				for (const action in this.actions) {
 					if (this.actions.hasOwnProperty(action)) {
 						const binding = this.actions[action];
-	
+
 						if (_.includes(binding.eventCodes, code))
 						{
 							this.triggerAction(action, pressed);
@@ -343,7 +348,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			this.world.cameraOperator.move(deltaX, deltaY);
 		}
 	}
-	
+
 	public handleMouseWheel(event: WheelEvent, value: number): void
 	{
 		if (this.controlledObject !== undefined)
@@ -471,6 +476,10 @@ export class Character extends THREE.Object3D implements IWorldEntity
 				keys: ['P'],
 				desc: 'Punch'
 			},
+            {
+                keys: ['T'],
+                desc: 'Load guns'
+            },
 			{
 				keys: ['F', 'or', 'G'],
 				desc: 'Enter vehicle'
@@ -498,7 +507,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			this.viewVector = new THREE.Vector3().subVectors(this.position, this.world.camera.position);
 			this.getWorldPosition(this.world.cameraOperator.target);
 		}
-		
+
 	}
 
 	public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean): number
@@ -577,7 +586,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 		if (this.vehicleEntryInstance === null)
 		{
 			let moveVector = this.getCameraRelativeMovementVector();
-	
+
 			if (moveVector.x === 0 && moveVector.y === 0 && moveVector.z === 0)
 			{
 				this.setOrientation(this.orientation);
@@ -715,11 +724,11 @@ export class Character extends THREE.Object3D implements IWorldEntity
 		{
 			this.transferControls(vehicle);
 			this.resetControls();
-	
+
 			this.controlledObject = vehicle;
 			this.controlledObject.allowSleep(false);
 			vehicle.inputReceiverInit();
-	
+
 			vehicle.controllingCharacter = this;
 		}
 	}
@@ -776,7 +785,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			{
 				this.setState(new ExitingVehicle(this, this.occupyingSeat));
 			}
-			
+
 			this.stopControllingVehicle();
 		}
 	}
@@ -931,7 +940,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 				body.velocity.vsub(add, body.velocity);
 			}
 
-			// Add positive vertical velocity 
+			// Add positive vertical velocity
 			body.velocity.y += 4;
 			// Move above ground by 2x safe offset value
 			body.position.y += character.raySafeOffset * 2;
@@ -995,4 +1004,25 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			world.graphicsWorld.remove(this.raycastBox);
 		}
 	}
+
+	// TODO: make something cleaner
+	public loadWeapon(character: Character): void {
+		const loader = new GLTFLoader();
+		const rightHand = character.getObjectByName(BodyPart.RightHand);
+		loader.load('../build/assets/weapons/1911.glb', function (gltf) {
+			gltf.scene.name = 'gun';
+			gltf.scene.scale.set(3, 3, 3);
+			rightHand.add(gltf.scene);
+			console.log(rightHand);
+		}, undefined, function (error) {
+			console.error(error);
+		});
+    }
+
+    public unloadWeapon(character: Character): void {
+        const rightHand = character.getObjectByName(BodyPart.RightHand);
+        const guns = character.getObjectByName('gun');
+        rightHand.remove(guns);
+    }
 }
+
