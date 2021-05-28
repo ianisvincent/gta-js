@@ -53,6 +53,15 @@ export abstract class CharacterStateBase implements ICharacterState
 
 	public onInputChange(): void
 	{
+		if (this.character.actions.load_gun.justPressed) {
+			if (!this.character.hasWeapon && !this.character.getObjectByName('gun')) {
+				this.character.loadWeapon(this.character);
+				this.character.hasWeapon = true;
+			} else {
+				this.character.unloadWeapon(this.character);
+				this.character.hasWeapon = false;
+			}
+		}
 		if (this.canFindVehiclesToEnter && this.character.actions.enter.justPressed)
 		{
 			this.character.findVehicleToEnter(true);
