@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
+import * as GUI from '../../lib/utils/dat.gui';
 
 import { KeyBinding } from '../core/KeyBinding';
 import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
@@ -1012,8 +1013,18 @@ export class Character extends THREE.Object3D implements IWorldEntity
 		loader.load('../build/assets/weapons/1911.glb', function (gltf) {
 			gltf.scene.name = 'gun';
 			gltf.scene.scale.set(3, 3, 3);
+			gltf.scene.rotation.set(1.62, 0, 4.52);
+			gltf.scene.position.set(1.68, 16.48, 2.6)
 			rightHand.add(gltf.scene);
-			console.log(rightHand);
+			/*const gui = new GUI.GUI();
+			const gunGUIFolder = gui.addFolder('Gun');
+			gunGUIFolder.add(gltf.scene.rotation, "x", 0, Math.PI * 2, 0.01)
+			gunGUIFolder.add(gltf.scene.rotation, "y", 0, Math.PI * 2, 0.01)
+			gunGUIFolder.add(gltf.scene.rotation, "z", 0, Math.PI * 2, 0.01)
+
+			gunGUIFolder.add(gltf.scene.position, "x", 0, 100, 0.01)
+			gunGUIFolder.add(gltf.scene.position, "y", 0, 100, 0.01)
+			gunGUIFolder.add(gltf.scene.position, "z", 0, 100, 0.01)*/
 		}, undefined, function (error) {
 			console.error(error);
 		});
