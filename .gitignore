@@ -1,4 +1,2 @@
 .vscode
 node_modules
-*.js linguist-detectable=false
-linguist-generated
