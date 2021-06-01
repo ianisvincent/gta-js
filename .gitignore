@@ -1,2 +1,3 @@
 .vscode
 node_modules
+*.js linguist-detectable=false
