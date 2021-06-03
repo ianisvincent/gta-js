@@ -34,7 +34,7 @@ export class Idle extends CharacterStateBase implements ICharacterState {
             this.character.setState(new Punch(this.character));
         }
 
-        if (this.character.actions.aim.isPressed) {
+        if (this.character.hasWeapon && this.character.actions.aim.isPressed) {
             this.character.setState(new Aim(this.character));
         }
 
