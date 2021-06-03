@@ -120,6 +120,7 @@ export class Character extends THREE.Object3D implements IWorldEntity
 			'run': new KeyBinding('ShiftLeft'),
 			'jump': new KeyBinding('Space'),
             'spawn_gun': new KeyBinding('KeyT'),
+			'aim': new KeyBinding('KeyY'),
 			'punch': new KeyBinding('KeyP'),
 			'use': new KeyBinding('KeyE'),
 			'enter': new KeyBinding('KeyF'),
@@ -481,6 +482,10 @@ export class Character extends THREE.Object3D implements IWorldEntity
                 keys: ['T'],
                 desc: 'Spawn gun'
             },
+            {
+                keys: ['Y'],
+                desc: 'Aim'
+            },
 			{
 				keys: ['F', 'or', 'G'],
 				desc: 'Enter vehicle'
@@ -524,11 +529,9 @@ export class Character extends THREE.Object3D implements IWorldEntity
 				console.error(`Animation ${clipName} not found!`);
 				return 0;
 			}
-
 			if (runOnlyOnce) {
 				action.setLoop(THREE.LoopOnce, 1);
 			}
-
 			this.mixer.stopAllAction();
 			action.fadeIn(fadeIn);
 			action.play();

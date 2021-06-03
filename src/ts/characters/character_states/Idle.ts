@@ -2,7 +2,7 @@ import
 {
     CharacterStateBase,
     JumpIdle, Punch,
-    Walk,
+    Walk, Aim
 } from './_stateLibrary';
 import {ICharacterState} from '../../interfaces/ICharacterState';
 import {Character} from '../Character';
@@ -20,7 +20,6 @@ export class Idle extends CharacterStateBase implements ICharacterState {
 
     public update(timeStep: number): void {
         super.update(timeStep);
-
         this.fallInAir();
     }
 
@@ -33,6 +32,14 @@ export class Idle extends CharacterStateBase implements ICharacterState {
 
         if (this.character.actions.punch.isPressed) {
             this.character.setState(new Punch(this.character));
+        }
+
+        // TODO: Find a way to set Aiming state and deal with stuff there...
+        if (this.character.actions.aim.isPressed) {
+            this.playAnimation('aim_pistol_idle', 0.1);
+        }
+        if (this.character.actions.aim.justReleased) {
+            this.playAnimation('idle', 0.1);
         }
 
 
