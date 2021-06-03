@@ -25,5 +25,9 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
     public onInputChange(): void {
         super.onInputChange();
+
+        if (this.character.actions.aim.justReleased) {
+            this.character.setState(new Idle(this.character))
+        }
     }
 }
