@@ -34,14 +34,9 @@ export class Idle extends CharacterStateBase implements ICharacterState {
             this.character.setState(new Punch(this.character));
         }
 
-        // TODO: Find a way to set Aiming state and deal with stuff there...
         if (this.character.actions.aim.isPressed) {
-            this.playAnimation('aim_pistol_idle', 0.1);
+            this.character.setState(new Aim(this.character));
         }
-        if (this.character.actions.aim.justReleased) {
-            this.playAnimation('idle', 0.1);
-        }
-
 
         if (this.anyDirection()) {
             if (this.character.velocity.length() > 0.5) {
