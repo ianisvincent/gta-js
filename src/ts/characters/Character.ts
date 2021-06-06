@@ -1038,5 +1038,14 @@ export class Character extends THREE.Object3D implements IWorldEntity
         const guns = character.getObjectByName('gun');
         rightHand.remove(guns);
     }
+
+	lockAiming(character: Character): void {
+		this.world.cameraOperator.aimingMode = true;
+		this.world.cameraOperator.targetedCharacter = character;
+	}
+
+	unlockAiming(): void {
+		this.world.cameraOperator.aimingMode = false;
+	}
 }
 
