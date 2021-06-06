@@ -12,7 +12,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
 
     public world: World;
     public camera: THREE.Camera;
-    public target: THREE.Vector3;
+    public target: THREE.Vector3; // Target is the center of orbit control
     public sensitivity: THREE.Vector2;
     public radius: number = 1;
     public theta: number;
@@ -94,16 +94,15 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         } else if (!this.followMode) {
             // This is the default behaviour
             this.radius = THREE.MathUtils.lerp(this.radius, this.targetRadius, 0.1);
-
             this.camera.position.x = this.target.x + this.radius * Math.sin(this.theta * Math.PI / 180) * Math.cos(this.phi * Math.PI / 180);
             this.camera.position.y = this.target.y + this.radius * Math.sin(this.phi * Math.PI / 180);
             this.camera.position.z = this.target.z + this.radius * Math.cos(this.theta * Math.PI / 180) * Math.cos(this.phi * Math.PI / 180);
             this.camera.updateMatrix();
             this.camera.lookAt(this.target);
         }
+        // Maybe this is not the best place to put this, as this is a character stuff..
         if (this.aimingMode && this.targetedCharacter.hasWeapon) {
-            // Character is facing the same direction as camera.
-            this.camera.getWorldDirection(this.target);
+            this.camera.getWorldDirection(this.target); // Affect the direction in which the camera is looking into the target vector.
             this.target.y = 0;
             this.target.add(this.targetedCharacter.position);
             this.targetedCharacter.lookAt(this.target);
