@@ -58,6 +58,12 @@ export abstract class CharacterStateBase implements ICharacterState {
                 this.character.hasWeapon = false;
             }
         }
+        if (this.character.actions.aim.justPressed) {
+            this.character.lockAiming(this.character);
+        }
+        if (this.character.actions.aim.justReleased) {
+            this.character.unlockAiming();
+        }
         if (this.canFindVehiclesToEnter && this.character.actions.enter.justPressed) {
             this.character.findVehicleToEnter(true);
         } else if (this.canFindVehiclesToEnter && this.character.actions.enter_passenger.justPressed) {
