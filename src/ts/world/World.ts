@@ -135,6 +135,7 @@ export class World
 		this.physicsFrameTime = 1 / this.physicsFrameRate;
 		this.physicsMaxPrediction = this.physicsFrameRate;
 
+
 		// RenderLoop
 		this.clock = new THREE.Clock();
 		this.renderDelta = 0;
@@ -151,7 +152,10 @@ export class World
 		this.inputManager = new InputManager(this, this.renderer.domElement);
 		this.cameraOperator = new CameraOperator(this, this.camera, this.params.Mouse_Sensitivity);
 		this.sky = new Sky(this);
-		
+		// Disable Shadows to Debug
+		this.sky.csm.lights.forEach((light) => {
+			light.castShadow = false;
+		});
 		// Load scene if path is supplied
 		if (worldScenePath !== undefined)
 		{
