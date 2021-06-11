@@ -108,8 +108,11 @@ export class World
 		// Three.js scene
 		this.graphicsWorld = new THREE.Scene();
 		this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1010);
+
+		// Camera helper
 		const helper = new THREE.CameraHelper(this.camera);
 		this.graphicsWorld.add(helper);
+
 		// Passes
 		let renderPass = new RenderPass( this.graphicsWorld, this.camera );
 		let fxaaPass = new ShaderPass( FXAAShader );
