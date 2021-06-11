@@ -102,11 +102,15 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         }
         // Maybe this is not the best place to put this, as this is a character stuff..
         if (this.aimingMode && this.targetedCharacter.hasWeapon) {
-            this.camera.getWorldDirection(this.target); // Affect the direction in which the camera is looking into the target vector.
-            this.target.y = 0;
-            this.target.add(this.targetedCharacter.position);
-            this.targetedCharacter.lookAt(this.target);
+            this.setAimingMode();
         }
+    }
+
+    public setAimingMode(): void {
+        this.camera.getWorldDirection(this.target); // Affect the direction in which the camera is looking into the target vector.
+        this.target.y = 0;
+        this.target.add(this.targetedCharacter.position);
+        this.targetedCharacter.lookAt(this.target);
     }
 
     public handleKeyboardEvent(event: KeyboardEvent, code: string, pressed: boolean): void {
