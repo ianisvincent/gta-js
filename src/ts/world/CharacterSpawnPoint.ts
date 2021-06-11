@@ -19,7 +19,10 @@ export class CharacterSpawnPoint implements ISpawnPoint
 		loadingManager.loadGLTF('build/assets/brian.glb', (model) =>
 		{
 			let player = new Character(model);
-			
+			player.traverse( function( object ) {
+				console.log(object);
+				object.frustumCulled = false;
+			})
 			let worldPos = new THREE.Vector3();
 			this.object.getWorldPosition(worldPos);
 			player.setPosition(worldPos.x, worldPos.y, worldPos.z);
