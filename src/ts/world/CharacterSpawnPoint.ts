@@ -20,7 +20,6 @@ export class CharacterSpawnPoint implements ISpawnPoint
 		{
 			let player = new Character(model);
 			player.traverse( function( object ) {
-				console.log(object);
 				object.frustumCulled = false;
 			})
 			let worldPos = new THREE.Vector3();
