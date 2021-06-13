@@ -459,7 +459,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             // Look in camera's direction
             this.viewVector = new THREE.Vector3().subVectors(this.position, this.world.camera.position);
             this.getWorldPosition(this.cameraPos);
-            this.cameraPos.y += 0.6;
+            this.cameraPos.y += 0.7;
             this.world.cameraOperator.target = this.cameraPos;
         }
 
