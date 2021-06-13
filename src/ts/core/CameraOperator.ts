@@ -32,7 +32,6 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
     public followMode: boolean = false;
     public aimingMode: boolean = false;
 
-    public characterCaller: Character;
     public targetedCharacter: Character;
 
     constructor(world: World, camera: THREE.Camera, sensitivityX: number = 1, sensitivityY: number = sensitivityX * 0.8) {
@@ -120,9 +119,9 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
     public handleKeyboardEvent(event: KeyboardEvent, code: string, pressed: boolean): void {
         // Free camera
         if (code === 'KeyC' && pressed === true && event.shiftKey === true) {
-            if (this.characterCaller !== undefined) {
-                this.world.inputManager.setInputReceiver(this.characterCaller);
-                this.characterCaller = undefined;
+            if (this.targetedCharacter !== undefined) {
+                this.world.inputManager.setInputReceiver(this.targetedCharacter);
+                this.targetedCharacter = undefined;
             }
         } else {
             for (const action in this.actions) {

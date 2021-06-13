@@ -164,7 +164,7 @@ export abstract class Vehicle extends THREE.Object3D implements IWorldEntity
 		if (code === 'KeyC' && pressed === true && event.shiftKey === true)
 		{
 			this.resetControls();
-			this.world.cameraOperator.characterCaller = this.controllingCharacter;
+			this.world.cameraOperator.targetedCharacter = this.controllingCharacter;
 			this.world.inputManager.setInputReceiver(this.world.cameraOperator);
 		}
 		else if (code === 'KeyR' && pressed === true && event.shiftKey === true)

@@ -277,7 +277,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             // Free camera
             if (code === 'KeyC' && pressed === true && event.shiftKey === true) {
                 this.resetControls();
-                this.world.cameraOperator.characterCaller = this;
+                this.world.cameraOperator.targetedCharacter = this;
                 this.world.inputManager.setInputReceiver(this.world.cameraOperator);
             } else if (code === 'KeyR' && pressed === true && event.shiftKey === true) {
                 this.world.restartScenario();
