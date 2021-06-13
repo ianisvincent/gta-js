@@ -38,7 +38,6 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     public height: number = 0;
     public tiltContainer: THREE.Group;
     public modelContainer: THREE.Group;
-    public modelContainerLeftOffSet = 0.22;
     public materials: THREE.Material[] = [];
     public mixer: THREE.AnimationMixer;
     public animations: any[];
@@ -104,7 +103,6 @@ export class Character extends THREE.Object3D implements IWorldEntity {
         // Model container is used to reliably ground the character, as animation can alter the position of the model itself
         this.modelContainer = new THREE.Group();
         this.modelContainer.position.y = -0.57;
-        this.modelContainer.position.x = this.modelContainerLeftOffSet;
         this.tiltContainer.add(this.modelContainer);
         this.modelContainer.add(gltf.scene);
 
