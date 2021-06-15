@@ -16,7 +16,7 @@ export class CharacterSpawnPoint implements ISpawnPoint
 	
 	public spawn(loadingManager: LoadingManager, world: World): void
 	{
-		loadingManager.loadGLTF('build/assets/brian', (model) =>
+		loadingManager.loadGLTF('build/assets/brian.glb', (model) =>
 		{
 			let player = new Character(model);
 			player.traverse( function( object ) {

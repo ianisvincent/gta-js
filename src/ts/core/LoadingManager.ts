@@ -43,6 +43,7 @@ export class LoadingManager
 		},
 		(error)  =>
 		{
+			console.log('failed to load', path);
 			console.error(error);
 		});
 	}
