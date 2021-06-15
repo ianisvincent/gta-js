@@ -89,6 +89,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     private physicsEnabled: boolean = true;
 
     public hasWeapon: boolean = false;
+    private clip: THREE.AnimationClip;
 
     constructor(gltf: any) {
         super();
@@ -468,9 +469,9 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean): number {
         if (this.mixer !== undefined) {
             // gltf
-            let clip = THREE.AnimationClip.findByName(this.animations, clipName);
+            this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
 
-            let action = this.mixer.clipAction(clip);
+            let action = this.mixer.clipAction(this.clip);
             if (action === null) {
                 console.error(`Animation ${clipName} not found!`);
                 return 0;
@@ -481,8 +482,17 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             this.mixer.stopAllAction();
             action.fadeIn(fadeIn);
             action.play();
-
             return action.getClip().duration;
+        }
+    }
+
+    public updateAnimation(clipName: string, cameraRotation, vector): void {
+        if (this.mixer !== undefined) {
+            let action = this.mixer.clipAction(this.clip);
+            // pitch UP max: 2 - pitch DOWN min: 0
+            action.time = (cameraRotation.getWorldDirection(vector).y + 0.8) / 1.3;
+            action.zeroSlopeAtStart = true;
+            action.zeroSlopeAtEnd = true;
         }
     }
 

@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import * as Utils from './FunctionLibrary';
-import {World} from '../world/World';
-import {IInputReceiver} from '../interfaces/IInputReceiver';
-import {KeyBinding} from './KeyBinding';
-import {Character} from '../characters/Character';
+import { World } from '../world/World';
+import { IInputReceiver } from '../interfaces/IInputReceiver';
+import { KeyBinding } from './KeyBinding';
+import { Character } from '../characters/Character';
 import _ = require('lodash');
-import {IUpdatable} from '../interfaces/IUpdatable';
+import { IUpdatable } from '../interfaces/IUpdatable';
 
 export class CameraOperator implements IInputReceiver, IUpdatable {
     public updateOrder: number = 4;
@@ -13,6 +13,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
     public world: World;
     public camera: THREE.Camera;
     public target: THREE.Vector3; // Target is the center of orbit control
+    public vector: THREE.Vector3;
     public sensitivity: THREE.Vector2;
     public radius: number = 1;
     public theta: number;
@@ -37,6 +38,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
     constructor(world: World, camera: THREE.Camera, sensitivityX: number = 1, sensitivityY: number = sensitivityX * 0.8) {
         this.world = world;
         this.camera = camera;
+        this.vector = new THREE.Vector3();
         this.target = new THREE.Vector3();
         this.sensitivity = new THREE.Vector2(sensitivityX, sensitivityY);
 
@@ -102,6 +104,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         // Maybe this is not the best place to put this, as this is a character stuff..
         if (this.aimingMode && this.targetedCharacter.hasWeapon) {
             this.setAimingMode();
+            this.targetedCharacter.updateAnimation('aim_pistol_idle', this.camera, this.vector)
         } else {
             // Zoom out to set default radius
             this.setRadius(2, true);
@@ -110,7 +113,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
 
     public setAimingMode(): void {
         this.camera.getWorldDirection(this.target); // Affect the direction in which the camera is looking into the target vector.
-        this.setRadius(1, true); // Zoom in
+        this.setRadius(0.5, true); // Zoom in
         this.target.y = 0;
         this.target.add(this.targetedCharacter.position);
         this.targetedCharacter.lookAt(this.target);

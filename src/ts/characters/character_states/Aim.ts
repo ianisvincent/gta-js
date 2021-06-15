@@ -10,7 +10,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         this.character.velocitySimulator.mass = 10;
 
         this.character.setArcadeVelocityTarget(0);
-        this.playAnimation('aim_pistol_idle', 0.1, false);
+        this.playAnimation('aim_pistol_idle', 0.1, true);
     }
 
     public update(timeStep: number): void {
