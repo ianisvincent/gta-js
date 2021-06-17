@@ -15,14 +15,13 @@ export class Walk extends CharacterStateBase
 		super(character);
 
 		this.canEnterVehicles = true;
-		this.character.setArcadeVelocityTarget(0.8);
-		this.playAnimation('run', 0.1);
+		this.character.setArcadeVelocityTarget(0.5);
+		this.playAnimation('walk', 0.1);
 	}
 
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-
 		this.character.setCameraRelativeOrientationTarget();
 
 		this.fallInAir();

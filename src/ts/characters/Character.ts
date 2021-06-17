@@ -486,11 +486,14 @@ export class Character extends THREE.Object3D implements IWorldEntity {
         }
     }
 
-    public updateAnimation(clipName: string, cameraRotation, vector): void {
+    public updateAimAnimation(clipName: string, cameraRotation, vector): void {
         if (this.mixer !== undefined) {
+            this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
             let action = this.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
             action.paused = true;
+            action.zeroSlopeAtStart = true;
+            action.zeroSlopeAtEnd = true;
             action.time = (cameraRotation.getWorldDirection(vector).y + 0.8) / 1.3;
         }
     }
