@@ -30,6 +30,7 @@ import { Object3D } from 'three';
 import { EntityType } from '../enums/EntityType';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
+import { CameraOperator } from "../core/CameraOperator";
 
 export class Character extends THREE.Object3D implements IWorldEntity {
     public updateOrder: number = 1;
@@ -44,6 +45,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
 
     // Custom Camera Pos
     public cameraPos: THREE.Vector3 = new THREE.Vector3();
+    public cameraOperator: CameraOperator;
 
     // Movement
     public acceleration: THREE.Vector3 = new THREE.Vector3();
@@ -124,6 +126,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             'jump': new KeyBinding('Space'),
             'spawn_gun': new KeyBinding('KeyT'),
             'aim': new KeyBinding('KeyY'),
+            'shoot': new KeyBinding('KeyK'),
             'punch': new KeyBinding('KeyP'),
             'use': new KeyBinding('KeyE'),
             'enter': new KeyBinding('KeyF'),
@@ -437,6 +440,10 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             {
                 keys: ['Y'],
                 desc: 'Aim'
+            },
+            {
+                keys: ['K'],
+                desc: 'Shoot'
             },
             {
                 keys: ['F', 'or', 'G'],

@@ -19,3 +19,4 @@ export * from './StartWalkRight';
 export * from './Walk';
 export * from './Punch';
 export * from './Aim';
+export * from './Shoot';
