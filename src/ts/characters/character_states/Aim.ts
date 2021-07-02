@@ -21,15 +21,16 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
         this.character.setArcadeVelocityTarget(0);
         this.playAnimation('aim_pistol_idle', 0.1, true);
+        this.spawnObjectOnPoint();
     }
 
     public update(timeStep: number): void {
         super.update(timeStep);
         this.fallInAir();
-        this.spawnObjectOnPoint();
         if (this.character.cameraOperator) {
-            this.rayCaster.setFromCamera(new THREE.Vector2(0.05, 0), this.character.cameraOperator.camera)
-            const intersects = this.rayCaster.intersectObjects(this.character.world.graphicsWorld.children, true);
+            const array = this.character.world.graphicsWorld.children.filter((children) => children.name !== 'cameraHelper');
+            this.rayCaster.setFromCamera(new THREE.Vector2(0, 0), this.character.cameraOperator.camera)
+            const intersects = this.rayCaster.intersectObjects(array, true);
             for (let i = 0; i < intersects.length; i++) {
                 if (intersects[i].object.type !== 'LineSegments' && this.dummySphereImpact) {
                     this.intersectedObject = intersects[0];
@@ -41,10 +42,9 @@ export class Aim extends CharacterStateBase implements ICharacterState {
             }
 
             if (this.character.actions.shoot.isPressed) {
-                console.log(this.shootingCount);
                 this.shootingCount += 1;
                 if (this.shootingCount === 1) {
-                    console.log('shoitt!');
+                    console.log('shoot!');
                     this.spawnImpactOnPoint(this.intersectedObject);
                     this.setGunRecoilToForeArms();
                 }
@@ -101,7 +101,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     }
 
     spawnImpactOnPoint(intersected): void {
-        console.log(intersected.object.name);
         this.dummySphereImpact.position.copy(intersected.point);
     }
 }
