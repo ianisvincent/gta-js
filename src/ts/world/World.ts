@@ -110,9 +110,9 @@ export class World
 		this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1010);
 		this.camera.filmOffset = 6.4;
 		// Camera helper
-		/* TODO: Camera helper is removed for now on, because detected by the raycaster as an intersect */
-/*		const helper = new THREE.CameraHelper(this.camera);
-		this.graphicsWorld.add(helper);*/
+		const helper = new THREE.CameraHelper(this.camera);
+		helper.name = 'cameraHelper';
+		this.graphicsWorld.add(helper);
 
 		// Passes
 		let renderPass = new RenderPass( this.graphicsWorld, this.camera );
