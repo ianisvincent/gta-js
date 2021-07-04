@@ -112,6 +112,7 @@ export class World
 		// Camera helper
 		const helper = new THREE.CameraHelper(this.camera);
 		helper.name = 'cameraHelper';
+		helper.visible = false;
 		this.graphicsWorld.add(helper);
 
 		// Passes
