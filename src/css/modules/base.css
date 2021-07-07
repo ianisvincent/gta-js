@@ -37,7 +37,6 @@ h1 {
     position: absolute;
     display: flex;
     z-index: 100;
-    display: flex;
     align-items: center;
     justify-content: center;
     top: 0;
@@ -49,7 +48,7 @@ h1 {
 
 .target-point {
     background: white;
-    width: 6px;
-    height: 6px;
-    border-radius: 6px;
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
 }
