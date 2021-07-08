@@ -1,9 +1,9 @@
 import { ISpawnPoint } from '../interfaces/ISpawnPoint';
 import * as THREE from 'three';
 import { World } from './World';
-import { Character } from '../characters/Character';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
+import { Npc } from "../characters/Npc";
 
 export class NpcSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;
@@ -17,7 +17,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
 
     public spawn(loadingManager: LoadingManager, world: World): void {
         loadingManager.loadGLTF('build/assets/brian.glb', (model) => {
-            let npc = new Character(model);
+            let npc = new Npc(model);
             npc.traverse(function (object) {
                 object.frustumCulled = false;
             })

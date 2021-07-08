@@ -44,8 +44,8 @@ export class Aim extends CharacterStateBase implements ICharacterState {
             if (this.character.actions.shoot.isPressed) {
                 this.shootingCount += 1;
                 if (this.shootingCount === 1) {
-                    console.log('shoot!');
-                    this.spawnImpactOnPoint(this.intersectedObject);
+                    console.log('shooting ', this.intersectedObject.object.name);
+                    this.spawnImpactOnTarget(this.intersectedObject);
                     this.setGunRecoilToForeArms();
                 }
             }
@@ -100,7 +100,8 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         });
     }
 
-    spawnImpactOnPoint(intersected): void {
-        this.dummySphereImpact.position.copy(intersected.point);
+    spawnImpactOnTarget(intersectedTarget): void {
+        // TODO: make this impact spawn on the specific point in the mesh
+        intersectedTarget.object.add(this.dummySphereImpact);
     }
 }
