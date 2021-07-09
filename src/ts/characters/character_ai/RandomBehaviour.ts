@@ -15,7 +15,7 @@ export class RandomBehaviour implements ICharacterAI
 	public update(timeStep: number): void
 	{
 		let rndInt = Math.floor(Math.random() * this.randomFrequency);
-		let rndBool = Math.random() > 0.5 ? true : false;
+		let rndBool = Math.random() > 0.5;
 
 		if (rndInt === 0)
 		{
