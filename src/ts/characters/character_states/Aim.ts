@@ -5,6 +5,7 @@ import { Idle } from "./Idle";
 import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../../enums/BodyPart";
+import { Impact } from "../../enums/impact";
 
 export class Aim extends CharacterStateBase implements ICharacterState {
     public rayCaster: THREE.Raycaster;
@@ -44,7 +45,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
             if (this.character.actions.shoot.isPressed) {
                 this.shootingCount += 1;
                 if (this.shootingCount === 1) {
-                    console.log('shooting ', this.intersectedObject.object.name);
                     this.spawnImpactOnTarget(this.intersectedObject);
                     this.setGunRecoilToForeArms();
                 }
@@ -90,7 +90,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     private spawnObjectOnPoint() {
         const loader = new GLTFLoader();
         loader.load('../build/assets/impact_spawn.glb', (gltf) => {
-            gltf.scene.name = 'impact';
+            gltf.scene.name = Impact.Bullet;
             gltf.scene.scale.set(0.08, 0.08, 0.08);
             this.dummySphereImpact = gltf.scene;
             this.character.world.graphicsWorld.add(gltf.scene);
@@ -103,5 +103,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     spawnImpactOnTarget(intersectedTarget): void {
         // TODO: make this impact spawn on the specific point in the mesh
         intersectedTarget.object.add(this.dummySphereImpact);
+        intersectedTarget.object.parent.isGettingShot = true;
     }
 }

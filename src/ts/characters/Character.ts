@@ -93,6 +93,8 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     public hasWeapon: boolean = false;
     private clip: THREE.AnimationClip;
 
+    public isGettingShot: boolean = false;
+
     constructor(gltf: any) {
         super();
 

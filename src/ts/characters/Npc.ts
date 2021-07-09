@@ -1,17 +1,12 @@
 import { Character } from "./Character";
+import { RandomBehaviour } from "./character_ai/RandomBehaviour";
 
 export class Npc extends Character {
-    public isGettingShot: boolean;
 
     constructor(gltf: any) {
         console.log('create npc');
         super(gltf);
-/*
-        this.startWalk();
-*/
+        this.setBehaviour(new RandomBehaviour())
     }
 
-    private startWalk(): void {
-        this.triggerAction('up', true);
-    }
 }
