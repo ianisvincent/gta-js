@@ -4,6 +4,7 @@ import { World } from './World';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
 import { Npc } from "../characters/Npc";
+import { WalkOnPath } from "../characters/character_ai/WalkOnPath";
 
 export class NpcSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;
@@ -44,6 +45,31 @@ export class NpcSpawnPoint implements ISpawnPoint {
             npc.add(mesh);
 
             world.add(npc);
+
+            if (this.firstAINode !== undefined) {
+                let nodeFound = false;
+                for (const pathName in world.paths) {
+                    if (world.paths.hasOwnProperty(pathName)) {
+                        const path = world.paths[pathName];
+
+                        for (const nodeName in path.nodes) {
+                            if (Object.prototype.hasOwnProperty.call(path.nodes, nodeName)) {
+                                const node = path.nodes[nodeName];
+
+                                if (node.object.name === this.firstAINode) {
+                                    console.log(node.object.name);
+                                    npc.setBehaviour(new WalkOnPath(node, 10));
+                                    nodeFound = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!nodeFound) {
+                    console.error('Path node ' + this.firstAINode + 'not found.');
+                }
+            }
         });
     }
 }
