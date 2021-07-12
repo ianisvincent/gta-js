@@ -15,7 +15,8 @@
   "types": "build/types/sketchbook.d.ts",
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "test": "babel src/ts --delete-dir-on-start -d \"spec/out\" src/ts --out-dir \"spec/out\" -x \".ts\" -x \".js\" && jasmine"
   },
   "repository": {
     "type": "git",
@@ -28,9 +29,16 @@
   },
   "homepage": "https://github.com/swift502/Sketchbook",
   "devDependencies": {
+    "@babel/cli": "^7.14.5",
+    "@babel/core": "^7.14.6",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-typescript": "^7.14.5",
+    "@babel/register": "^7.14.5",
     "@types/jquery": "^3.5.1",
     "@types/lodash": "^4.14.149",
     "css-loader": "^3.4.0",
+    "jasmine": "^3.8.0",
     "style-loader": "^1.2.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.3",
@@ -40,6 +48,7 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+    "@types/jasmine": "^3.8.1",
     "jquery": "^3.5.1",
     "lodash": "^4.17.20",
     "sweetalert2": "^9.17.1",

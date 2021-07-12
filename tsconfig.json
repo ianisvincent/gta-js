@@ -8,6 +8,7 @@
         "moduleResolution": "node",
         "declaration": true,
         "declarationDir": "build/types",
+        "allowSyntheticDefaultImports": true,
         "baseUrl": ".",
         "paths": {
             "cannon" : ["src/lib/cannon/cannon"]
