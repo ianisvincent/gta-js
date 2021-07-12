@@ -9,12 +9,12 @@ import { Vehicle } from '../vehicles/Vehicle';
 import { Character } from '../characters/Character';
 import { FollowPath } from '../characters/character_ai/FollowPath';
 import { LoadingManager } from '../core/LoadingManager';
-import { IWorldEntity } from '../interfaces/IWorldEntity';
+import { Driver } from "../enums/driver";
 
 export class VehicleSpawnPoint implements ISpawnPoint
 {
 	public type: string;
-	public driver: string;
+	public driver: Driver;
 	public firstAINode: string;
 
 	private object: THREE.Object3D;
@@ -48,11 +48,11 @@ export class VehicleSpawnPoint implements ISpawnPoint
 					world.add(character);
 					character.teleportToVehicle(vehicle, vehicle.seats[0]);
 
-					if (this.driver === 'player')
+					if (this.driver === Driver.Player)
 					{
 						character.takeControl();
 					}
-					else if (this.driver === 'ai')
+					else if (this.driver === Driver.AI)
 					{
 						if (this.firstAINode !== undefined)
 						{

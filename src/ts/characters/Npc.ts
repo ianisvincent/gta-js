@@ -6,7 +6,7 @@ export class Npc extends Character {
     constructor(gltf: any) {
         console.log('create npc');
         super(gltf);
-        this.setBehaviour(new RandomBehaviour())
+/*        this.setBehaviour(new RandomBehaviour())*/
     }
 
 }

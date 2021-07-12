@@ -4,6 +4,7 @@ import { CharacterSpawnPoint } from './CharacterSpawnPoint';
 import { World } from './World';
 import { LoadingManager } from '../core/LoadingManager';
 import { NpcSpawnPoint } from "./NpcSpawnPoint";
+import { Driver } from "../enums/driver";
 
 export class Scenario
 {
@@ -58,7 +59,7 @@ export class Scenario
 
 		if (!this.invisible) this.createLaunchLink();
 
-		// Find all scenario spawns and enitites
+		// Find all scenario spawns and entities
 		root.traverse((child) => {
 			if (child.hasOwnProperty('userData') && child.userData.hasOwnProperty('data'))
 			{
@@ -77,7 +78,7 @@ export class Scenario
 						{
 							sp.driver = child.userData.driver;
 
-							if (child.userData.driver === 'ai' && child.userData.hasOwnProperty('first_node'))
+							if (child.userData.driver === Driver.AI && child.userData.hasOwnProperty('first_node'))
 							{
 								sp.firstAINode = child.userData.first_node;
 							}
@@ -93,7 +94,12 @@ export class Scenario
 					else if (child.userData.type === 'npc')
 					{
 						let sp = new NpcSpawnPoint(child);
+
+						if (child.userData.hasOwnProperty('first_node')) {
+							sp.firstAINode = child.userData.first_node;
+						}
 						this.spawnPoints.push(sp);
+
 					}
 				}
 			}
