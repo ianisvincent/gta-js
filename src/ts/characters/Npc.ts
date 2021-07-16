@@ -1,12 +1,16 @@
 import { Character } from "./Character";
-import { RandomBehaviour } from "./character_ai/RandomBehaviour";
 
 export class Npc extends Character {
+    isGettingShot: boolean = false;
 
     constructor(gltf: any) {
-        console.log('create npc');
         super(gltf);
-/*        this.setBehaviour(new RandomBehaviour())*/
     }
 
+    public update(timeStep: number) {
+        super.update(timeStep);
+        if (this.isGettingShot) {
+            // Do something if NPC is getting shot
+        }
+    }
 }
