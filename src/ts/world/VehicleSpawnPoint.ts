@@ -42,7 +42,7 @@ export class VehicleSpawnPoint implements ISpawnPoint
 
 			if (this.driver !== undefined)
 			{
-				loadingManager.loadGLTF('build/assets/brian.glb', (charModel) =>
+				loadingManager.loadGLTF('build/assets/brian_test_2.glb', (charModel) =>
 				{
 					let character = new Character(charModel);
 					world.add(character);
