@@ -16,7 +16,7 @@ export class CharacterSpawnPoint implements ISpawnPoint
 	
 	public spawn(loadingManager: LoadingManager, world: World): void
 	{
-		loadingManager.loadGLTF('build/assets/brian_test_2.glb', (model) =>
+		loadingManager.loadGLTF('build/assets/brian.glb', (model) =>
 		{
 			let player = new Character(model);
 			player.traverse( function( object ) {
@@ -28,7 +28,7 @@ export class CharacterSpawnPoint implements ISpawnPoint
 			
 			let forward = Utils.getForward(this.object);
 			player.setOrientation(forward, true);
-			
+			player.isPlayer = true;
 			world.add(player);
 			player.takeControl();
 		});

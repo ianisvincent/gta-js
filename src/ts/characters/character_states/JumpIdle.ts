@@ -24,7 +24,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-
+		this.onDie();
 		// Move in air
 		if (this.alreadyJumped)
 		{

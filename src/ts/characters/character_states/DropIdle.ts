@@ -34,6 +34,7 @@ export class DropIdle extends CharacterStateBase implements ICharacterState
 			this.character.setState(new Idle(this.character));
 		}
 		this.fallInAir();
+		this.onDie();
 	}
 
 	public onInputChange(): void

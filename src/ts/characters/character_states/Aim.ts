@@ -28,6 +28,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     public update(timeStep: number): void {
         super.update(timeStep);
         this.fallInAir();
+        this.onDie();
         if (this.character.cameraOperator) {
             const array = this.character.world.graphicsWorld.children.filter((children) => children.name !== 'cameraHelper');
             this.rayCaster.setFromCamera(new THREE.Vector2(0, 0), this.character.cameraOperator.camera)
@@ -105,6 +106,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         intersectedTarget.object.add(this.dummySphereImpact);
         intersectedTarget.object.parent.isGettingShot = true;
         const character = intersectedTarget.object.parent as Character;
-        character.takeDamage(10);
+        character.takeDamage(50);
     }
 }

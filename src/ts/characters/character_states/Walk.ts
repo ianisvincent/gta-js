@@ -26,9 +26,7 @@ export class Walk extends CharacterStateBase
 		this.character.setCameraRelativeOrientationTarget();
 
 		this.fallInAir();
-		if (this.character.isDead) {
-			this.character.setState(new Die(this.character));
-		}
+		this.onDie();
 	}
 
 	public onInputChange(): void
