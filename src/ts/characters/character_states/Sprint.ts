@@ -28,6 +28,7 @@ export class Sprint extends CharacterStateBase
 		super.update(timeStep);
 		this.character.setCameraRelativeOrientationTarget();
 		this.fallInAir();
+		this.onDie();
 	}
 
 	public onInputChange(): void

@@ -22,7 +22,7 @@ export class EndWalk extends CharacterStateBase implements ICharacterState
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-
+		this.onDie();
 		if (this.animationEnded(timeStep))
 		{
 
