@@ -29,8 +29,7 @@ export class StartWalkBase extends CharacterStateBase
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-
-		if (this.animationEnded(timeStep))
+		if (this.animationEnded(timeStep) && !this.character.isAiming)
 		{
 			this.character.setState(new Walk(this.character));
 		}
