@@ -7,7 +7,6 @@ import
 	Sprint,
 } from './_stateLibrary';
 import { Character } from '../Character';
-import { Die } from "./Die";
 
 export class Walk extends CharacterStateBase
 {

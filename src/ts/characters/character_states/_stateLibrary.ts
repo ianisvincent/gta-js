@@ -21,3 +21,7 @@ export * from './Punch';
 export * from './Aim';
 export * from './Shoot';
 export * from './Die';
+export * from './AimWalkForward';
+export * from './AimWalkBackward';
+export * from './AimWalkLeft';
+export * from './AimWalkRight';
