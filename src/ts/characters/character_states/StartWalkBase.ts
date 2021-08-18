@@ -1,6 +1,7 @@
 import * as Utils from '../../core/FunctionLibrary';
 import
 {
+	Aim,
 	CharacterStateBase,
 	Idle,
 	IdleRotateLeft,
@@ -29,8 +30,7 @@ export class StartWalkBase extends CharacterStateBase
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-		if (this.animationEnded(timeStep) && !this.character.isAiming)
-		{
+		if (this.animationEnded(timeStep) && !this.character.isAiming) {
 			this.character.setState(new Walk(this.character));
 		}
 
@@ -59,7 +59,8 @@ export class StartWalkBase extends CharacterStateBase
 	public onInputChange(): void
 	{
 		super.onInputChange();
-		
+
+
 		if (this.character.actions.jump.justPressed)
 		{
 			this.character.setState(new JumpRunning(this.character));
@@ -84,9 +85,15 @@ export class StartWalkBase extends CharacterStateBase
 					this.character.setState(new Idle(this.character));
 				}
 			}
-			else
-			{
-				this.character.setState(new Idle(this.character));
+			else {
+				if (this.character.isAiming) {
+					this.character.setState(new Aim(this.character));
+
+				} else {
+					console.log('b');
+					this.character.setState(new Idle(this.character));
+				}
+
 			}
 		}
 
