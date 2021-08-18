@@ -1,4 +1,4 @@
-import { CharacterStateBase } from "./CharacterStateBase";
+import { CharacterStateBase } from "./_stateLibrary";
 import { ICharacterState } from "../../interfaces/ICharacterState";
 import { Character } from "../Character";
 import { Idle } from "./Idle";
