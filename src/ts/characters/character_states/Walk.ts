@@ -1,6 +1,5 @@
 import
 {
-	Aim,
 	CharacterStateBase,
 	EndWalk,
 	Idle,
@@ -32,10 +31,6 @@ export class Walk extends CharacterStateBase
 	public onInputChange(): void
 	{
 		super.onInputChange();
-
-		if (this.character.hasWeapon && this.character.actions.aim.justPressed) {
-			this.character.setState(new Aim(this.character));
-		}
 
 		if (this.noDirection())
 		{
