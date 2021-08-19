@@ -94,7 +94,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     private physicsEnabled: boolean = true;
 
     public hasWeapon: boolean = false;
-    public isAiming: boolean = false;
     public isGettingShot: boolean = false;
     public health: number = 1000;
     public isDead: boolean;
@@ -404,8 +403,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public update(timeStep: number): void {
         this.behaviour?.update(timeStep);
         this.vehicleEntryInstance?.update(timeStep);
-
-
+        // console.log(this.occupyingSeat);
         this.charState?.update(timeStep);
 
         // this.visuals.position.copy(this.modelOffset);
@@ -531,12 +529,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
             let action = this.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
-             action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
             action.paused = true;
-            action.stopWarping();
-            /*action.zeroSlopeAtStart = true;
+            action.zeroSlopeAtStart = true;
             action.zeroSlopeAtEnd = true;
-            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;*/
+            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
         }
     }
 

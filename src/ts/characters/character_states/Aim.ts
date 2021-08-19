@@ -6,10 +6,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../../enums/BodyPart";
 import { Impact } from "../../enums/impact";
-import { AimWalkForward } from "./AimWalkForward";
-import { AimWalkBackward } from "./AimWalkBackward";
-import { AimWalkLeft } from "./AimWalkLeft";
-import { AimWalkRight } from "./AimWalkRight";
 
 export class Aim extends CharacterStateBase implements ICharacterState {
     public rayCaster: THREE.Raycaster;
@@ -20,13 +16,12 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
     constructor(character: Character) {
         super(character);
-
         this.rayCaster = new THREE.Raycaster();
         this.character.velocitySimulator.damping = 0.6;
         this.character.velocitySimulator.mass = 10;
-        this.character.isAiming = true;
+
         this.character.setArcadeVelocityTarget(0);
-        this.playAnimation('aim_pistol_idle', 0.1, true, true);
+        this.playAnimation('aim_pistol_idle', 0.1, true);
         this.spawnObjectOnPoint();
     }
 
@@ -44,9 +39,9 @@ export class Aim extends CharacterStateBase implements ICharacterState {
                 }
             }
             // If this character stop aiming, go back to idle state
-         /*   if (this.animationEnded(timeStep)) {
+            if (this.animationEnded(timeStep)) {
                 this.character.setState(new Idle(this.character))
-            }*/
+            }
 
             if (this.character.actions.shoot.isPressed) {
                 this.shootingCount += 1;
@@ -56,18 +51,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
                 }
             }
 
-            if (this.character.actions.up.isPressed) {
-                this.character.setState(new AimWalkForward(this.character))
-            }
-            if (this.character.actions.down.isPressed) {
-                this.character.setState(new AimWalkBackward(this.character))
-            }
-            if (this.character.actions.left.isPressed) {
-                this.character.setState(new AimWalkLeft(this.character))
-            }
-            if (this.character.actions.right.isPressed) {
-                this.character.setState(new AimWalkRight(this.character))
-            }
         }
     }
 

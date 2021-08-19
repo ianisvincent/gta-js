@@ -10,7 +10,7 @@ import {Character} from '../Character';
 export class Idle extends CharacterStateBase implements ICharacterState {
     constructor(character: Character) {
         super(character);
-        this.character.isAiming = false;
+
         this.character.velocitySimulator.damping = 0.6;
         this.character.velocitySimulator.mass = 10;
 
@@ -34,7 +34,7 @@ export class Idle extends CharacterStateBase implements ICharacterState {
             this.character.setState(new Punch(this.character));
         }
 
-        if (this.character.hasWeapon && this.character.actions.aim.justPressed) {
+        if (this.character.hasWeapon && this.character.actions.aim.isPressed) {
             this.character.setState(new Aim(this.character));
         }
 
