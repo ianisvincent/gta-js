@@ -10,7 +10,6 @@ import { AimWalkForward } from "./AimWalkForward";
 import { AimWalkBackward } from "./AimWalkBackward";
 import { AimWalkLeft } from "./AimWalkLeft";
 import { AimWalkRight } from "./AimWalkRight";
-import { Npc } from "../Npc";
 
 export class Aim extends CharacterStateBase implements ICharacterState {
     public rayCaster: THREE.Raycaster;
@@ -110,7 +109,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         const loader = new GLTFLoader();
         loader.load('../build/assets/impact_spawn.glb', (gltf) => {
             gltf.scene.name = Impact.Bullet;
-            gltf.scene.scale.set(0.05, 0.05, 0.05);
+            gltf.scene.scale.set(0.08, 0.08, 0.08);
             this.dummySphereImpact = gltf.scene;
             this.character.world.graphicsWorld.add(gltf.scene);
 
@@ -120,18 +119,14 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     }
 
     spawnImpactOnTarget(intersectedTarget): void {
-        if (intersectedTarget.object.parent instanceof Npc) {
-            console.log(intersectedTarget.object.parent);
-            intersectedTarget.object.attach(this.dummySphereImpact);
-            /* We convert the intersect point from world to local pos */
-            const impactLocalPos = intersectedTarget.object.worldToLocal(intersectedTarget.point);
-            /* So we can then apply the dummy sphere position locally inside intersected object */
-            this.dummySphereImpact.position.set(impactLocalPos.x, impactLocalPos.y, impactLocalPos.z);
+        intersectedTarget.object.add(this.dummySphereImpact);
+        /* We convert the intersect point from world to local pos */
+        const impactLocalPos = intersectedTarget.object.worldToLocal(intersectedTarget.point);
+        /* So we can then apply the dummy sphere position locally inside intersected object */
+        this.dummySphereImpact.position.set(impactLocalPos.x, impactLocalPos.y, impactLocalPos.z);
 
-            intersectedTarget.object.parent.isGettingShot = true;
-
-            const characterNpc = intersectedTarget.object.parent as Npc;
-            characterNpc.takeDamage(50);
-        }
+        intersectedTarget.object.parent.isGettingShot = true;
+        const character = intersectedTarget.object.parent as Character;
+        character.takeDamage(50);
     }
 }

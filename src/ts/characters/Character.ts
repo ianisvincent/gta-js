@@ -200,9 +200,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public takeDamage(damage: number) {
         if (this.health >= 0) {
             this.health -= damage;
+
             if (this.isPlayer) {
                 this.updatePlayerHealthBar(damage);
             }
+
         } else {
             this.isDead = true;
         }
