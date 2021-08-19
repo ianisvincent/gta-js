@@ -46,6 +46,8 @@ export abstract class CharacterStateBase implements ICharacterState {
     }
 
     public update(timeStep: number): void {
+        // Do we have to check all children to check if an impact is on the mesh in the update loop?
+        this.checkIfImpact();
         this.timer += timeStep;
     }
 
@@ -142,7 +144,14 @@ export abstract class CharacterStateBase implements ICharacterState {
         }
     }
 
-    protected playAnimation(animName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): void {
-        this.animationLength = this.character.setAnimation(animName, fadeIn, runOnlyOnce, lockWhenFinished);
+    protected playAnimation(animName: string, fadeIn: number, runOnlyOnce?: boolean): void {
+        this.animationLength = this.character.setAnimation(animName, fadeIn, runOnlyOnce);
+    }
+
+    private checkIfImpact() {
+        const impact = this.character.getObjectByName(Impact.Bullet)
+        if (impact) {
+            // Do something if character get shot
+        }
     }
 }

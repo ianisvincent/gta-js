@@ -31,9 +31,8 @@ import { EntityType } from '../enums/EntityType';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
-import { IDamageable } from "../interfaces/IDamageable";
 
-export class Character extends THREE.Object3D implements IWorldEntity, IDamageable {
+export class Character extends THREE.Object3D implements IWorldEntity {
     public updateOrder: number = 1;
     public entityType: EntityType = EntityType.Character;
 
@@ -92,13 +91,9 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     private physicsEnabled: boolean = true;
 
     public hasWeapon: boolean = false;
-    public isGettingShot: boolean = false;
-    public health: number = 100;
-    public isDead: boolean;
-
     private clip: THREE.AnimationClip;
-    private aimingSettings = {offSet: 1.64, amplitude: 2.49};
 
+    public isGettingShot: boolean = false;
 
     constructor(gltf: any) {
         super();
@@ -109,11 +104,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         // The visuals group is centered for easy character tilting
         this.tiltContainer = new THREE.Group();
         this.add(this.tiltContainer);
-
-        const gui = new GUI.GUI();
-        const gunGUIFolder = gui.addFolder('aimingSettings');
-        gunGUIFolder.add(this.aimingSettings, "offSet", 0, 10, 0.01)
-        gunGUIFolder.add(this.aimingSettings, "amplitude", 0, 10, 0.01)
 
         // Model container is used to reliably ground the character, as animation can alter the position of the model itself
         this.modelContainer = new THREE.Group();
@@ -191,15 +181,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         // States
         this.setState(new Idle(this));
 
-    }
-
-    public takeDamage(damage: number) {
-        if (this.health >= 0) {
-            console.log('health:', this.health);
-            this.health -= damage;
-        } else {
-            this.isDead = true;
-        }
     }
 
     public setAnimations(animations: []): void {
@@ -494,7 +475,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     }
 
-    public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
+    public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean): number {
         if (this.mixer !== undefined) {
             // gltf
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
@@ -506,9 +487,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             }
             if (runOnlyOnce) {
                 action.setLoop(THREE.LoopOnce, 1);
-            }
-            if (lockWhenFinished) {
-                action.clampWhenFinished = true;
             }
             this.mixer.stopAllAction();
             action.fadeIn(fadeIn);
@@ -525,7 +503,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             action.paused = true;
             action.zeroSlopeAtStart = true;
             action.zeroSlopeAtEnd = true;
-            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
+            action.time = (cameraRotation.getWorldDirection(vector).y + 0.8) / 1.3;
         }
     }
 

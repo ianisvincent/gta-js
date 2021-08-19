@@ -7,7 +7,6 @@ import
 	Sprint,
 } from './_stateLibrary';
 import { Character } from '../Character';
-import { Die } from "./Die";
 
 export class Walk extends CharacterStateBase
 {
@@ -26,9 +25,6 @@ export class Walk extends CharacterStateBase
 		this.character.setCameraRelativeOrientationTarget();
 
 		this.fallInAir();
-		if (this.character.isDead) {
-			this.character.setState(new Die(this.character));
-		}
 	}
 
 	public onInputChange(): void

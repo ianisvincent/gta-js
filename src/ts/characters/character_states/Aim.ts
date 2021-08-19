@@ -104,7 +104,5 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         // TODO: make this impact spawn on the specific point in the mesh
         intersectedTarget.object.add(this.dummySphereImpact);
         intersectedTarget.object.parent.isGettingShot = true;
-        const character = intersectedTarget.object.parent as Character;
-        character.takeDamage(10);
     }
 }
