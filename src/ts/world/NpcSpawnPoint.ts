@@ -43,7 +43,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
             // Affect name to npc
             mesh.name = `npc${this.object.uuid.substring(0, 3)}`
             npc.add(mesh);
-
+            npc.isPlayer = false;
             world.add(npc);
 
             if (this.firstAINode !== undefined) {

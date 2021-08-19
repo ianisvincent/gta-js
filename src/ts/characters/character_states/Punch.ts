@@ -1,4 +1,4 @@
-import {CharacterStateBase} from "./CharacterStateBase";
+import {CharacterStateBase} from "./_stateLibrary";
 import {ICharacterState} from "../../interfaces/ICharacterState";
 import {Character} from "../Character";
 import {Idle} from "./Idle";
@@ -16,7 +16,7 @@ export class Punch extends CharacterStateBase implements ICharacterState {
     public update(timeStep: number): void {
         super.update(timeStep);
         this.fallInAir();
-
+        this.onDie();
         // If this character stop punching, go back to idle state
            if (this.animationEnded(timeStep)) {
                this.character.setState(new Idle(this.character))

@@ -31,10 +31,13 @@ import { EntityType } from '../enums/EntityType';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
+import { IDamageable } from "../interfaces/IDamageable";
 
-export class Character extends THREE.Object3D implements IWorldEntity {
+export class Character extends THREE.Object3D implements IWorldEntity, IDamageable {
     public updateOrder: number = 1;
     public entityType: EntityType = EntityType.Character;
+
+    public isPlayer: boolean;
 
     public height: number = 0;
     public tiltContainer: THREE.Group;
@@ -91,19 +94,30 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     private physicsEnabled: boolean = true;
 
     public hasWeapon: boolean = false;
-    private clip: THREE.AnimationClip;
-
+    public isAiming: boolean = false;
     public isGettingShot: boolean = false;
+    public health: number = 1000;
+    public isDead: boolean;
+
+    private clip: THREE.AnimationClip;
+    private aimingSettings = {offSet: 1.64, amplitude: 2.49};
+
 
     constructor(gltf: any) {
         super();
-
+        console.log(this);
         this.readCharacterData(gltf);
         this.setAnimations(gltf.animations);
 
         // The visuals group is centered for easy character tilting
         this.tiltContainer = new THREE.Group();
         this.add(this.tiltContainer);
+
+        // GUI to debut aiming rotations
+/*        const gui = new GUI.GUI();
+        const gunGUIFolder = gui.addFolder('aimingSettings');
+        gunGUIFolder.add(this.aimingSettings, "offSet", 0, 10, 0.01)
+        gunGUIFolder.add(this.aimingSettings, "amplitude", 0, 10, 0.01)*/
 
         // Model container is used to reliably ground the character, as animation can alter the position of the model itself
         this.modelContainer = new THREE.Group();
@@ -181,6 +195,17 @@ export class Character extends THREE.Object3D implements IWorldEntity {
         // States
         this.setState(new Idle(this));
 
+    }
+
+    public takeDamage(damage: number) {
+        if (this.health >= 0) {
+            this.health -= damage;
+            if (this.isPlayer) {
+                this.updatePlayerHealthBar(damage);
+            }
+        } else {
+            this.isDead = true;
+        }
     }
 
     public setAnimations(animations: []): void {
@@ -377,7 +402,8 @@ export class Character extends THREE.Object3D implements IWorldEntity {
     public update(timeStep: number): void {
         this.behaviour?.update(timeStep);
         this.vehicleEntryInstance?.update(timeStep);
-        // console.log(this.occupyingSeat);
+
+
         this.charState?.update(timeStep);
 
         // this.visuals.position.copy(this.modelOffset);
@@ -475,7 +501,7 @@ export class Character extends THREE.Object3D implements IWorldEntity {
 
     }
 
-    public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean): number {
+    public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
         if (this.mixer !== undefined) {
             // gltf
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
@@ -487,6 +513,9 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             }
             if (runOnlyOnce) {
                 action.setLoop(THREE.LoopOnce, 1);
+            }
+            if (lockWhenFinished) {
+                action.clampWhenFinished = true;
             }
             this.mixer.stopAllAction();
             action.fadeIn(fadeIn);
@@ -500,10 +529,12 @@ export class Character extends THREE.Object3D implements IWorldEntity {
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
             let action = this.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
+             action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
             action.paused = true;
-            action.zeroSlopeAtStart = true;
+            action.stopWarping();
+            /*action.zeroSlopeAtStart = true;
             action.zeroSlopeAtEnd = true;
-            action.time = (cameraRotation.getWorldDirection(vector).y + 0.8) / 1.3;
+            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;*/
         }
     }
 
@@ -950,6 +981,30 @@ export class Character extends THREE.Object3D implements IWorldEntity {
 
     unlockAiming(): void {
         this.world.cameraOperator.aimingMode = false;
+    }
+
+    private updatePlayerHealthBar(damage: number) {
+         // Update Player's  health bar
+
+            const healthBarElement = document.getElementById('health-bar');
+            const barElement = document.getElementById('bar');
+            const hitElement = document.getElementById('hit');
+
+            const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
+            const healthValue = parseInt(healthBarElement.dataset.value) as number;
+
+            let newValue = (healthValue - damage) as number;
+
+            const barWidth = (newValue / healthMaxValue) * 100;
+            const hitWidth = (damage / healthValue) * 100 + '%';
+
+            hitElement.style.width = hitWidth;
+            healthBarElement.dataset.value = String(newValue);
+
+            setTimeout(function () {
+                hitElement.style.width = '0';
+                barElement.style.width = barWidth + '%';
+            }, 500);
     }
 }
 
