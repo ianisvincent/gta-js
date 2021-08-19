@@ -1,6 +1,6 @@
+import { CharacterStateBase } from "./CharacterStateBase";
 import { ICharacterState } from "../../interfaces/ICharacterState";
 import { Character } from "../Character";
-import { CharacterStateBase } from "./_stateLibrary";
 
 export class Die extends CharacterStateBase implements ICharacterState {
     constructor(character: Character) {
