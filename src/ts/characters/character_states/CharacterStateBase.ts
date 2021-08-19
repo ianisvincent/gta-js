@@ -151,7 +151,7 @@ export abstract class CharacterStateBase implements ICharacterState {
     private checkIfImpact() {
         const impact = this.character.getObjectByName(Impact.Bullet)
         if (impact) {
-            // Do something if character get shot
+            console.log(impact.parent.name, 'got shot!');
         }
     }
 }

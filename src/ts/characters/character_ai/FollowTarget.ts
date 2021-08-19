@@ -117,7 +117,7 @@ export class FollowTarget implements ICharacterAI
 			{
 				this.isTargetReached = true;
 				this.character.triggerAction('up', false);
-
+	
 				// Look at character
 				this.character.setOrientation(viewVector);
 			}

@@ -57,7 +57,8 @@ export class NpcSpawnPoint implements ISpawnPoint {
                                 const node = path.nodes[nodeName];
 
                                 if (node.object.name === this.firstAINode) {
-                                    npc.setBehaviour(new WalkOnPath(node, 1));
+                                    console.log(node.object.name);
+                                    npc.setBehaviour(new WalkOnPath(node, 10));
                                     nodeFound = true;
                                 }
                             }
