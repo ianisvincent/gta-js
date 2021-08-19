@@ -12,7 +12,6 @@ import {
     StartWalkLeft,
     StartWalkRight,
     Walk,
-    Die
 } from './_stateLibrary';
 import {Character} from '../Character';
 import {ICharacterState} from '../../interfaces/ICharacterState';
@@ -92,12 +91,6 @@ export abstract class CharacterStateBase implements ICharacterState {
     public fallInAir(): void {
         if (!this.character.rayHasHit) {
             this.character.setState(new Falling(this.character));
-        }
-    }
-
-    public onDie(): void {
-        if (this.character.isDead) {
-            this.character.setState(new Die(this.character));
         }
     }
 

@@ -27,7 +27,7 @@ export class IdleRotateLeft extends CharacterStateBase implements ICharacterStat
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-		this.onDie();
+
 		if (this.animationEnded(timeStep))
 		{
 			this.character.setState(new Idle(this.character));

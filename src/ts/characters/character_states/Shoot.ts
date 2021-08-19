@@ -18,7 +18,6 @@ export class Shoot extends CharacterStateBase implements ICharacterState {
     public update(timeStep: number): void {
         super.update(timeStep);
         this.fallInAir();
-        this.onDie();
         console.log('shoot state')
     }
 

@@ -17,7 +17,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
     }
 
     public spawn(loadingManager: LoadingManager, world: World): void {
-        loadingManager.loadGLTF('build/assets/brian.glb', (model) => {
+        loadingManager.loadGLTF('build/assets/brian_test_2.glb', (model) => {
             let npc = new Npc(model);
             npc.traverse(function (object) {
                 object.frustumCulled = false;
@@ -43,7 +43,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
             // Affect name to npc
             mesh.name = `npc${this.object.uuid.substring(0, 3)}`
             npc.add(mesh);
-            npc.isPlayer = false;
+
             world.add(npc);
 
             if (this.firstAINode !== undefined) {

@@ -37,8 +37,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public updateOrder: number = 1;
     public entityType: EntityType = EntityType.Character;
 
-    public isPlayer: boolean;
-
     public height: number = 0;
     public tiltContainer: THREE.Group;
     public modelContainer: THREE.Group;
@@ -95,7 +93,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public hasWeapon: boolean = false;
     public isGettingShot: boolean = false;
-    public health: number = 1000;
+    public health: number = 100;
     public isDead: boolean;
 
     private clip: THREE.AnimationClip;
@@ -104,7 +102,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     constructor(gltf: any) {
         super();
-        console.log(this);
+
         this.readCharacterData(gltf);
         this.setAnimations(gltf.animations);
 
@@ -112,11 +110,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.tiltContainer = new THREE.Group();
         this.add(this.tiltContainer);
 
-        // GUI to debut aiming rotations
-/*        const gui = new GUI.GUI();
+        const gui = new GUI.GUI();
         const gunGUIFolder = gui.addFolder('aimingSettings');
         gunGUIFolder.add(this.aimingSettings, "offSet", 0, 10, 0.01)
-        gunGUIFolder.add(this.aimingSettings, "amplitude", 0, 10, 0.01)*/
+        gunGUIFolder.add(this.aimingSettings, "amplitude", 0, 10, 0.01)
 
         // Model container is used to reliably ground the character, as animation can alter the position of the model itself
         this.modelContainer = new THREE.Group();
@@ -198,12 +195,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public takeDamage(damage: number) {
         if (this.health >= 0) {
+            console.log('health:', this.health);
             this.health -= damage;
-
-            if (this.isPlayer) {
-                this.updatePlayerHealthBar(damage);
-            }
-
         } else {
             this.isDead = true;
         }
@@ -979,30 +972,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     unlockAiming(): void {
         this.world.cameraOperator.aimingMode = false;
-    }
-
-    private updatePlayerHealthBar(damage: number) {
-         // Update Player's  health bar
-
-            const healthBarElement = document.getElementById('health-bar');
-            const barElement = document.getElementById('bar');
-            const hitElement = document.getElementById('hit');
-
-            const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
-            const healthValue = parseInt(healthBarElement.dataset.value) as number;
-
-            let newValue = (healthValue - damage) as number;
-
-            const barWidth = (newValue / healthMaxValue) * 100;
-            const hitWidth = (damage / healthValue) * 100 + '%';
-
-            hitElement.style.width = hitWidth;
-            healthBarElement.dataset.value = String(newValue);
-
-            setTimeout(function () {
-                hitElement.style.width = '0';
-                barElement.style.width = barWidth + '%';
-            }, 500);
     }
 }
 

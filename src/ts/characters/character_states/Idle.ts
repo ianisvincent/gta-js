@@ -25,7 +25,7 @@ export class Idle extends CharacterStateBase implements ICharacterState {
 
     public onInputChange(): void {
         super.onInputChange();
-        this.onDie();
+
         if (this.character.actions.jump.justPressed) {
             this.character.setState(new JumpIdle(this.character));
         }

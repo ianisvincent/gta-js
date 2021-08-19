@@ -22,7 +22,7 @@ export class JumpRunning extends CharacterStateBase implements ICharacterState
 	public update(timeStep: number): void
 	{
 		super.update(timeStep);
-		this.onDie();
+
 		this.character.setCameraRelativeOrientationTarget();
 
 		// Move in air
