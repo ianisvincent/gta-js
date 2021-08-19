@@ -119,12 +119,8 @@ export class Aim extends CharacterStateBase implements ICharacterState {
     }
 
     spawnImpactOnTarget(intersectedTarget): void {
+        // TODO: make this impact spawn on the specific point in the mesh
         intersectedTarget.object.add(this.dummySphereImpact);
-        /* We convert the intersect point from world to local pos */
-        const impactLocalPos = intersectedTarget.object.worldToLocal(intersectedTarget.point);
-        /* So we can then apply the dummy sphere position locally inside intersected object */
-        this.dummySphereImpact.position.set(impactLocalPos.x, impactLocalPos.y, impactLocalPos.z);
-
         intersectedTarget.object.parent.isGettingShot = true;
         const character = intersectedTarget.object.parent as Character;
         character.takeDamage(50);
