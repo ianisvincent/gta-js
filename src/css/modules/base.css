@@ -4,7 +4,7 @@ body {
     background-color: #ffffff;
     overflow: hidden;
     margin: 0;
-    font-family: 'Solway', serif;
+	font-family: 'Solway', serif;
     color: white;
     text-shadow: 1px 1px 1px #000, 0px 1px 3px #000;
 }
@@ -15,9 +15,9 @@ html, body {
 }
 
 h1 {
-    font-weight: 400;
-    font-size: 50px;
-    font-family: 'Alfa Slab One', cursive;
+	font-weight: 400;
+	font-size: 50px;
+	font-family: 'Alfa Slab One', cursive;
 }
 
 #canvas {
@@ -26,8 +26,8 @@ h1 {
 }
 
 #ui-container {
-    position: absolute;
-    top: 0;
+	position: absolute;
+	top: 0;
     height: 100vh;
 }
 
@@ -52,45 +52,3 @@ h1 {
     height: 4px;
     border-radius: 4px;
 }
-
-.health-bar {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 200px;
-    height: 20px;
-    padding: 5px;
-    background: #ddd;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    display: flex;
-    border: black 1px solid;
-    position: absolute;
-    align-items: center;
-    justify-content: center;
-    top: 50%;
-    bottom: 0;
-    left: 20Px;
-    right: 0;
-    margin: 0;
-}
-
-.bar {
-    background: #c54;
-    width: 100%;
-    height: 10px;
-    position: relative;
-    transition: width .5s linear;
-}
-
-.hit {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.6);
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 0;
-    transition: width .5s linear;
-}
-
