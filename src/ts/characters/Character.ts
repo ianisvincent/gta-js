@@ -96,7 +96,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public hasWeapon: boolean = false;
     public isAiming: boolean = false;
     public isGettingShot: boolean = false;
-    public health: number = 1000;
+    public health: number = 100;
     public isDead: boolean;
 
     private clip: THREE.AnimationClip;
