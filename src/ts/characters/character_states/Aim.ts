@@ -11,18 +11,20 @@ import { AimWalkBackward } from "./AimWalkBackward";
 import { AimWalkLeft } from "./AimWalkLeft";
 import { AimWalkRight } from "./AimWalkRight";
 import { Npc } from "../Npc";
+import * as TWEEN from "@tweenjs/tween.js";
 
 export class Aim extends CharacterStateBase implements ICharacterState {
     public rayCaster: THREE.Raycaster;
     private intersectedObject: any;
     private dummySphereImpact: any;
     private shootingCount = 0;
-    private readonly recoilForce = 0.008;
+    public tween: TWEEN.Tween<any>;
 
     constructor(character: Character) {
         super(character);
 
         this.rayCaster = new THREE.Raycaster();
+
         this.character.velocitySimulator.damping = 0.6;
         this.character.velocitySimulator.mass = 10;
         this.character.isAiming = true;
@@ -70,23 +72,32 @@ export class Aim extends CharacterStateBase implements ICharacterState {
                 this.character.setState(new AimWalkRight(this.character))
             }
         }
+    TWEEN.update();
     }
 
     public setGunRecoilToForeArms(): void {
-        const rightForeArm = this.character.getObjectByName(BodyPart.RightForeArm);
-        const leftForeArm = this.character.getObjectByName(BodyPart.LeftForeArm);
-        leftForeArm.rotation.y -= this.recoilForce;
-        rightForeArm.rotation.y += this.recoilForce;
-        rightForeArm.rotation.z -= this.recoilForce;
-    }
+        const rightForeArm = this.character.getObjectByName(BodyPart.RightForeArm)
+        const gun = rightForeArm.getObjectByName('gun');
 
+        const coords = {x: gun.rotation.x, y: gun.rotation.y, z: gun.rotation.z}
+        const tween = new TWEEN.Tween(coords)
+            .to({x: gun.rotation.x, y: gun.rotation.y - 0.08, z: gun.rotation.z}, 50)
+            .easing(TWEEN.Easing.Elastic.Out)
 
-    public restoreInitialForeArmsPosition(): void {
-        const rightForeArm = this.character.getObjectByName(BodyPart.RightForeArm);
-        const leftForeArm = this.character.getObjectByName(BodyPart.LeftForeArm);
-        leftForeArm.rotation.y += this.recoilForce;
-        rightForeArm.rotation.y -= this.recoilForce;
-        rightForeArm.rotation.z += this.recoilForce;
+            .onUpdate(() => {
+                gun.rotation.set(coords.x, coords.y, coords.z)
+            })
+
+        const tween2 = new TWEEN.Tween(coords)
+            .to({x: gun.rotation.x, y: gun.rotation.y, z: gun.rotation.z}, 50)
+            .easing(TWEEN.Easing.Quartic.Out)
+
+            .onUpdate(() => {
+                gun.rotation.set(coords.x, coords.y, coords.z)
+            })
+
+        tween.chain((tween2));
+        tween.start();
     }
 
     public onInputChange(): void {
@@ -98,7 +109,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
         if (this.character.actions.shoot.justReleased) {
             this.shootingCount = 0;
-            this.restoreInitialForeArmsPosition();
         }
     }
 
