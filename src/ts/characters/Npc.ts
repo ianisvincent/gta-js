@@ -8,5 +8,6 @@ export class Npc extends Character {
 
     public update(timeStep: number) {
         super.update(timeStep);
+        console.log(this.charState);
     }
 }
