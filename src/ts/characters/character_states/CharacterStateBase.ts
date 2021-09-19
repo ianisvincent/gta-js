@@ -16,7 +16,7 @@ import {
 } from './_stateLibrary';
 import {Character} from '../Character';
 import {ICharacterState} from '../../interfaces/ICharacterState';
-import { Impact } from "../../enums/impact";
+import { Scared } from "../npc_states/Scared";
 
 export abstract class CharacterStateBase implements ICharacterState {
     public character: Character;
@@ -98,6 +98,13 @@ export abstract class CharacterStateBase implements ICharacterState {
     public onDie(): void {
         if (this.character.isDead) {
             this.character.setState(new Die(this.character));
+        }
+    }
+
+    public onShoot(): void {
+        // TODO: find a way to not mix up those NPC behaviour in this generic file
+        if (!this.character.isPlayer && this.character.isGettingShot) {
+            this.character.setState(new Scared(this.character));
         }
     }
 
