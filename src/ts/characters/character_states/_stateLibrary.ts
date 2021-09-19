@@ -25,3 +25,5 @@ export * from './AimWalkForward';
 export * from './AimWalkBackward';
 export * from './AimWalkLeft';
 export * from './AimWalkRight';
+export * from './Scared';
+export * from './ScaredRun';

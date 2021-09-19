@@ -12,11 +12,11 @@ import {
     StartWalkLeft,
     StartWalkRight,
     Walk,
-    Die
+    Die,
+    Scared
 } from './_stateLibrary';
 import {Character} from '../Character';
 import {ICharacterState} from '../../interfaces/ICharacterState';
-import { Scared } from "../npc_states/Scared";
 
 export abstract class CharacterStateBase implements ICharacterState {
     public character: Character;
