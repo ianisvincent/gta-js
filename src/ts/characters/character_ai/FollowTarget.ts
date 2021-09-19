@@ -3,8 +3,6 @@ import { ICharacterAI } from '../../interfaces/ICharacterAI';
 import * as Utils from '../../core/FunctionLibrary';
 import { Vehicle } from '../../vehicles/Vehicle';
 import { Character } from '../Character';
-import { Car } from '../../vehicles/Car';
-import { EntityType } from '../../enums/EntityType';
 
 export class FollowTarget implements ICharacterAI
 {
