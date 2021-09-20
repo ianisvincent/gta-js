@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
-import * as GUI from '../../lib/utils/dat.gui';
 
 import { KeyBinding } from '../core/KeyBinding';
 import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
@@ -200,7 +199,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public takeDamage(damage: number) {
         if (this.health >= 0) {
             this.health -= damage;
-            if (this.isPlayer) {
+            if (this.isPlayer) { // TODO: Remove this soon, Every character will have health bar, even NPC
                 this.updatePlayerHealthBar(damage);
             }
         } else {
