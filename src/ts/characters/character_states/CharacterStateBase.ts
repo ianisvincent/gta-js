@@ -12,8 +12,7 @@ import {
     StartWalkLeft,
     StartWalkRight,
     Walk,
-    Die,
-    Scared
+    Die
 } from './_stateLibrary';
 import {Character} from '../Character';
 import {ICharacterState} from '../../interfaces/ICharacterState';
@@ -98,13 +97,6 @@ export abstract class CharacterStateBase implements ICharacterState {
     public onDie(): void {
         if (this.character.isDead) {
             this.character.setState(new Die(this.character));
-        }
-    }
-
-    public onShoot(): void {
-        // TODO: find a way to not mix up those NPC behaviour in this generic file
-        if (!this.character.isPlayer && this.character.isGettingShot) {
-            this.character.setState(new Scared(this.character));
         }
     }
 

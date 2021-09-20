@@ -27,7 +27,6 @@ export class Walk extends CharacterStateBase
 
 		this.fallInAir();
 		this.onDie();
-		this.onShoot()
 	}
 
 	public onInputChange(): void
