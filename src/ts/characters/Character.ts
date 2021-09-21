@@ -31,8 +31,9 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
 import { IDamageable } from "../interfaces/IDamageable";
+import { IDieable } from "../interfaces/IDieable";
 
-export class Character extends THREE.Object3D implements IWorldEntity, IDamageable {
+export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     public updateOrder: number = 1;
     public entityType: EntityType = EntityType.Character;
 
@@ -203,8 +204,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 this.updatePlayerHealthBar(damage);
             }
         } else {
-            this.isDead = true;
+            this.onDie();
         }
+    }
+
+    public onDie() {
+        this.isDead = true;
     }
 
     public setAnimations(animations: []): void {

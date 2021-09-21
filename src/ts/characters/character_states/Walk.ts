@@ -26,7 +26,6 @@ export class Walk extends CharacterStateBase
 		this.character.setCameraRelativeOrientationTarget();
 
 		this.fallInAir();
-		this.onDie();
 	}
 
 	public onInputChange(): void

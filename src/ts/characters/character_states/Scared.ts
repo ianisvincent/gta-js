@@ -1,7 +1,6 @@
 import { ICharacterState } from "../../interfaces/ICharacterState";
 import { NpcStateBase } from "./NpcStateBase";
 import { Npc } from "../Npc";
-import { ScaredRun } from "./ScaredRun";
 
 export class Scared extends NpcStateBase implements ICharacterState {
     npc: Npc;
@@ -13,9 +12,6 @@ export class Scared extends NpcStateBase implements ICharacterState {
         this.character.velocitySimulator.mass = 10;
         this.character.setArcadeVelocityTarget(0);
         this.playAnimation('ducking', 0.1, true, true);
-        setTimeout(() => {
-            this.character.setState(new ScaredRun(this.character));
-        }, 1000);
     }z
 
     public update(timeStep: number): void {
