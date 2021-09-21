@@ -197,7 +197,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public takeDamage(damage: number) {
-        if (this.health >= 0) {
+        if (this.health > 0) {
             this.health -= damage;
             if (this.isPlayer) { // TODO: Remove this soon, Every character will have health bar, even NPC
                 this.updatePlayerHealthBar(damage);
