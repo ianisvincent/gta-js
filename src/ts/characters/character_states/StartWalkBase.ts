@@ -90,7 +90,6 @@ export class StartWalkBase extends CharacterStateBase
 					this.character.setState(new Aim(this.character));
 
 				} else {
-					console.log('b');
 					this.character.setState(new Idle(this.character));
 				}
 
