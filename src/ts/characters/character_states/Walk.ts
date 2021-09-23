@@ -5,6 +5,7 @@ import
 	EndWalk,
 	Idle,
 	JumpRunning,
+    Punch,
 	Sprint,
 } from './_stateLibrary';
 import { Character } from '../Character';
@@ -40,12 +41,16 @@ export class Walk extends CharacterStateBase
 		{
 			this.character.setState(new EndWalk(this.character));
 		}
-		
+
+        if (this.character.actions.punch.isPressed) {
+            this.character.setState(new Punch(this.character));
+        }
+
 		if (this.character.actions.run.isPressed)
 		{
 			this.character.setState(new Sprint(this.character));
 		}
-		
+
 		if (this.character.actions.run.justPressed)
 		{
 			this.character.setState(new Sprint(this.character));
