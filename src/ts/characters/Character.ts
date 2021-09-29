@@ -25,13 +25,14 @@ import { VehicleEntryInstance } from './VehicleEntryInstance';
 import { SeatType } from '../enums/SeatType';
 import { GroundImpactData } from './GroundImpactData';
 import { ClosestObjectFinder } from '../core/ClosestObjectFinder';
-import { Object3D } from 'three';
+import { Object3D, Vector3 } from 'three';
 import { EntityType } from '../enums/EntityType';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
 import { IDamageable } from "../interfaces/IDamageable";
 import { IDieable } from "../interfaces/IDieable";
+import { SphereCollider } from "../physics/colliders/SphereCollider";
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     public updateOrder: number = 1;
@@ -70,6 +71,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public viewVector: THREE.Vector3;
     public actions: { [action: string]: KeyBinding };
     public characterCapsule: CapsuleCollider;
+    public handCapsule: SphereCollider;
 
     // Ray casting
     public rayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
@@ -101,6 +103,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
+    private rightHand: Object3D;
+    private rightHandGlobalPosition: Vector3;
 
 
     constructor(gltf: any) {
@@ -195,6 +199,31 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         // States
         this.setState(new Idle(this));
 
+        // Set right hand
+        this.rightHandGlobalPosition = new THREE.Vector3();
+
+        this.setRightHand();
+        this.createHandCollision();
+    }
+
+    private createHandCollision() {
+        this.handCapsule = new SphereCollider({
+            mass: 0,
+            position: new CANNON.Vec3(),
+            radius: 0.05,
+            friction: 0
+        });
+        this.handCapsule.body.shapes.forEach((shape) => {
+            // tslint:disable-next-line: no-bitwise
+            shape.collisionFilterMask = ~CollisionGroups.TrimeshColliders;
+        });
+        this.handCapsule.body.allowSleep = false;
+
+        // Move hand to different collision group for raycasting
+        this.handCapsule.body.collisionFilterGroup = 3;
+
+        this.handCapsule.body.fixedRotation = true;
+        this.handCapsule.body.updateMassProperties();
     }
 
     public takeDamage(damage: number) {
@@ -210,6 +239,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public onDie() {
         this.isDead = true;
+    }
+
+    public setRightHand(): void {
+        this.children.forEach(children => {
+            this.rightHand = children.getObjectByName(BodyPart.RightHand)
+        })
     }
 
     public setAnimations(animations: []): void {
@@ -238,6 +273,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.characterCapsule.body.previousPosition = new CANNON.Vec3(x, y, z);
             this.characterCapsule.body.position = new CANNON.Vec3(x, y, z);
             this.characterCapsule.body.interpolatedPosition = new CANNON.Vec3(x, y, z);
+
+            this.handCapsule.body.previousPosition = new CANNON.Vec3(x, y, z);
+            this.handCapsule.body.position = new CANNON.Vec3(x, y, z);
+            this.handCapsule.body.interpolatedPosition = new CANNON.Vec3(x, y, z);
+
         } else {
             this.position.x = x;
             this.position.y = y;
@@ -287,6 +327,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
         if (value === true) {
             this.world.physicsWorld.addBody(this.characterCapsule.body);
+            this.world.physicsWorld.addBody(this.handCapsule.body);
         } else {
             this.world.physicsWorld.remove(this.characterCapsule.body);
         }
@@ -423,15 +464,23 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 this.characterCapsule.body.interpolatedPosition.y,
                 this.characterCapsule.body.interpolatedPosition.z
             );
+            if (this.handCapsule) {
+                // The hand capsule follow the hand position
+                this.handCapsule.body.interpolatedPosition.x = this.rightHandGlobalPosition.x;
+                this.handCapsule.body.interpolatedPosition.y = this.rightHandGlobalPosition.y;
+                this.handCapsule.body.interpolatedPosition.z = this.rightHandGlobalPosition.z;
+            }
+
         } else {
             let newPos = new THREE.Vector3();
             this.getWorldPosition(newPos);
-
             this.characterCapsule.body.position.copy(Utils.cannonVector(newPos));
             this.characterCapsule.body.interpolatedPosition.copy(Utils.cannonVector(newPos));
         }
-
         this.updateMatrixWorld();
+        if (this.rightHand) {
+            this.rightHand.getWorldPosition(this.rightHandGlobalPosition);
+        }
     }
 
     public inputReceiverInit(): void {
@@ -915,6 +964,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
             // Register physics
             world.physicsWorld.addBody(this.characterCapsule.body);
+            world.physicsWorld.addBody(this.handCapsule.body);
 
             // Add to graphicsWorld
             world.graphicsWorld.add(this);
