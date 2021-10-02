@@ -32,6 +32,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
 
     public followMode: boolean = false;
     public aimingMode: boolean = false;
+    public drivingMode: boolean = false;
 
     public targetedCharacter: Character;
 
@@ -109,6 +110,10 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         } else {
             // Zoom out to set default radius
             this.setRadius(2, true);
+        }
+        /* Driving camera mode */
+        if (this.drivingMode) {
+            this.setRadius(4, true);
         }
     }
 

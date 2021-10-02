@@ -756,6 +756,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public occupySeat(seat: VehicleSeat): void {
+        this.world.cameraOperator.drivingMode = true;
         this.occupyingSeat = seat;
         seat.occupiedBy = this;
     }
