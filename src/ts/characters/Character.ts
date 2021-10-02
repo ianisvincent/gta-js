@@ -765,6 +765,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         if (this.occupyingSeat !== null) {
             this.occupyingSeat.occupiedBy = null;
             this.occupyingSeat = null;
+            this.world.cameraOperator.drivingMode = false;
         }
     }
 

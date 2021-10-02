@@ -114,6 +114,8 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         /* Driving camera mode */
         if (this.drivingMode) {
             this.setRadius(4, true);
+        } else {
+            this.drivingMode = false;
         }
     }
 
