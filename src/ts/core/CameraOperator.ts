@@ -120,7 +120,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         /*this.targetedCharacter.lookAt(this.target);*/
         var vector = new THREE.Vector3();
         const cameraDirection = this.camera.getWorldDirection(vector);
-        this.targetedCharacter.setOrientation(cameraDirection, true);
+        this.targetedCharacter.setOrientation(cameraDirection, false);
     }
 
     public handleKeyboardEvent(event: KeyboardEvent, code: string, pressed: boolean): void {
