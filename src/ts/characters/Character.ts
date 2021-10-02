@@ -105,11 +105,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
     private rightHand: Object3D;
     private rightHandGlobalPosition: Vector3;
+    private handRayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
+    public handRayHasHit: boolean = false;
 
 
     constructor(gltf: any) {
         super();
-        console.log(this);
         this.readCharacterData(gltf);
         this.setAnimations(gltf.animations);
 
@@ -186,7 +187,14 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             color: 0xff0000
         });
         this.raycastBox = new THREE.Mesh(boxGeo, boxMat);
-        this.raycastBox.visible = false;
+        this.raycastBox.visible = true;
+
+
+        // Hand Ray cast debug
+        const boxGeo2 = new THREE.BoxGeometry(0.6, 1.2, 0.1);
+        const boxMat2 = new THREE.MeshLambertMaterial({
+            color: 0x0029ff
+        });
 
         // Physics pre/post step callback bindings
         this.characterCapsule.body.preStep = (body: CANNON.Body) => {
@@ -204,20 +212,32 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
         this.setRightHand();
         this.createHandCollision();
+
+        // Hand Physics pre/post step callback bindings
+        this.handCapsule.body.preStep = (body: CANNON.Body) => {
+            this.handPhysicsPreStep(body, this);
+        };
+
+        this.handCapsule.body.postStep = (body: CANNON.Body) => {
+            this.handPhysicsPostStep(body, this);
+        };
     }
 
     private createHandCollision() {
         this.handCapsule = new SphereCollider({
-            mass: 0,
+            mass: 1,
             position: new CANNON.Vec3(),
-            radius: 0.05,
+            radius: 0.1,
             friction: 0
         });
+
         this.handCapsule.body.shapes.forEach((shape) => {
             // tslint:disable-next-line: no-bitwise
-            shape.collisionFilterMask = ~CollisionGroups.TrimeshColliders;
+            shape.collisionFilterMask = ~CollisionGroups.Characters;
         });
+
         this.handCapsule.body.allowSleep = false;
+
 
         // Move hand to different collision group for raycasting
         this.handCapsule.body.collisionFilterGroup = 3;
@@ -447,10 +467,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public update(timeStep: number): void {
         this.behaviour?.update(timeStep);
         this.vehicleEntryInstance?.update(timeStep);
-
-
         this.charState?.update(timeStep);
-
+        console.log(this.handRayHasHit);
         // this.visuals.position.copy(this.modelOffset);
         if (this.physicsEnabled) this.springMovement(timeStep);
         if (this.physicsEnabled) this.springRotation(timeStep);
@@ -470,7 +488,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 this.handCapsule.body.interpolatedPosition.y = this.rightHandGlobalPosition.y;
                 this.handCapsule.body.interpolatedPosition.z = this.rightHandGlobalPosition.z;
             }
-
         } else {
             let newPos = new THREE.Vector3();
             this.getWorldPosition(newPos);
@@ -835,6 +852,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         }
     }
 
+    public handPhysicsPreStep(body: CANNON.Body, character: Character): void {
+        character.handRaycast();
+        // Raycast debug
+        if (character.handRayHasHit) {
+        } else {
+        }
+    }
+
+    private handPhysicsPostStep(body: CANNON.Body, character: Character): void {
+        // Get velocities
+        let simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
+    }
+
     public feetRaycast(): void {
         // Player ray casting
         // Create ray
@@ -850,10 +880,24 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.rayHasHit = this.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.rayResult);
     }
 
+    public handRaycast(): void {
+        // Player's right hand ray casting
+        // Create ray
+        let body = this.handCapsule.body;
+        const start = new CANNON.Vec3(body.position.x, body.position.y, body.position.z);
+        const end = new CANNON.Vec3(body.position.x, body.position.y - 0.05 , body.position.z);
+        // Raycast options
+        const rayCastOptions = {
+            collisionFilterMask: CollisionGroups.Default,
+            skipBackfaces: true      /* ignore back faces */
+        };
+        // Cast the ray
+        this.handRayHasHit = this.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.handRayResult);
+    }
+
     public physicsPostStep(body: CANNON.Body, character: Character): void {
         // Get velocities
         let simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
-
         // Take local velocity
         let arcadeVelocity = new THREE.Vector3().copy(character.velocity).multiplyScalar(character.moveSpeed);
         // Turn local into global
