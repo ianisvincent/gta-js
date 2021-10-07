@@ -43,7 +43,7 @@ export class WalkOnPath extends WalkFollowTarget implements ICharacterAI {
 			{
 				super.setTarget(this.targetNode.nextNode.object);
 				this.targetNode = this.targetNode.nextNode;
-			}
-		}
+            }
+        }
     }
 }
