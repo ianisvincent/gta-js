@@ -4,7 +4,6 @@ import { World } from './World';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
 import { Npc } from "../characters/Npc";
-import { WalkOnPath } from "../characters/character_ai/WalkOnPath";
 
 export class NpcSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;
@@ -17,7 +16,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
     }
 
     public spawn(loadingManager: LoadingManager, world: World): void {
-        loadingManager.loadGLTF('build/assets/dummy.glb', (model) => {
+        loadingManager.loadGLTF('build/assets/low_poly.glb', (model) => {
             let npc = new Npc(model);
             npc.traverse(function (object) {
                 object.frustumCulled = false;

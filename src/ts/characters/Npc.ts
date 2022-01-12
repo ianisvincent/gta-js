@@ -56,7 +56,6 @@ export class Npc extends Character implements IDamageable, IDieable {
                 Idle: 'idle'
             }).listen()
             .onChange((value) => {
-                console.log(this.charState);
                 if (value === 'scared') {
                     this.setState(new Scared(this));
                 } else if (value === 'run') {

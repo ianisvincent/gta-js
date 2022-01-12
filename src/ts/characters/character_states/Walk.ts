@@ -15,7 +15,6 @@ export class Walk extends CharacterStateBase
 	constructor(character: Character)
 	{
 		super(character);
-
 		this.canEnterVehicles = true;
 		this.character.setArcadeVelocityTarget(0.5);
 		this.playAnimation('walk', 0.1);
@@ -33,7 +32,7 @@ export class Walk extends CharacterStateBase
 	{
 		super.onInputChange();
 
-		if (this.character.hasWeapon && this.character.actions.aim.justPressed) {
+		if (this.character.actions.aim.justPressed) {
 			this.character.setState(new Aim(this.character));
 		}
 

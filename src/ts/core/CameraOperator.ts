@@ -103,7 +103,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
             this.camera.lookAt(this.target);
         }
         // Maybe this is not the best place to put this, as this is a character stuff..
-        if (this.aimingMode && this.targetedCharacter.isAiming && this.targetedCharacter.hasWeapon) {
+        if (this.aimingMode && this.targetedCharacter.isAiming) {
             this.setAimingCameraMode();
             this.targetedCharacter.cameraOperator = this;
             this.targetedCharacter.updateAimAnimation('aim_pistol_idle', this.camera, this.vector)
@@ -121,7 +121,6 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
 
     public setAimingCameraMode(): void {
         this.camera.getWorldDirection(this.target); // Affect the direction in which the camera is looking into the target vector.
-        this.setRadius(0.5, true); // Zoom in
         this.target.y = 0;
         this.target.add(this.targetedCharacter.position);
         this.targetedCharacter.lookAt(this.target);

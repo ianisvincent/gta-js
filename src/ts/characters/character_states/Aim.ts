@@ -55,7 +55,8 @@ export class Aim extends CharacterStateBase implements ICharacterState {
                 this.shootingCount += 1;
                 if (this.shootingCount === 1) {
                     this.spawnImpactOnTarget(this.intersectedObject);
-                    this.setGunRecoilToForeArms();
+                    //this.setGunRecoilToForeArms();
+                    this.playAnimation('shoot', 0.1, true, true);
                 }
             }
 
