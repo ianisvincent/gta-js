@@ -11,7 +11,7 @@ export class Scared extends NpcStateBase implements ICharacterState {
         this.character.velocitySimulator.damping = 0.6;
         this.character.velocitySimulator.mass = 10;
         this.character.setArcadeVelocityTarget(0);
-        this.playAnimation('ducking', 0.1, true, true);
+        this.playAnimation('ducking', 0.1, false, false);
     }
 
     public update(timeStep: number): void {
