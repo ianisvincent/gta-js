@@ -71,7 +71,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public viewVector: THREE.Vector3;
     public actions: { [action: string]: KeyBinding };
     public characterCapsule: CapsuleCollider;
-    public handCapsule: SphereCollider;
 
     // Ray casting
     public rayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
@@ -86,9 +85,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     // Right-Hand Ray casting
     private rightHand: Object3D;
     private rightHandGlobalPosition: Vector3;
-    private handRayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
-    public handRayHasHit: boolean = false;
-    public handRaycastBox: THREE.Mesh;
 
     public world: World;
     public charState: ICharacterState;
@@ -192,15 +188,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.raycastBox = new THREE.Mesh(boxGeo, boxMat);
         this.raycastBox.visible = true;
 
-
-        // Hand Ray cast debug
-        const boxGeo2 = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-        const boxMat2 = new THREE.MeshLambertMaterial({
-            color: 0x0029ff
-        });
-        this.handRaycastBox = new THREE.Mesh(boxGeo2, boxMat2);
-        this.handRaycastBox.visible = true;
-
         // Physics pre/post step callback bindings
         this.characterCapsule.body.preStep = (body: CANNON.Body) => {
             this.physicsPreStep(body, this);
@@ -216,39 +203,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.rightHandGlobalPosition = new THREE.Vector3();
 
         this.setRightHand();
-        this.createHandCollision();
-
-        // Hand Physics pre/post step callback bindings
-        this.handCapsule.body.preStep = (body: CANNON.Body) => {
-            this.handPhysicsPreStep(body, this);
-        };
-
-        this.handCapsule.body.postStep = (body: CANNON.Body) => {
-            this.handPhysicsPostStep(body, this);
-        };
-    }
-
-    private createHandCollision() {
-        this.handCapsule = new SphereCollider({
-            mass: 1,
-            position: new CANNON.Vec3(),
-            radius: 0.1,
-            friction: 0
-        });
-
-        this.handCapsule.body.shapes.forEach((shape) => {
-            // tslint:disable-next-line: no-bitwise
-            shape.collisionFilterMask = ~CollisionGroups.Characters;
-        });
-
-        this.handCapsule.body.allowSleep = false;
-
-
-        // Move hand to different collision group for raycasting
-        this.handCapsule.body.collisionFilterGroup = 3;
-
-        this.handCapsule.body.fixedRotation = true;
-        this.handCapsule.body.updateMassProperties();
     }
 
     public takeDamage(damage: number) {
@@ -270,6 +224,33 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.children.forEach(children => {
             this.rightHand = children.getObjectByName(BodyPart.RightHand)
         })
+        const points = [
+             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+
+             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+        ]
+        let geometry = new THREE.BufferGeometry().setFromPoints(points);
+        geometry.computeVertexNormals();
+        geometry.computeBoundingBox();
+        console.log(geometry);
+        const material = new THREE.MeshPhongMaterial( { color: 0xffff00 })
+        const mesh = new THREE.Mesh(geometry, material)
+
+        mesh.userData.obb = new OBB()
+
+        this.rightHand.add(mesh);
     }
 
     public setAnimations(animations: []): void {
@@ -298,11 +279,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.characterCapsule.body.previousPosition = new CANNON.Vec3(x, y, z);
             this.characterCapsule.body.position = new CANNON.Vec3(x, y, z);
             this.characterCapsule.body.interpolatedPosition = new CANNON.Vec3(x, y, z);
-
-            this.handCapsule.body.previousPosition = new CANNON.Vec3(x, y, z);
-            this.handCapsule.body.position = new CANNON.Vec3(x, y, z);
-            this.handCapsule.body.interpolatedPosition = new CANNON.Vec3(x, y, z);
-
         } else {
             this.position.x = x;
             this.position.y = y;
@@ -352,7 +328,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
         if (value === true) {
             this.world.physicsWorld.addBody(this.characterCapsule.body);
-            this.world.physicsWorld.addBody(this.handCapsule.body);
         } else {
             this.world.physicsWorld.remove(this.characterCapsule.body);
         }
@@ -486,12 +461,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 this.characterCapsule.body.interpolatedPosition.y,
                 this.characterCapsule.body.interpolatedPosition.z
             );
-            if (this.handCapsule) {
-                // The hand capsule follow the hand position
-                this.handCapsule.body.interpolatedPosition.x = this.rightHandGlobalPosition.x;
-                this.handCapsule.body.interpolatedPosition.y = this.rightHandGlobalPosition.y;
-                this.handCapsule.body.interpolatedPosition.z = this.rightHandGlobalPosition.z;
-            }
         } else {
             let newPos = new THREE.Vector3();
             this.getWorldPosition(newPos);
@@ -856,27 +825,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         }
     }
 
-    public handPhysicsPreStep(body: CANNON.Body, character: Character): void {
-        character.handRaycast();
-        // Raycast debug
-        if (character.handRayHasHit) {
-            if (character.handRaycastBox.visible) {
-                character.handRaycastBox.position.x = character.rayResult.hitPointWorld.x;
-                character.handRaycastBox.position.y = character.rayResult.hitPointWorld.y;
-                character.handRaycastBox.position.z = character.rayResult.hitPointWorld.z;
-            }
-        } else {
-            if (character.handRaycastBox.visible) {
-                character.handRaycastBox.position.set(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
-            }
-        }
-    }
-
-    private handPhysicsPostStep(body: CANNON.Body, character: Character): void {
-        // Get velocities
-        let simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
-    }
-
     public feetRaycast(): void {
         // Player ray casting
         // Create ray
@@ -890,21 +838,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         };
         // Cast the ray
         this.rayHasHit = this.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.rayResult);
-    }
-
-    public handRaycast(): void {
-        // Player's right hand ray casting
-        // Create ray
-        let body = this.handCapsule.body;
-        const start = new CANNON.Vec3(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
-        const end = new CANNON.Vec3(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
-        // Raycast options
-        const rayCastOptions = {
-            collisionFilterMask: CollisionGroups.Default,
-            skipBackfaces: true      /* ignore back faces */
-        };
-        // Cast the ray
-        this.handRayHasHit = this.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.handRayResult);
     }
 
     public physicsPostStep(body: CANNON.Body, character: Character): void {
@@ -1018,12 +951,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
             // Register physics
             world.physicsWorld.addBody(this.characterCapsule.body);
-            world.physicsWorld.addBody(this.handCapsule.body);
 
             // Add to graphicsWorld
             world.graphicsWorld.add(this);
             world.graphicsWorld.add(this.raycastBox);
-            world.graphicsWorld.add(this.handRaycastBox);
 
             // Shadow cascades
             this.materials.forEach((mat) => {
@@ -1051,7 +982,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             // Remove visuals
             world.graphicsWorld.remove(this);
             world.graphicsWorld.remove(this.raycastBox);
-            world.graphicsWorld.remove(this.handRaycastBox);
         }
     }
 
