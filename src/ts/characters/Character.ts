@@ -83,6 +83,13 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public groundImpactData: GroundImpactData = new GroundImpactData();
     public raycastBox: THREE.Mesh;
 
+    // Right-Hand Ray casting
+    private rightHand: Object3D;
+    private rightHandGlobalPosition: Vector3;
+    private handRayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
+    public handRayHasHit: boolean = false;
+    public handRaycastBox: THREE.Mesh;
+
     public world: World;
     public charState: ICharacterState;
     public behaviour: ICharacterAI;
@@ -103,10 +110,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
-    private rightHand: Object3D;
-    private rightHandGlobalPosition: Vector3;
-    private handRayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
-    public handRayHasHit: boolean = false;
 
 
     constructor(gltf: any) {
@@ -191,10 +194,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
 
         // Hand Ray cast debug
-        const boxGeo2 = new THREE.BoxGeometry(0.6, 1.2, 0.1);
+        const boxGeo2 = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         const boxMat2 = new THREE.MeshLambertMaterial({
             color: 0x0029ff
         });
+        this.handRaycastBox = new THREE.Mesh(boxGeo2, boxMat2);
+        this.handRaycastBox.visible = true;
 
         // Physics pre/post step callback bindings
         this.characterCapsule.body.preStep = (body: CANNON.Body) => {
@@ -468,7 +473,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.behaviour?.update(timeStep);
         this.vehicleEntryInstance?.update(timeStep);
         this.charState?.update(timeStep);
-        console.log(this.handRayHasHit);
         // this.visuals.position.copy(this.modelOffset);
         if (this.physicsEnabled) this.springMovement(timeStep);
         if (this.physicsEnabled) this.springRotation(timeStep);
@@ -856,7 +860,15 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         character.handRaycast();
         // Raycast debug
         if (character.handRayHasHit) {
+            if (character.handRaycastBox.visible) {
+                character.handRaycastBox.position.x = character.rayResult.hitPointWorld.x;
+                character.handRaycastBox.position.y = character.rayResult.hitPointWorld.y;
+                character.handRaycastBox.position.z = character.rayResult.hitPointWorld.z;
+            }
         } else {
+            if (character.handRaycastBox.visible) {
+                character.handRaycastBox.position.set(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
+            }
         }
     }
 
@@ -884,8 +896,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         // Player's right hand ray casting
         // Create ray
         let body = this.handCapsule.body;
-        const start = new CANNON.Vec3(body.position.x, body.position.y, body.position.z);
-        const end = new CANNON.Vec3(body.position.x, body.position.y - 0.05 , body.position.z);
+        const start = new CANNON.Vec3(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
+        const end = new CANNON.Vec3(body.interpolatedPosition.x, body.interpolatedPosition.y, body.interpolatedPosition.z);
         // Raycast options
         const rayCastOptions = {
             collisionFilterMask: CollisionGroups.Default,
@@ -928,7 +940,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 THREE.MathUtils.lerp(simulatedVelocity.z, arcadeVelocity.z, character.arcadeVelocityInfluence.z),
             );
         }
-
         // If we're hitting the ground, stick to ground
         if (character.rayHasHit) {
             // Flatten velocity
@@ -971,7 +982,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             character.groundImpactData.velocity.y = body.velocity.y;
             character.groundImpactData.velocity.z = body.velocity.z;
         }
-
         // Jumping
         if (character.wantsToJump) {
             // If initJumpSpeed is set
@@ -1013,6 +1023,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             // Add to graphicsWorld
             world.graphicsWorld.add(this);
             world.graphicsWorld.add(this.raycastBox);
+            world.graphicsWorld.add(this.handRaycastBox);
 
             // Shadow cascades
             this.materials.forEach((mat) => {
@@ -1040,6 +1051,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             // Remove visuals
             world.graphicsWorld.remove(this);
             world.graphicsWorld.remove(this.raycastBox);
+            world.graphicsWorld.remove(this.handRaycastBox);
         }
     }
 
