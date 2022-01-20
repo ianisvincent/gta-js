@@ -13,10 +13,12 @@ import { Idle } from "./character_states/Idle";
 export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;
     private walkOnPath: WalkOnPath;
+    name: string;
 
     constructor(gltf: any) {
         super(gltf);
         this.initDebug()
+        this.name = 'npc';
     }
 
     public update(timeStep: number) {
@@ -25,7 +27,7 @@ export class Npc extends Character implements IDamageable, IDieable {
 
     initNpc(node: PathNode) { // When an NPC is init, it walks on its path by default
         this.walkOnPath = new WalkOnPath(node, 1)
-        this.setBehaviour(this.walkOnPath);
+        // this.setBehaviour(this.walkOnPath);
     }
 
     takeDamage(damage: number) {
