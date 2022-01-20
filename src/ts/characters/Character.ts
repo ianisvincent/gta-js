@@ -32,7 +32,6 @@ import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
 import { IDamageable } from "../interfaces/IDamageable";
 import { IDieable } from "../interfaces/IDieable";
-import { SphereCollider } from "../physics/colliders/SphereCollider";
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     public updateOrder: number = 1;
@@ -106,6 +105,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
+    private npcPos: Vector3;
+    private playerHandPos: Vector3;
 
 
     constructor(gltf: any) {
@@ -225,30 +226,27 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.rightHand = children.getObjectByName(BodyPart.RightHand)
         })
         const points = [
-             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
             new THREE.Vector3(-0.1, -0.1, 0.1),//b
             new THREE.Vector3(0.1, 0.1, 0.1),//a
 
             new THREE.Vector3(0.1, 0.1, 0.1),//a
             new THREE.Vector3(0.1, -0.1, -0.1),//d
-             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
 
             new THREE.Vector3(-0.1, -0.1, 0.1),//b
             new THREE.Vector3(0.1, -0.1, -0.1),//d
             new THREE.Vector3(0.1, 0.1, 0.1),//a
 
-             new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
             new THREE.Vector3(0.1, -0.1, -0.1),//d
             new THREE.Vector3(-0.1, -0.1, 0.1),//b
         ]
         let geometry = new THREE.BufferGeometry().setFromPoints(points);
         geometry.computeVertexNormals();
         geometry.computeBoundingBox();
-        console.log(geometry);
-        const material = new THREE.MeshPhongMaterial( { color: 0xffff00 })
+        const material = new THREE.MeshPhongMaterial({color: 0xffff00})
         const mesh = new THREE.Mesh(geometry, material)
-
-        mesh.userData.obb = new OBB()
 
         this.rightHand.add(mesh);
     }
@@ -468,8 +466,13 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.characterCapsule.body.interpolatedPosition.copy(Utils.cannonVector(newPos));
         }
         this.updateMatrixWorld();
-        if (this.rightHand) {
-            this.rightHand.getWorldPosition(this.rightHandGlobalPosition);
+        if (this.isPlayer) {
+            const z = new THREE.Vector3();
+            this.playerHandPos = this.getWorldPosition(z);
+        }
+        if (this.name === 'npc') {
+            const y = new THREE.Vector3();
+            this.npcPos = this.getWorldPosition(y)
         }
     }
 
@@ -572,7 +575,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
             let action = this.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
-             action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
+            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
             action.paused = true;
             action.stopWarping();
             /*action.zeroSlopeAtStart = true;
@@ -1026,27 +1029,27 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     private updatePlayerHealthBar(damage: number) {
-         // Update Player's  health bar
+        // Update Player's  health bar
 
-            const healthBarElement = document.getElementById('health-bar');
-            const barElement = document.getElementById('bar');
-            const hitElement = document.getElementById('hit');
+        const healthBarElement = document.getElementById('health-bar');
+        const barElement = document.getElementById('bar');
+        const hitElement = document.getElementById('hit');
 
-            const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
-            const healthValue = parseInt(healthBarElement.dataset.value) as number;
+        const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
+        const healthValue = parseInt(healthBarElement.dataset.value) as number;
 
-            let newValue = (healthValue - damage) as number;
+        let newValue = (healthValue - damage) as number;
 
-            const barWidth = (newValue / healthMaxValue) * 100;
-            const hitWidth = (damage / healthValue) * 100 + '%';
+        const barWidth = (newValue / healthMaxValue) * 100;
+        const hitWidth = (damage / healthValue) * 100 + '%';
 
-            hitElement.style.width = hitWidth;
-            healthBarElement.dataset.value = String(newValue);
+        hitElement.style.width = hitWidth;
+        healthBarElement.dataset.value = String(newValue);
 
-            setTimeout(function () {
-                hitElement.style.width = '0';
-                barElement.style.width = barWidth + '%';
-            }, 500);
+        setTimeout(function () {
+            hitElement.style.width = '0';
+            barElement.style.width = barWidth + '%';
+        }, 500);
     }
 }
 
