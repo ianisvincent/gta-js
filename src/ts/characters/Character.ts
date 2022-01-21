@@ -32,6 +32,7 @@ import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
 import { IDamageable } from "../interfaces/IDamageable";
 import { IDieable } from "../interfaces/IDieable";
+import { Npc } from "./Npc";
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     public updateOrder: number = 1;
@@ -105,8 +106,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
-    private npcPos: Vector3;
-    private playerHandPos: Vector3;
 
 
     constructor(gltf: any) {
@@ -197,6 +196,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.physicsPostStep(body, this);
         };
 
+
         // States
         this.setState(new Idle(this));
 
@@ -204,6 +204,16 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.rightHandGlobalPosition = new THREE.Vector3();
 
         this.setRightHand();
+    }
+
+    public trackPlayerHandPosition(): void {
+        const z = new THREE.Vector3();
+        this.children.forEach((child) => {
+            const hand = child.getObjectByName(BodyPart.RightHand);
+            if (hand) {
+                this.world.playerHandPos = hand.getWorldPosition(z);
+            }
+        })
     }
 
     public takeDamage(damage: number) {
@@ -466,13 +476,9 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.characterCapsule.body.interpolatedPosition.copy(Utils.cannonVector(newPos));
         }
         this.updateMatrixWorld();
-        if (this.isPlayer) {
-            const z = new THREE.Vector3();
-            this.playerHandPos = this.getWorldPosition(z);
-        }
-        if (this.name === 'npc') {
-            const y = new THREE.Vector3();
-            this.npcPos = this.getWorldPosition(y)
+
+        if (this.isPlayer && !(this instanceof Npc)) {
+            this.trackPlayerHandPosition();
         }
     }
 

@@ -64,10 +64,11 @@ export class World
 	public paths: Path[] = [];
 	public scenarioGUIFolder: any;
 	public updatables: IUpdatable[] = [];
+    public playerHandPos: Vector3;
+    public npcPos: Vector3;
 
     private lastScenarioID: string;
-    private playerHandPos: Vector3;
-    private npcPos: Vector3;
+
 
 	constructor(worldScenePath?: any)
 	{
@@ -222,26 +223,6 @@ export class World
 
         // Physics debug
         if (this.params.Debug_Physics) this.cannonDebugRenderer.update();
-
-        this.characters.forEach((characters) => {
-            if (characters.isPlayer) {
-                const z = new THREE.Vector3();
-                characters.children.forEach((child) => {
-                    const hand = child.getObjectByName('handR');
-                    if (hand) {
-                        this.playerHandPos = hand.getWorldPosition(z);
-                    }
-                })
-
-            }
-            if (characters.name === 'npc') {
-                const y = new THREE.Vector3();
-                this.npcPos = characters.getWorldPosition(y)
-            }
-            if (this.playerHandPos?.x.toFixed(1) === this.npcPos?.x.toFixed(1)) {
-                console.log('HIT');
-            }
-        })
     }
 
 	public updatePhysics(timeStep: number): void
