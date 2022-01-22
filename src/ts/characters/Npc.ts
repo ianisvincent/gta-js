@@ -10,6 +10,7 @@ import { ScaredRun } from "./character_states/ScaredRun";
 import { WalkFollowTarget } from "./character_ai/WalkFollowTarget";
 import { Idle } from "./character_states/Idle";
 import * as THREE from "three";
+import { Hurt } from "./character_states/Hurt";
 
 export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;
@@ -27,6 +28,7 @@ export class Npc extends Character implements IDamageable, IDieable {
         this.trackNpcPosition()
         if (this.world.playerHandPos?.x.toFixed(1) === this.world.npcPos?.x.toFixed(1)) {
             console.log('HIT');
+            this.setState(new Hurt(this));
         }
     }
 
