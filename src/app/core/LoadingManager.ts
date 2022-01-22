@@ -20,7 +20,6 @@ export class LoadingManager
 		this.gltfLoader = new GLTFLoader();
 
 		this.world.setTimeScale(0);
-		UIManager.setUserInterfaceVisible(false);
 		UIManager.setLoadingScreenVisible(true);
 	}
 
@@ -68,10 +67,6 @@ export class LoadingManager
 			{
 				this.onFinishedCallback();
 			}
-			else
-			{
-				UIManager.setUserInterfaceVisible(true);
-			}
 
 			UIManager.setLoadingScreenVisible(false);
 		}
@@ -92,7 +87,6 @@ export class LoadingManager
 					buttonsStyling: false,
 					onClose: () => {
 						this.world.setTimeScale(1);
-						UIManager.setUserInterfaceVisible(true);
 					}
 				});
 			};

@@ -26,14 +26,11 @@ export class VehicleSpawnPoint implements ISpawnPoint
 
 	public spawn(loadingManager: LoadingManager, world: World): void
 	{
-	  console.log(this.type);
 		loadingManager.loadGLTF('../../../assets/' + this.type + '.glb', (model: any) =>
 		{
 			let vehicle: Vehicle = this.getNewVehicleByType(model, this.type);
 			vehicle.spawnPoint = this.object;
-      console.log(model)
 			let worldPos = new THREE.Vector3();
-      console.log(worldPos);
 			let worldQuat = new THREE.Quaternion();
 			this.object.getWorldPosition(worldPos);
 			this.object.getWorldQuaternion(worldQuat);
