@@ -1,59 +1,51 @@
 {
-  "name": "sketchbook",
-  "version": "0.4.0",
-  "description": "3D playground built on three.js and cannon.js",
-  "keywords": [
-    "3d",
-    "threejs",
-    "cannonjs",
-    "game",
-    "engine",
-    "typescript",
-    "sketchbook"
-  ],
-  "main": "build/sketchbook.min.js",
-  "types": "build/types/sketchbook.d.ts",
+  "name": "untitled1",
+  "version": "0.0.0",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js",
-    "test": "babel src/ts --delete-dir-on-start -d \"spec/out\" src/ts --out-dir \"spec/out\" -x \".ts\" -x \".js\" && jasmine"
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/swift502/Sketchbook.git"
-  },
-  "author": "swift502 <blaha.j502@gmail.com> (http://jblaha.art/)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/swift502/Sketchbook/issues"
-  },
-  "homepage": "https://github.com/swift502/Sketchbook",
-  "devDependencies": {
-    "@babel/cli": "^7.14.5",
-    "@babel/core": "^7.14.6",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.14.7",
-    "@babel/preset-typescript": "^7.14.5",
-    "@babel/register": "^7.14.5",
-    "@types/jquery": "^3.5.1",
-    "@types/lodash": "^4.14.149",
-    "css-loader": "^3.4.0",
-    "jasmine": "^3.8.0",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^6.2.1",
-    "typescript": "^3.7.3",
-    "webpack": "^4.41.3",
-    "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
-  },
+  "private": true,
   "dependencies": {
+    "@angular/animations": "~10.0.6",
+    "@angular/common": "~10.0.6",
+    "@angular/compiler": "~10.0.6",
+    "@angular/core": "~10.0.6",
+    "@angular/forms": "~10.0.6",
+    "@angular/platform-browser": "~10.0.6",
+    "@angular/platform-browser-dynamic": "~10.0.6",
+    "@angular/router": "~10.0.6",
     "@tweenjs/tween.js": "^18.6.4",
-    "@types/jasmine": "^3.8.1",
     "jquery": "^3.5.1",
-    "lodash": "^4.17.20",
+    "rxjs": "~6.5.5",
     "sweetalert2": "^9.17.1",
     "three": "0.113.0",
-    "three-csm": "1.0.2"
+    "three-csm": "1.0.2",
+    "tslib": "^2.0.0",
+    "zone.js": "~0.10.3"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.1000.5",
+    "@angular/cli": "~10.0.5",
+    "@angular/compiler-cli": "~10.0.6",
+    "@types/jasmine": "~3.5.0",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.20.42",
+    "codelyzer": "^6.0.0",
+    "jasmine-core": "~3.5.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "~5.0.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-jasmine": "~3.3.0",
+    "karma-jasmine-html-reporter": "^1.5.0",
+    "protractor": "~7.0.0",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "~3.9.5"
   }
 }
