@@ -54,7 +54,7 @@ export class World {
   public params: any;
   public inputManager: InputManager;
   public cameraOperator: CameraOperator;
-  public timeScaleTarget: number = 1;
+  public timeScaleTarget = 1;
   public console: InfoStack;
   public cannonDebugRenderer: CannonDebugRenderer;
   public scenarios: Scenario[] = [];
@@ -117,11 +117,11 @@ export class World {
     this.graphicsWorld.add(helper);
 
     // Passes
-    let renderPass = new RenderPass(this.graphicsWorld, this.camera);
-    let fxaaPass = new ShaderPass(FXAAShader);
+    const renderPass = new RenderPass(this.graphicsWorld, this.camera);
+    const fxaaPass = new ShaderPass(FXAAShader);
 
     // FXAA
-    let pixelRatio = this.renderer.getPixelRatio();
+    const pixelRatio = this.renderer.getPixelRatio();
     fxaaPass.material['uniforms'].resolution.value.x = 1 / (window.innerWidth * pixelRatio);
     fxaaPass.material['uniforms'].resolution.value.y = 1 / (window.innerHeight * pixelRatio);
 
@@ -165,7 +165,7 @@ export class World {
     });
     // Load scene if path is supplied
     if (worldScenePath !== undefined) {
-      let loadingManager = new LoadingManager(this);
+      const loadingManager = new LoadingManager(this);
       loadingManager.onFinishedCallback = () => {
         this.update(1, 1);
         this.setTimeScale(1);
@@ -177,7 +177,6 @@ export class World {
           confirmButtonText: 'Okay',
           buttonsStyling: false,
           onClose: () => {
-            UIManager.setUserInterfaceVisible(true);
           }
         });
       };
@@ -186,7 +185,6 @@ export class World {
         }
       );
     } else {
-      UIManager.setUserInterfaceVisible(true);
       UIManager.setLoadingScreenVisible(false);
       Swal.fire({
         icon: 'success',
@@ -213,7 +211,7 @@ export class World {
     this.params.Time_Scale = THREE.MathUtils.lerp(this.params.Time_Scale, this.timeScaleTarget, 0.2);
 
     // Physics debug
-    if (this.params.Debug_Physics) this.cannonDebugRenderer.update();
+    if (this.params.Debug_Physics) { this.cannonDebugRenderer.update(); }
   }
 
   public updatePhysics(timeStep: number): void {
@@ -228,7 +226,7 @@ export class World {
 
     this.vehicles.forEach((vehicle) => {
       if (this.isOutOfBounds(vehicle.rayCastVehicle.chassisBody.position)) {
-        let worldPos = new THREE.Vector3();
+        const worldPos = new THREE.Vector3();
         vehicle.spawnPoint.getWorldPosition(worldPos);
         worldPos.y += 1;
         this.outOfBoundsRespawn(vehicle.rayCastVehicle.chassisBody, Utils.cannonVector(worldPos));
@@ -237,17 +235,17 @@ export class World {
   }
 
   public isOutOfBounds(position: CANNON.Vec3): boolean {
-    let inside = position.x > -211.882 && position.x < 211.882 &&
+    const inside = position.x > -211.882 && position.x < 211.882 &&
       position.z > -169.098 && position.z < 153.232 &&
       position.y > 0.107;
-    let belowSeaLevel = position.y < 14.989;
+    const belowSeaLevel = position.y < 14.989;
 
     return !inside && belowSeaLevel;
   }
 
   public outOfBoundsRespawn(body: CANNON.Body, position?: CANNON.Vec3): void {
-    let newPos = position || new CANNON.Vec3(0, 16, 0);
-    let newQuat = new CANNON.Quaternion(0, 0, 0, 1);
+    const newPos = position || new CANNON.Vec3(0, 16, 0);
+    const newQuat = new CANNON.Quaternion(0, 0, 0, 1);
 
     body.position.copy(newPos);
     body.interpolatedPosition.copy(newPos);
@@ -271,7 +269,7 @@ export class World {
     });
 
     // Getting timeStep
-    let unscaledTimeStep = (this.requestDelta + this.renderDelta + this.logicDelta);
+    const unscaledTimeStep = (this.requestDelta + this.renderDelta + this.logicDelta);
     let timeStep = unscaledTimeStep * this.params.Time_Scale;
     timeStep = Math.min(timeStep, 1 / 30);    // min 30 fps
 
@@ -282,7 +280,7 @@ export class World {
     this.logicDelta = this.clock.getDelta();
 
     // Frame limiting
-    let interval = 1 / 60;
+    const interval = 1 / 60;
     this.sinceLastFrame += this.requestDelta + this.renderDelta + this.logicDelta;
     this.sinceLastFrame %= interval;
 
@@ -291,8 +289,8 @@ export class World {
     this.stats.begin();
 
     // Actual rendering with a FXAA ON/OFF switch
-    if (this.params.FXAA) this.composer.render();
-    else this.renderer.render(this.graphicsWorld, this.camera);
+    if (this.params.FXAA) { this.composer.render(); }
+    else { this.renderer.render(this.graphicsWorld, this.camera); }
 
     // Measuring render time
     this.renderDelta = this.clock.getDelta();
@@ -339,7 +337,7 @@ export class World {
             if (child.userData.hasOwnProperty('type')) {
               // Convex doesn't work! Stick to boxes!
               if (child.userData.type === 'box') {
-                let phys = new BoxCollider({size: new THREE.Vector3(child.scale.x, child.scale.y, child.scale.z)});
+                const phys = new BoxCollider({size: new THREE.Vector3(child.scale.x, child.scale.y, child.scale.z)});
                 phys.body.position.copy(Utils.cannonVector(child.position));
                 phys.body.quaternion.copy(Utils.cannonQuat(child.quaternion));
                 phys.body.computeAABB();
@@ -350,7 +348,7 @@ export class World {
 
                 this.physicsWorld.addBody(phys.body);
               } else if (child.userData.type === 'trimesh') {
-                let phys = new TrimeshCollider(child, {});
+                const phys = new TrimeshCollider(child, {});
                 this.physicsWorld.addBody(phys.body);
               }
 
@@ -379,7 +377,7 @@ export class World {
         break;
       }
     }
-    if (defaultScenarioID !== undefined) this.launchScenario(defaultScenarioID, loadingManager);
+    if (defaultScenarioID !== undefined) { this.launchScenario(defaultScenarioID, loadingManager); }
   }
 
   public launchScenario(scenarioID: string, loadingManager?: LoadingManager): void {
@@ -388,7 +386,7 @@ export class World {
     this.clearEntities();
 
     // Launch default scenario
-    if (!loadingManager) loadingManager = new LoadingManager(this);
+    if (!loadingManager) { loadingManager = new LoadingManager(this); }
     for (const scenario of this.scenarios) {
       if (scenario.id === scenarioID || scenario.spawnAlways) {
         scenario.launch(loadingManager, this);
@@ -424,10 +422,10 @@ export class World {
 
     if (scrollAmount > 0) {
       this.timeScaleTarget /= timeScaleChangeSpeed;
-      if (this.timeScaleTarget < timeScaleBottomLimit) this.timeScaleTarget = 0;
+      if (this.timeScaleTarget < timeScaleBottomLimit) { this.timeScaleTarget = 0; }
     } else {
       this.timeScaleTarget *= timeScaleChangeSpeed;
-      if (this.timeScaleTarget < timeScaleBottomLimit) this.timeScaleTarget = timeScaleBottomLimit;
+      if (this.timeScaleTarget < timeScaleBottomLimit) { this.timeScaleTarget = timeScaleBottomLimit; }
       this.timeScaleTarget = Math.min(this.timeScaleTarget, 1);
     }
   }
@@ -439,10 +437,12 @@ export class World {
     controls.forEach((row) => {
       html += '<div class="ctrl-row">';
       row.keys.forEach((key) => {
-        if (key === '+' || key === 'and' || key === 'or' || key === '&') html += '&nbsp;' + key + '&nbsp;';
-        else html += '<span class="ctrl-key">' + key + '</span>';
+        if (key === '+' || key === 'and' || key === 'or' || key === '&') {
+          html += '&nbsp;' + key + '&nbsp;';
+        } else {
+          html += '<span class="ctrl-key">' + key + '</span>';
+        }
       });
-
       html += '<span class="ctrl-desc">' + row.desc + '</span></div>';
     });
 
@@ -468,26 +468,6 @@ export class World {
 				<div id="loading-text">Loading...</div>
 			</div>
 		`).appendTo('body');
-
-    // UI
-    $(`	<div id="ui-container" style="display: none;">
-				<div class="github-corner">
-					<a href="https://github.com/swift502/Sketchbook" target="_blank" title="Fork me on GitHub">
-						<svg viewbox="0 0 100 100" fill="currentColor">
-							<title>Fork me on GitHub</title>
-							<path d="M0 0v100h100V0H0zm60 70.2h.2c1 2.7.3 4.7 0 5.2 1.4 1.4 2 3 2 5.2 0 7.4-4.4 9-8.7 9.5.7.7 1.3 2
-							1.3 3.7V99c0 .5 1.4 1 1.4 1H44s1.2-.5 1.2-1v-3.8c-3.5 1.4-5.2-.8-5.2-.8-1.5-2-3-2-3-2-2-.5-.2-1-.2-1
-							2-.7 3.5.8 3.5.8 2 1.7 4 1 5 .3.2-1.2.7-2 1.2-2.4-4.3-.4-8.8-2-8.8-9.4 0-2 .7-4 2-5.2-.2-.5-1-2.5.2-5
-							0 0 1.5-.6 5.2 1.8 1.5-.4 3.2-.6 4.8-.6 1.6 0 3.3.2 4.8.7 2.8-2 4.4-2 5-2z"></path>
-						</svg>
-					</a>
-				</div>
-				<div class="left-panel">
-					<div id="controls" class="panel-segment flex-bottom"></div>
-				</div>
-			</div>
-		`).appendTo('body');
-
     // Canvas
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.id = 'canvas';
@@ -513,7 +493,7 @@ export class World {
     this.scenarioGUIFolder.open();
 
     // World
-    let worldFolder = gui.addFolder('World');
+    const worldFolder = gui.addFolder('World');
     worldFolder.add(this.params, 'Time_Scale', 0, 1).listen()
       .onChange((value) => {
         scope.timeScaleTarget = value;
@@ -528,7 +508,7 @@ export class World {
       });
 
     // Input
-    let settingsFolder = gui.addFolder('Settings');
+    const settingsFolder = gui.addFolder('Settings');
     settingsFolder.add(this.params, 'FXAA');
     settingsFolder.add(this.params, 'Shadows')
       .onChange((enabled) => {
@@ -565,7 +545,6 @@ export class World {
       });
     settingsFolder.add(this.params, 'Debug_FPS')
       .onChange((enabled) => {
-        UIManager.setFPSVisible(enabled);
       });
 
     gui.open();

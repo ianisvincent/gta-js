@@ -19,7 +19,8 @@
       ]
     },
     "types": [
-      "node"
+      "node",
+      "jquery"
     ],
     "lib": [
       "es2018",
