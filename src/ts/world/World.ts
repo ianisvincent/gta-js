@@ -7,7 +7,7 @@ import { CameraOperator } from '../core/CameraOperator';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { FXAAShader  } from 'three/examples/jsm/shaders/FXAAShader';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 
 import { Detector } from '../../lib/utils/Detector';
 import { Stats } from '../../lib/utils/Stats';
@@ -31,6 +31,7 @@ import { Vehicle } from '../vehicles/Vehicle';
 import { Scenario } from './Scenario';
 import { Sky } from './Sky';
 import { Ocean } from './Ocean';
+import { Vector3 } from "three";
 
 export class World
 {
@@ -63,8 +64,11 @@ export class World
 	public paths: Path[] = [];
 	public scenarioGUIFolder: any;
 	public updatables: IUpdatable[] = [];
+    public playerHandPos: Vector3;
+    public npcPos: Vector3;
 
-	private lastScenarioID: string;
+    private lastScenarioID: string;
+
 
 	constructor(worldScenePath?: any)
 	{
@@ -170,7 +174,7 @@ export class World
 			{
 				this.update(1, 1);
 				this.setTimeScale(1);
-	
+
 				Swal.fire({
 					title: 'Welcome to Sketchbook!',
 					text: 'Feel free to explore the world and interact with available vehicles. There are also various scenarios ready to launch from the right panel.',
@@ -217,9 +221,9 @@ export class World
 		// Lerp time scale
 		this.params.Time_Scale = THREE.MathUtils.lerp(this.params.Time_Scale, this.timeScaleTarget, 0.2);
 
-		// Physics debug
-		if (this.params.Debug_Physics) this.cannonDebugRenderer.update();
-	}
+        // Physics debug
+        if (this.params.Debug_Physics) this.cannonDebugRenderer.update();
+    }
 
 	public updatePhysics(timeStep: number): void
 	{
@@ -271,7 +275,7 @@ export class World
 	 * Rendering loop.
 	 * Implements fps limiter and frame-skipping
 	 * Calls world's "update" function before rendering.
-	 * @param {World} world 
+	 * @param {World} world
 	 */
 	public render(world: World): void
 	{
@@ -358,7 +362,7 @@ export class World
 				{
 					if (child.userData.data === 'physics')
 					{
-						if (child.userData.hasOwnProperty('type')) 
+						if (child.userData.hasOwnProperty('type'))
 						{
 							// Convex doesn't work! Stick to boxes!
 							if (child.userData.type === 'box')
@@ -409,7 +413,7 @@ export class World
 		}
 		if (defaultScenarioID !== undefined) this.launchScenario(defaultScenarioID, loadingManager);
 	}
-	
+
 	public launchScenario(scenarioID: string, loadingManager?: LoadingManager): void
 	{
 		this.lastScenarioID = scenarioID;
@@ -456,7 +460,7 @@ export class World
 		// Changing time scale with scroll wheel
 		const timeScaleBottomLimit = 0.003;
 		const timeScaleChangeSpeed = 1.3;
-	
+
 		if (scrollAmount > 0)
 		{
 			this.timeScaleTarget /= timeScaleChangeSpeed;

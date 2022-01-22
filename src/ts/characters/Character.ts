@@ -25,13 +25,14 @@ import { VehicleEntryInstance } from './VehicleEntryInstance';
 import { SeatType } from '../enums/SeatType';
 import { GroundImpactData } from './GroundImpactData';
 import { ClosestObjectFinder } from '../core/ClosestObjectFinder';
-import { Object3D } from 'three';
+import { Object3D, Vector3 } from 'three';
 import { EntityType } from '../enums/EntityType';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { BodyPart } from "../enums/BodyPart";
 import { CameraOperator } from "../core/CameraOperator";
 import { IDamageable } from "../interfaces/IDamageable";
 import { IDieable } from "../interfaces/IDieable";
+import { Npc } from "./Npc";
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     public updateOrder: number = 1;
@@ -81,6 +82,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public groundImpactData: GroundImpactData = new GroundImpactData();
     public raycastBox: THREE.Mesh;
 
+    // Right-Hand Ray casting
+    private rightHand: Object3D;
+    private rightHandGlobalPosition: Vector3;
+
     public world: World;
     public charState: ICharacterState;
     public behaviour: ICharacterAI;
@@ -105,7 +110,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     constructor(gltf: any) {
         super();
-        console.log(this);
         this.readCharacterData(gltf);
         this.setAnimations(gltf.animations);
 
@@ -182,7 +186,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             color: 0xff0000
         });
         this.raycastBox = new THREE.Mesh(boxGeo, boxMat);
-        this.raycastBox.visible = false;
+        this.raycastBox.visible = true;
 
         // Physics pre/post step callback bindings
         this.characterCapsule.body.preStep = (body: CANNON.Body) => {
@@ -192,9 +196,24 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.physicsPostStep(body, this);
         };
 
+
         // States
         this.setState(new Idle(this));
 
+        // Set right hand
+        this.rightHandGlobalPosition = new THREE.Vector3();
+
+        this.setRightHand();
+    }
+
+    public trackPlayerHandPosition(): void {
+        const z = new THREE.Vector3();
+        this.children.forEach((child) => {
+            const hand = child.getObjectByName(BodyPart.RightHand);
+            if (hand) {
+                this.world.playerHandPos = hand.getWorldPosition(z);
+            }
+        })
     }
 
     public takeDamage(damage: number) {
@@ -210,6 +229,36 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public onDie() {
         this.isDead = true;
+    }
+
+    public setRightHand(): void {
+        this.children.forEach(children => {
+            this.rightHand = children.getObjectByName(BodyPart.RightHand)
+        })
+        const points = [
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
+
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+            new THREE.Vector3(0.1, 0.1, 0.1),//a
+
+            new THREE.Vector3(-0.1, 0.1, -0.1),//c
+            new THREE.Vector3(0.1, -0.1, -0.1),//d
+            new THREE.Vector3(-0.1, -0.1, 0.1),//b
+        ]
+        let geometry = new THREE.BufferGeometry().setFromPoints(points);
+        geometry.computeVertexNormals();
+        geometry.computeBoundingBox();
+        const material = new THREE.MeshPhongMaterial({color: 0xffff00})
+        const mesh = new THREE.Mesh(geometry, material)
+
+        this.rightHand.add(mesh);
     }
 
     public setAnimations(animations: []): void {
@@ -406,10 +455,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public update(timeStep: number): void {
         this.behaviour?.update(timeStep);
         this.vehicleEntryInstance?.update(timeStep);
-
-
         this.charState?.update(timeStep);
-
         // this.visuals.position.copy(this.modelOffset);
         if (this.physicsEnabled) this.springMovement(timeStep);
         if (this.physicsEnabled) this.springRotation(timeStep);
@@ -426,12 +472,14 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         } else {
             let newPos = new THREE.Vector3();
             this.getWorldPosition(newPos);
-
             this.characterCapsule.body.position.copy(Utils.cannonVector(newPos));
             this.characterCapsule.body.interpolatedPosition.copy(Utils.cannonVector(newPos));
         }
-
         this.updateMatrixWorld();
+
+        if (this.isPlayer && !(this instanceof Npc)) {
+            this.trackPlayerHandPosition();
+        }
     }
 
     public inputReceiverInit(): void {
@@ -533,7 +581,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
             let action = this.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
-             action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
+            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
             action.paused = true;
             action.stopWarping();
             /*action.zeroSlopeAtStart = true;
@@ -804,7 +852,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public physicsPostStep(body: CANNON.Body, character: Character): void {
         // Get velocities
         let simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
-
         // Take local velocity
         let arcadeVelocity = new THREE.Vector3().copy(character.velocity).multiplyScalar(character.moveSpeed);
         // Turn local into global
@@ -835,7 +882,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
                 THREE.MathUtils.lerp(simulatedVelocity.z, arcadeVelocity.z, character.arcadeVelocityInfluence.z),
             );
         }
-
         // If we're hitting the ground, stick to ground
         if (character.rayHasHit) {
             // Flatten velocity
@@ -878,7 +924,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             character.groundImpactData.velocity.y = body.velocity.y;
             character.groundImpactData.velocity.z = body.velocity.z;
         }
-
         // Jumping
         if (character.wantsToJump) {
             // If initJumpSpeed is set
@@ -990,27 +1035,27 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     private updatePlayerHealthBar(damage: number) {
-         // Update Player's  health bar
+        // Update Player's  health bar
 
-            const healthBarElement = document.getElementById('health-bar');
-            const barElement = document.getElementById('bar');
-            const hitElement = document.getElementById('hit');
+        const healthBarElement = document.getElementById('health-bar');
+        const barElement = document.getElementById('bar');
+        const hitElement = document.getElementById('hit');
 
-            const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
-            const healthValue = parseInt(healthBarElement.dataset.value) as number;
+        const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
+        const healthValue = parseInt(healthBarElement.dataset.value) as number;
 
-            let newValue = (healthValue - damage) as number;
+        let newValue = (healthValue - damage) as number;
 
-            const barWidth = (newValue / healthMaxValue) * 100;
-            const hitWidth = (damage / healthValue) * 100 + '%';
+        const barWidth = (newValue / healthMaxValue) * 100;
+        const hitWidth = (damage / healthValue) * 100 + '%';
 
-            hitElement.style.width = hitWidth;
-            healthBarElement.dataset.value = String(newValue);
+        hitElement.style.width = hitWidth;
+        healthBarElement.dataset.value = String(newValue);
 
-            setTimeout(function () {
-                hitElement.style.width = '0';
-                barElement.style.width = barWidth + '%';
-            }, 500);
+        setTimeout(function () {
+            hitElement.style.width = '0';
+            barElement.style.width = barWidth + '%';
+        }, 500);
     }
 }
 
