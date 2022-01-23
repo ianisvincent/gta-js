@@ -22,7 +22,6 @@ export class LoadingManager {
     }
 
     public loadGLTF(path: string, onLoadingFinished: (gltf: any) => void): void {
-        console.log(path);
         const trackerEntry = this.addLoadingEntry(path);
 
         this.gltfLoader.load(path,
