@@ -19,7 +19,6 @@ import { InputManager } from '../core/InputManager';
 import * as Utils from '../core/FunctionLibrary';
 import { LoadingManager } from '../core/LoadingManager';
 import { InfoStack } from '../core/InfoStack';
-import { UIManager } from '../core/UIManager';
 import { IWorldEntity } from '../interfaces/IWorldEntity';
 import { IUpdatable } from '../interfaces/IUpdatable';
 import { Character } from '../characters/Character';
@@ -32,6 +31,7 @@ import { Scenario } from './Scenario';
 import { Sky } from './Sky';
 import { Ocean } from './Ocean';
 import { Vector3 } from 'three';
+import { UiManagerService } from '../ui-manager.service';
 
 export class World {
   public renderer: THREE.WebGLRenderer;
@@ -69,7 +69,7 @@ export class World {
   private lastScenarioID: string;
 
 
-  constructor(worldScenePath?: any) {
+  constructor(private uiManagerService: UiManagerService, worldScenePath?: any) {
     const scope = this;
 
     // WebGL not supported
@@ -165,7 +165,7 @@ export class World {
     });
     // Load scene if path is supplied
     if (worldScenePath !== undefined) {
-      const loadingManager = new LoadingManager(this);
+      const loadingManager = new LoadingManager(this, this.uiManagerService);
       loadingManager.onFinishedCallback = () => {
         this.update(1, 1);
         this.setTimeScale(1);
@@ -175,13 +175,6 @@ export class World {
         }
       );
     } else {
-      UIManager.setLoadingScreenVisible(false);
-      Swal.fire({
-        icon: 'success',
-        title: 'Hello world!',
-        text: 'Empty Sketchbook world was succesfully initialized. Enjoy the blueness of the sky.',
-        buttonsStyling: false
-      });
     }
 
     this.render(this);
@@ -376,7 +369,7 @@ export class World {
     this.clearEntities();
 
     // Launch default scenario
-    if (!loadingManager) { loadingManager = new LoadingManager(this); }
+    if (!loadingManager) { loadingManager = new LoadingManager(this, this.uiManagerService); }
     for (const scenario of this.scenarios) {
       if (scenario.id === scenarioID || scenario.spawnAlways) {
         scenario.launch(loadingManager, this);
@@ -445,19 +438,6 @@ export class World {
     $('head').append('<link href="https://fonts.googleapis.com/css2?family=Solway:wght@400;500;700&display=swap" rel="stylesheet">');
     $('head').append('<link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">');
 
-    // Loader
-    $(`	<div id="loading-screen">
-				<div id="loading-screen-background"></div>
-				<h1 id="main-title" class="sb-font">Sketchbook 0.4</h1>
-				<div class="cubeWrap">
-					<div class="cube">
-						<div class="faces1"></div>
-						<div class="faces2"></div>
-					</div>
-				</div>
-				<div id="loading-text">Loading...</div>
-			</div>
-		`).appendTo('body');
     // Canvas
     document.body.appendChild(this.renderer.domElement);
     this.renderer.domElement.id = 'canvas';
