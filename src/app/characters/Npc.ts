@@ -11,7 +11,6 @@ import { WalkFollowTarget } from './character_ai/WalkFollowTarget';
 import { Idle } from './character_states/Idle';
 import * as THREE from 'three';
 import { Hurt } from './character_states/Hurt';
-import { UiManagerService } from '../ui-manager.service';
 
 export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;
@@ -19,8 +18,8 @@ export class Npc extends Character implements IDamageable, IDieable {
     name: string;
     alreadyTookPunch = false;
 
-    constructor(gltf: any, ui: UiManagerService) {
-        super(gltf, ui);
+    constructor(gltf: any) {
+        super(gltf);
         this.initDebug();
         this.name = 'npc';
     }
