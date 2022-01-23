@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { World } from './World';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
-import { Npc } from "../characters/Npc";
+import { Npc } from '../characters/Npc';
 
 export class NpcSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;
@@ -17,15 +17,15 @@ export class NpcSpawnPoint implements ISpawnPoint {
 
     public spawn(loadingManager: LoadingManager, world: World): void {
         loadingManager.loadGLTF('../../assets/low_poly.glb', (model) => {
-            let npc = new Npc(model);
-            npc.traverse(function (object) {
+            const npc = new Npc(model, world.uiManager);
+            npc.traverse( (object) => {
                 object.frustumCulled = false;
-            })
-            let worldPos = new THREE.Vector3();
+            });
+            const worldPos = new THREE.Vector3();
             this.object.getWorldPosition(worldPos);
             npc.setPosition(worldPos.x, worldPos.y, worldPos.z);
 
-            let forward = Utils.getForward(this.object);
+            const forward = Utils.getForward(this.object);
             npc.setOrientation(forward, true);
 
             // Affect collision mesh to npc
