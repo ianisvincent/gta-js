@@ -1,9 +1,9 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { LoadingTrackerEntry } from './LoadingTrackerEntry';
-import { UIManager } from './UIManager';
 import { Scenario } from '../world/Scenario';
 import Swal from 'sweetalert2';
 import { World } from '../world/World';
+import { UiManagerService } from '../ui-manager.service';
 
 export class LoadingManager {
     public firstLoad = true;
@@ -13,12 +13,12 @@ export class LoadingManager {
     private gltfLoader: GLTFLoader;
     private loadingTracker: LoadingTrackerEntry[] = [];
 
-    constructor(world: World) {
+    constructor(world: World, private uiManagerService: UiManagerService) {
         this.world = world;
         this.gltfLoader = new GLTFLoader();
 
         this.world.setTimeScale(0);
-        UIManager.setLoadingScreenVisible(true);
+        this.uiManagerService.displayLoadingScreen(true);
     }
 
     public loadGLTF(path: string, onLoadingFinished: (gltf: any) => void): void {
@@ -57,7 +57,7 @@ export class LoadingManager {
                 this.onFinishedCallback();
             }
 
-            UIManager.setLoadingScreenVisible(false);
+            this.uiManagerService.displayLoadingScreen(false);
         }
     }
 
