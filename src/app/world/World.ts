@@ -66,6 +66,7 @@ export class World {
   public playerHandPos: Vector3;
   public npcPos: Vector3;
   public player: Character;
+  public uiManager: UiManagerService;
 
   private lastScenarioID: string;
 
