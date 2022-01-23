@@ -33,6 +33,7 @@ import { CameraOperator } from '../core/CameraOperator';
 import { IDamageable } from '../interfaces/IDamageable';
 import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
+import { UiManagerService } from '../ui-manager.service';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder: number = 1;
@@ -108,7 +109,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
 
-  constructor(gltf: any) {
+  constructor(gltf: any, private uiManagerService: UiManagerService) {
     super();
     this.readCharacterData(gltf);
     this.setAnimations(gltf.animations);
@@ -213,10 +214,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       if (hand) {
         this.world.playerHandPos = hand.getWorldPosition(z);
       }
-    })
+    });
   }
 
-  public takeDamage(damage: number) {
+  public takeDamage(damage: number): void {
     if (this.health > 0) {
       this.health -= damage;
       if (this.isPlayer) { // TODO: Remove this soon, Every character will have health bar, even NPC
@@ -227,14 +228,14 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
   }
 
-  public onDie() {
+  public onDie(): void {
     this.isDead = true;
   }
 
   public setRightHand(): void {
     this.children.forEach(children => {
       this.rightHand = children.getObjectByName(BodyPart.RightHand)
-    })
+    });
 /*    const points = [
       new THREE.Vector3(-0.1, 0.1, -0.1),//c
       new THREE.Vector3(-0.1, -0.1, 0.1),//b
@@ -1034,28 +1035,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     this.world.cameraOperator.aimingMode = false;
   }
 
-  private updatePlayerHealthBar(damage: number) {
-    // Update Player's  health bar
-
-    const healthBarElement = document.getElementById('health-bar');
-    const barElement = document.getElementById('bar');
-    const hitElement = document.getElementById('hit');
-
-    const healthMaxValue = parseInt(healthBarElement.dataset.total) as number;
-    const healthValue = parseInt(healthBarElement.dataset.value) as number;
-
-    let newValue = (healthValue - damage) as number;
-
-    const barWidth = (newValue / healthMaxValue) * 100;
-    const hitWidth = (damage / healthValue) * 100 + '%';
-
-    hitElement.style.width = hitWidth;
-    healthBarElement.dataset.value = String(newValue);
-
-    setTimeout(function () {
-      hitElement.style.width = '0';
-      barElement.style.width = barWidth + '%';
-    }, 500);
+  private updatePlayerHealthBar(damage: number): void {
+    this.uiManagerService.updateHealthBar(damage);
   }
 }
 
