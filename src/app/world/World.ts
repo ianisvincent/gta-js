@@ -65,6 +65,7 @@ export class World {
   public updatables: IUpdatable[] = [];
   public playerHandPos: Vector3;
   public npcPos: Vector3;
+  public player: Character;
 
   private lastScenarioID: string;
 
