@@ -132,7 +132,6 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
     spawnImpactOnTarget(intersectedTarget): void {
         if (intersectedTarget.object.parent instanceof Npc) {
-            console.log(intersectedTarget.object.parent);
             intersectedTarget.object.attach(this.dummySphereImpact);
             /* We convert the intersect point from world to local pos */
             const impactLocalPos = intersectedTarget.object.worldToLocal(intersectedTarget.point);

@@ -1,16 +1,17 @@
-import { Character } from "./Character";
-import { WalkOnPath } from "./character_ai/WalkOnPath";
-import { PathNode } from "../world/PathNode";
-import { IDamageable } from "../interfaces/IDamageable";
-import { IDieable } from "../interfaces/IDieable";
-import { Die } from "./character_states/Die";
-import { Scared } from "./character_states/Scared";
+import { Character } from './Character';
+import { WalkOnPath } from './character_ai/WalkOnPath';
+import { PathNode } from '../world/PathNode';
+import { IDamageable } from '../interfaces/IDamageable';
+import { IDieable } from '../interfaces/IDieable';
+import { Die } from './character_states/Die';
+import { Scared } from './character_states/Scared';
 import * as GUI from '../../lib/utils/dat.gui';
-import { ScaredRun } from "./character_states/ScaredRun";
-import { WalkFollowTarget } from "./character_ai/WalkFollowTarget";
-import { Idle } from "./character_states/Idle";
-import * as THREE from "three";
-import { Hurt } from "./character_states/Hurt";
+import { ScaredRun } from './character_states/ScaredRun';
+import { WalkFollowTarget } from './character_ai/WalkFollowTarget';
+import { Idle } from './character_states/Idle';
+import * as THREE from 'three';
+import { Hurt } from './character_states/Hurt';
+import { UiManagerService } from '../ui-manager.service';
 
 export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;
@@ -18,13 +19,13 @@ export class Npc extends Character implements IDamageable, IDieable {
     name: string;
     alreadyTookPunch = false;
 
-    constructor(gltf: any) {
-        super(gltf);
+    constructor(gltf: any, ui: UiManagerService) {
+        super(gltf, ui);
         this.initDebug();
         this.name = 'npc';
     }
 
-    public update(timeStep: number) {
+    public update(timeStep: number): void {
         super.update(timeStep);
         this.trackNpcPosition();
         if (this.world.playerHandPos?.x.toFixed(1) === this.world.npcPos?.x.toFixed(1)) {
@@ -39,7 +40,7 @@ export class Npc extends Character implements IDamageable, IDieable {
     }
 
     initNpc(node: PathNode) { // When an NPC is init, it walks on its path by default
-        this.walkOnPath = new WalkOnPath(node, 1)
+        this.walkOnPath = new WalkOnPath(node, 1);
         this.setBehaviour(this.walkOnPath);
     }
 
@@ -59,10 +60,10 @@ export class Npc extends Character implements IDamageable, IDieable {
     private initDebug(): void {
         const gui = new GUI.GUI();
         const gunGUIFolder = gui.addFolder('Npc Debug');
-        var statesDropDownDebug =
+        let statesDropDownDebug =
             {
                 states: 'states'
-            }
+            };
         gunGUIFolder.add(statesDropDownDebug, 'states',
             {
                 Scared: 'scared',
@@ -85,6 +86,6 @@ export class Npc extends Character implements IDamageable, IDieable {
 
     private trackNpcPosition(): void {
         const y = new THREE.Vector3();
-        this.world.npcPos = this.getWorldPosition(y)
+        this.world.npcPos = this.getWorldPosition(y);
     }
 }
