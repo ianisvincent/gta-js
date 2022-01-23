@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UiManagerService {
-  isDisplayed = true;
+    isDisplayed = true;
+    isPlayerIsAiming = true;
 
-  constructor() {
-  }
+    constructor() {
+    }
 
-  displayLoadingScreen(value: boolean): void {
-    this.isDisplayed = value;
-  }
+    displayLoadingScreen(value: boolean): void {
+        this.isDisplayed = value;
+    }
+
+    displayTargetPoint(value: boolean): void {
+        this.isPlayerIsAiming = value;
+    }
 }
