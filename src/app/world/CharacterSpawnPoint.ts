@@ -14,7 +14,7 @@ export class CharacterSpawnPoint implements ISpawnPoint {
 
     public spawn(loadingManager: LoadingManager, world: World): void {
         loadingManager.loadGLTF('../../assets/low_poly.glb', (model) => {
-            const player = new Character(model, world.uiManager);
+            const player = new Character(model);
             world.player = player;
             player.traverse((object) => {
                 object.frustumCulled = false;

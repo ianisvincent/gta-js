@@ -33,7 +33,6 @@ import { CameraOperator } from '../core/CameraOperator';
 import { IDamageable } from '../interfaces/IDamageable';
 import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
-import { UiManagerService } from '../ui-manager.service';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder: number = 1;
@@ -109,7 +108,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
 
-  constructor(gltf: any, private uiManagerService: UiManagerService) {
+  constructor(gltf: any) {
     super();
     this.readCharacterData(gltf);
     this.setAnimations(gltf.animations);
@@ -117,7 +116,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     // The visuals group is centered for easy character tilting
     this.tiltContainer = new THREE.Group();
     this.add(this.tiltContainer);
-
     // GUI to debut aiming rotations
     /*        const gui = new GUI.GUI();
             const gunGUIFolder = gui.addFolder('aimingSettings');
@@ -1036,7 +1034,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   private updatePlayerHealthBar(damage: number): void {
-    this.uiManagerService.updateHealthBar(damage);
+    this.world.uiManager.updateHealthBar(damage);
   }
 }
 
