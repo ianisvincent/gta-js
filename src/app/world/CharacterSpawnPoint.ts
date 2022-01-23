@@ -19,6 +19,7 @@ export class CharacterSpawnPoint implements ISpawnPoint
 		loadingManager.loadGLTF('../../assets/low_poly.glb', (model) =>
 		{
 			let player = new Character(model);
+			world.player = player;
 			player.traverse( function( object ) {
 				object.frustumCulled = false;
 			})

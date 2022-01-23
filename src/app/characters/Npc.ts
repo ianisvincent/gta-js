@@ -16,25 +16,31 @@ export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;
     private walkOnPath: WalkOnPath;
     name: string;
+    alreadyTookPunch = false;
 
     constructor(gltf: any) {
         super(gltf);
-        this.initDebug()
+        this.initDebug();
         this.name = 'npc';
     }
 
     public update(timeStep: number) {
         super.update(timeStep);
-        this.trackNpcPosition()
+        this.trackNpcPosition();
         if (this.world.playerHandPos?.x.toFixed(1) === this.world.npcPos?.x.toFixed(1)) {
-            console.log('HIT');
-            this.setState(new Hurt(this));
+            if (this.world.player.isPunching) {
+                this.world.player.isPunching = false;
+                this.alreadyTookPunch = false;
+                if (!this.alreadyTookPunch) {
+                    this.setState(new Hurt(this, this.alreadyTookPunch));
+                }
+            }
         }
     }
 
     initNpc(node: PathNode) { // When an NPC is init, it walks on its path by default
         this.walkOnPath = new WalkOnPath(node, 1)
-        // this.setBehaviour(this.walkOnPath);
+        this.setBehaviour(this.walkOnPath);
     }
 
     takeDamage(damage: number) {

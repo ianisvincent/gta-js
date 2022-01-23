@@ -106,7 +106,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   private clip: THREE.AnimationClip;
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
-
+  public isPunching: boolean;
 
   constructor(gltf: any) {
     super();
@@ -235,7 +235,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     this.children.forEach(children => {
       this.rightHand = children.getObjectByName(BodyPart.RightHand)
     })
-    const points = [
+/*    const points = [
       new THREE.Vector3(-0.1, 0.1, -0.1),//c
       new THREE.Vector3(-0.1, -0.1, 0.1),//b
       new THREE.Vector3(0.1, 0.1, 0.1),//a
@@ -258,7 +258,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     const material = new THREE.MeshPhongMaterial({color: 0xffff00})
     const mesh = new THREE.Mesh(geometry, material)
 
-    this.rightHand.add(mesh);
+    this.rightHand.add(mesh);*/
   }
 
   public setAnimations(animations: []): void {
