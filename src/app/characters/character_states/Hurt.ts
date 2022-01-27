@@ -1,30 +1,34 @@
-import { ICharacterState } from "../../interfaces/ICharacterState";
-import { NpcStateBase } from "./NpcStateBase";
-import { Npc } from "../Npc";
+import { ICharacterState } from '../../interfaces/ICharacterState';
+import { NpcStateBase } from './NpcStateBase';
+import { Npc } from '../Npc';
+import { Die } from './Die';
 
 
 export class Hurt extends NpcStateBase implements ICharacterState {
-    npc: Npc;
-    alreadyTookPunch = false;
 
     constructor(npc: Npc, alreadyTookPunch: boolean ) {
         super(npc);
         this.npc = npc;
         this.alreadyTookPunch = alreadyTookPunch;
         if (!this.npc.alreadyTookPunch) {
+            this.npc.takeDamage(50);
             this.playAnimation('hurt', 0.1, true, true);
         }
     }
+    npc: Npc;
+    alreadyTookPunch = false;
+z;
 
     public update(timeStep: number): void {
         super.update(timeStep);
-        if (this.animationEnded(timeStep))
-		{
-			this.alreadyTookPunch = true;
-			this.npc.alreadyTookPunch = true;
-		}
+        if (this.animationEnded(timeStep)) {
+            this.alreadyTookPunch = true;
+            this.npc.alreadyTookPunch = true;
+            if (this.npc.isDead) {
+                this.npc.setState(new Die(this.npc));
+            }
+        }
     }
-
     public onInputChange(): void {
         super.onInputChange();
     }
