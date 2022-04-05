@@ -32,6 +32,7 @@ import { Sky } from './Sky';
 import { Ocean } from './Ocean';
 import { Vector3 } from 'three';
 import { UiManagerService } from '../ui-manager.service';
+import { WorldService } from '../ui/word-controller/world.service';
 
 export class World {
   public renderer: THREE.WebGLRenderer;
@@ -71,7 +72,7 @@ export class World {
   private lastScenarioID: string;
 
 
-  constructor(private uiManagerService: UiManagerService, worldScenePath?: any) {
+  constructor(private worldService: WorldService, private uiManagerService: UiManagerService, worldScenePath?: any) {
     const scope = this;
 
     // WebGL not supported
@@ -186,14 +187,14 @@ export class World {
   // Handles all logic updates.
   public update(timeStep: number, unscaledTimeStep: number): void {
     this.updatePhysics(timeStep);
-
+    this.params.Time_Scale = this.worldService.worldTimeScale;
     // Update registred objects
     this.updatables.forEach((entity) => {
       entity.update(timeStep, unscaledTimeStep);
     });
 
     // Lerp time scale
-    this.params.Time_Scale = THREE.MathUtils.lerp(this.params.Time_Scale, this.timeScaleTarget, 0.2);
+    // this.params.Time_Scale = THREE.MathUtils.lerp(this.params.Time_Scale, this.timeScaleTarget, 0.2);
 
     // Physics debug
     if (this.params.Debug_Physics) { this.cannonDebugRenderer.update(); }
@@ -205,7 +206,7 @@ export class World {
 
     this.characters.forEach((char) => {
       if (this.isOutOfBounds(char.characterCapsule.body.position)) {
-        this.outOfBoundsRespawn(char.characterCapsule.body);
+        //this.outOfBoundsRespawn(char.characterCapsule.body);
       }
     });
 
@@ -223,7 +224,7 @@ export class World {
     const inside = position.x > -211.882 && position.x < 211.882 &&
       position.z > -169.098 && position.z < 153.232 &&
       position.y > 0.107;
-    const belowSeaLevel = position.y < 14.989;
+    const belowSeaLevel = position.y < 114.989;
 
     return !inside && belowSeaLevel;
   }
@@ -466,10 +467,10 @@ export class World {
 
     // World
     const worldFolder = gui.addFolder('World');
-    worldFolder.add(this.params, 'Time_Scale', 0, 1).listen()
+/*    worldFolder.add(this.params, 'Time_Scale', 0, 1).listen()
       .onChange((value) => {
         scope.timeScaleTarget = value;
-      });
+      });*/
     worldFolder.add(this.params, 'Sun_Elevation', 0, 180).listen()
       .onChange((value) => {
         scope.sky.phi = value;

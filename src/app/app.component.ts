@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { World } from './world/World';
 import { UiManagerService } from './ui-manager.service';
+import { WorldService } from './ui/word-controller/world.service';
 
 @Component({
   selector: 'app-root',
@@ -11,10 +12,11 @@ export class AppComponent implements OnInit {
   title = 'Game';
   word: World;
 
-  constructor(public UIManagerService: UiManagerService) {
+  constructor(public UIManagerService: UiManagerService,
+              public worldService: WorldService) {
   }
 
   ngOnInit(): void {
-    this.word = new World(this.UIManagerService, '../assets/world.glb');
+    this.word = new World(this.worldService, this.UIManagerService, '../assets/world.glb');
   }
 }
