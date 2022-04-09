@@ -14,7 +14,6 @@ class WeaponSlot {
     image?: string;
     ammo?: number;
     totalAmmo?: number;
-    isCurrentWeapon?: boolean;
 }
 
 @Component({
@@ -23,7 +22,7 @@ class WeaponSlot {
     styleUrls: ['./weapon-wheel.component.css']
 })
 export class WeaponWheelComponent implements OnInit {
-    currentWeapon: string;
+    currentWeapon = 'Unarmed';
     weaponSlots: WeaponSlot[];
 
     constructor() {
@@ -43,9 +42,8 @@ export class WeaponWheelComponent implements OnInit {
                 fireRate: 60,
                 accuracy: 70,
                 range: 10,
-                isCurrentWeapon: true
             },
-            {containerSvgPath: 'M 610 310 A 300 300 0 0 1 522.1320343559643 522.1320343559643  L 451.4213562373095 451.4213562373095 A 200 200 0 0 0 510 310  z',},
+            {containerSvgPath: 'M 610 310 A 300 300 0 0 1 522.1320343559643 522.1320343559643  L 451.4213562373095 451.4213562373095 A 200 200 0 0 0 510 310  z'},
             {containerSvgPath: 'M 310 610 A 300 300 0 0 1 97.86796564403576 522.1320343559643  L 168.57864376269052 451.4213562373095 A 200 200 0 0 0 310 510  z'},
             {containerSvgPath: 'M 97.86796564403576 522.1320343559643 A 300 300 0 0 1 10 310.00000000000006  L 110 310 A 200 200 0 0 0 168.57864376269052 451.4213562373095  z'},
             {containerSvgPath: 'M 10 310.00000000000006 A 300 300 0 0 1 97.8679656440357 97.86796564403576  L 168.57864376269046 168.57864376269052 A 200 200 0 0 0 110 310  z'},
@@ -60,10 +58,10 @@ export class WeaponWheelComponent implements OnInit {
     }
 
     onMouseOverWeapon(weaponSlot: WeaponSlot): void {
-        this.currentWeapon = weaponSlot.type;
+        // this.currentWeapon = weaponSlot.type;
     }
 
     onMouseOutWeapon(weaponSlot: WeaponSlot): void {
-        this.currentWeapon = null;
+       // this.currentWeapon = null;
     }
 }
