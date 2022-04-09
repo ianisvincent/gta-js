@@ -5,13 +5,11 @@ html {
   height: 100%;
 }
 
-
 @media all and (max-width: 768px) {
   body {
     flex-direction: column;
   }
 }
-
 
 #current-weapon h3 {
   letter-spacing: 1px;
@@ -167,7 +165,8 @@ g:hover {
 }
 
 g:hover path {
-  fill: white;
+  fill: #939393;
+  opacity: 0.8;
   transition: all 0.2s ease-in-out;
   stroke-width: 0;
 }

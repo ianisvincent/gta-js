@@ -1,18 +1,19 @@
 <div class="weapon-selector-wrapper">
-
     <svg height="620px" width="620px">
         <text text-anchor="middle" id="hovered-weapon-name" x="175" y="400" font-size="18"
               stroke="none">{{ currentWeapon }}</text>
-            <g *ngFor="let weapon of weaponSlots">
-                <path (click)="onSelectWeapon(weapon)" (mouseover)="onMouseOverWeapon(weapon)"
-               (mouseout)="onMouseOutWeapon(weapon)" [attr.d]="weapon.containerSvgPath"
-                      fill="rgba(255,255,255,0.3)"/>
-                <image  [attr.xlink:href]="weapon.image"
-                       [attr.x]="weapon.x"
-                       [attr.y]="weapon.y"
-                       [attr.height]="weapon.height"
-                       [attr.width]="weapon.width"/>
-            </g>
+        <g [ngClass]="currentWeapon === weapon.type ? 'active-weapon':''"
+           *ngFor="let weapon of weaponSlots">
+            <path (click)="weapon.type && onSelectWeapon(weapon)"
+                  (mouseover)="onMouseOverWeapon(weapon)"
+                  (mouseout)="onMouseOutWeapon(weapon)" [attr.d]="weapon.containerSvgPath"
+                  fill="rgba(255,255,255,0.3)"/>
+            <image [attr.xlink:href]="weapon.image"
+                   [attr.x]="weapon.x"
+                   [attr.y]="weapon.y"
+                   [attr.height]="weapon.height"
+                   [attr.width]="weapon.width"/>
+        </g>
         <!--    <g (click)="onSelectWeapon($event)"
                (mouseover)="onMouseOverWeapon($event)"
                (mouseout)="onMouseOutWeapon($event)"
