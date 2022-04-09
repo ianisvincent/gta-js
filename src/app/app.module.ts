@@ -6,6 +6,7 @@ import { LoadingScreenComponent } from './ui/loading-screen/loading-screen.compo
 import { TargetComponent } from './ui/target/target.component';
 import { HealthBarComponent } from './ui/health-bar/health-bar.component';
 import { WordControllerComponent } from './ui/word-controller/word-controller.component';
+import { WeaponWheelComponent } from './ui/weapon-wheel/weapon-wheel.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { WordControllerComponent } from './ui/word-controller/word-controller.co
     LoadingScreenComponent,
     TargetComponent,
     HealthBarComponent,
-    WordControllerComponent
+    WordControllerComponent,
+    WeaponWheelComponent
   ],
   imports: [
     BrowserModule
