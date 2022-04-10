@@ -72,7 +72,7 @@ export class World {
   private lastScenarioID: string;
 
 
-  constructor(private worldService: WorldService, private uiManagerService: UiManagerService, worldScenePath?: string) {
+  constructor(private worldService: WorldService, public uiManagerService: UiManagerService, worldScenePath?: string) {
     const scope = this;
 
     // WebGL not supported

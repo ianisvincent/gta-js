@@ -14,8 +14,8 @@ import {
     Walk,
     Die
 } from './_stateLibrary';
-import {Character} from '../Character';
-import {ICharacterState} from '../../interfaces/ICharacterState';
+import { Character } from '../Character';
+import { ICharacterState } from '../../interfaces/ICharacterState';
 
 export abstract class CharacterStateBase implements ICharacterState {
     public character: Character;
@@ -64,6 +64,12 @@ export abstract class CharacterStateBase implements ICharacterState {
         }
         if (this.character.actions.aim.justReleased) {
             this.character.unlockAiming();
+        }
+        if (this.character.actions.wheel.justPressed) {
+            this.character.world.uiManagerService.isWeaponWheelDisplayed = true;
+        }
+        if (this.character.actions.wheel.justReleased) {
+            this.character.world.uiManagerService.isWeaponWheelDisplayed = false;
         }
         if (this.canFindVehiclesToEnter && this.character.actions.enter.justPressed) {
             this.character.findVehicleToEnter(true);

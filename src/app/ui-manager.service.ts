@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class UiManagerService {
     isDisplayed = true;
     isPlayerIsAiming = true;
+    isWeaponWheelDisplayed = false;
 
     constructor() {
     }
