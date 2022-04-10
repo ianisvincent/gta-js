@@ -66,10 +66,12 @@ export abstract class CharacterStateBase implements ICharacterState {
             this.character.unlockAiming();
         }
         if (this.character.actions.wheel.justPressed) {
-            this.character.world.uiManagerService.isWeaponWheelDisplayed = true;
+            this.character.world.uiManagerService.toggleWeaponWheel(true);
+            document.exitPointerLock();
         }
         if (this.character.actions.wheel.justReleased) {
-            this.character.world.uiManagerService.isWeaponWheelDisplayed = false;
+            this.character.world.uiManagerService.toggleWeaponWheel(false);
+            this.character.world.inputManager.domElement.requestPointerLock();
         }
         if (this.canFindVehiclesToEnter && this.character.actions.enter.justPressed) {
             this.character.findVehicleToEnter(true);

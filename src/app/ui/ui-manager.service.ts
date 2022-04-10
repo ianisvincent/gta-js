@@ -11,6 +11,10 @@ export class UiManagerService {
     constructor() {
     }
 
+    toggleWeaponWheel(isWeaponWheelDisplayed: boolean): void {
+        this.isWeaponWheelDisplayed = isWeaponWheelDisplayed;
+    }
+
     displayLoadingScreen(value: boolean): void {
         this.isDisplayed = value;
     }
