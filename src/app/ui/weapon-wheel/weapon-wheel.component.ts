@@ -1,20 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { WeaponSlot } from './weapon-slot';
 
-class WeaponSlot {
-    containerSvgPath: string;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    type?: string;
-    damage?: number;
-    fireRate?: number;
-    accuracy?: number;
-    range?: number;
-    image?: string;
-    ammo?: number;
-    totalAmmo?: number;
-}
 
 @Component({
     selector: 'app-weapon-wheel',
