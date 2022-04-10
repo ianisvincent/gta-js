@@ -3,7 +3,7 @@ import { LoadingTrackerEntry } from './LoadingTrackerEntry';
 import { Scenario } from '../world/Scenario';
 import Swal from 'sweetalert2';
 import { World } from '../world/World';
-import { UiManagerService } from '../ui-manager.service';
+import { UiManagerService } from '../ui/ui-manager.service';
 
 export class LoadingManager {
     public firstLoad = true;

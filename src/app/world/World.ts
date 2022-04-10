@@ -31,7 +31,7 @@ import { Scenario } from './Scenario';
 import { Sky } from './Sky';
 import { Ocean } from './Ocean';
 import { Vector3 } from 'three';
-import { UiManagerService } from '../ui-manager.service';
+import { UiManagerService } from '../ui/ui-manager.service';
 import { WorldService } from '../ui/word-controller/world.service';
 
 export class World {
