@@ -67,10 +67,13 @@ export abstract class CharacterStateBase implements ICharacterState {
         }
         if (this.character.actions.wheel.justPressed) {
             this.character.world.uiManagerService.toggleWeaponWheel(true);
+            this.character.world.worldService.setWorldTimeScale(0.05);
             document.exitPointerLock();
         }
         if (this.character.actions.wheel.justReleased) {
             this.character.world.uiManagerService.toggleWeaponWheel(false);
+            this.character.world.setTimeScale(1);
+            this.character.world.worldService.setWorldTimeScale(1);
             this.character.world.inputManager.domElement.requestPointerLock();
         }
         if (this.canFindVehiclesToEnter && this.character.actions.enter.justPressed) {
