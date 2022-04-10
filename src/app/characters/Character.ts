@@ -144,6 +144,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       'run': new KeyBinding('ShiftLeft'),
       'jump': new KeyBinding('Space'),
       'spawn_gun': new KeyBinding('KeyT'),
+      'wheel': new KeyBinding('KeyC'),
       'aim': new KeyBinding('KeyY'),
       'shoot': new KeyBinding('KeyK'),
       'punch': new KeyBinding('KeyP'),

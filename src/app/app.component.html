@@ -2,5 +2,5 @@
 <app-loading-screen *ngIf="UIManagerService.isDisplayed"></app-loading-screen>
 <app-target *ngIf="UIManagerService.isPlayerIsAiming"></app-target>
 <app-health-bar></app-health-bar>
-<app-weapon-wheel></app-weapon-wheel>
+<app-weapon-wheel *ngIf="UIManagerService.isWeaponWheelDisplayed"></app-weapon-wheel>
 <app-word-controller></app-word-controller>
