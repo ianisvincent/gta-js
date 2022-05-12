@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WeaponSlot } from './weapon-slot';
+import { CharacterService } from '../../characters/character.service';
+import { WeaponType } from '../../weapons/weapon-type';
 
 
 @Component({
@@ -8,10 +10,10 @@ import { WeaponSlot } from './weapon-slot';
     styleUrls: ['./weapon-wheel.component.css']
 })
 export class WeaponWheelComponent implements OnInit {
-    currentWeapon = 'Unarmed';
+    currentWeapon = WeaponType.Fist;
     weaponSlots: WeaponSlot[];
 
-    constructor() {
+    constructor(private characterService: CharacterService) {
     }
 
     ngOnInit(): void {
@@ -22,7 +24,7 @@ export class WeaponWheelComponent implements OnInit {
                 y: 620,
                 height: 60,
                 width: 60,
-                type: 'Unarmed',
+                type: WeaponType.Fist,
                 image: 'https://vignette.wikia.nocookie.net/gtawiki/images/e/e0/Fist-GTAVPC-HUD.png/revision/latest?cb=20150425182638',
                 damage: 50,
                 fireRate: 60,
@@ -39,7 +41,7 @@ export class WeaponWheelComponent implements OnInit {
                 y: 105,
                 height: 100,
                 width: 90,
-                type: 'Pistol',
+                type: WeaponType.Pistol,
                 image: 'https://vignette.wikia.nocookie.net/gtawiki/images/8/8f/Pistol-GTAVPC-HUD.png/revision/latest?cb=20150419121059',
                 damage: 30,
                 fireRate: 60,
@@ -53,6 +55,7 @@ export class WeaponWheelComponent implements OnInit {
 
     onSelectWeapon(weaponSlot: WeaponSlot): void {
         this.currentWeapon = weaponSlot.type;
+        this.characterService.setCurrentWeapon(this.currentWeapon);
     }
 
     onMouseOverWeapon(weaponSlot: WeaponSlot): void {

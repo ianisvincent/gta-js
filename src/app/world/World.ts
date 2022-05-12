@@ -33,6 +33,7 @@ import { Ocean } from './Ocean';
 import { Vector3 } from 'three';
 import { UiManagerService } from '../ui/ui-manager.service';
 import { WorldService } from '../ui/word-controller/world.service';
+import { CharacterService } from '../characters/character.service';
 
 export class World {
   public renderer: THREE.WebGLRenderer;
@@ -68,11 +69,13 @@ export class World {
   public npcPos: Vector3;
   public player: Character;
   public uiManager: UiManagerService;
-
   private lastScenarioID: string;
 
 
-  constructor(public worldService: WorldService, public uiManagerService: UiManagerService, worldScenePath?: string) {
+  constructor(public worldService: WorldService,
+              public uiManagerService: UiManagerService,
+              public characterService: CharacterService,
+              worldScenePath?: string) {
     const scope = this;
 
     // WebGL not supported
@@ -206,7 +209,7 @@ export class World {
 
     this.characters.forEach((char) => {
       if (this.isOutOfBounds(char.characterCapsule.body.position)) {
-        //this.outOfBoundsRespawn(char.characterCapsule.body);
+        // this.outOfBoundsRespawn(char.characterCapsule.body);
       }
     });
 

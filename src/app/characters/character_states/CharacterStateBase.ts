@@ -50,15 +50,6 @@ export abstract class CharacterStateBase implements ICharacterState {
     }
 
     public onInputChange(): void {
-        if (this.character.actions.spawn_gun.justPressed) {
-            if (!this.character.hasWeapon && !this.character.getObjectByName('gun')) {
-                this.character.loadWeapon(this.character);
-                this.character.hasWeapon = true;
-            } else {
-                this.character.unloadWeapon(this.character);
-                this.character.hasWeapon = false;
-            }
-        }
         if (this.character.actions.aim.justPressed) {
             this.character.lockAiming(this.character);
         }

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
-
+import * as GUI from '../../lib/utils/dat.gui';
 import { KeyBinding } from '../core/KeyBinding';
 import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
 import { RelativeSpringSimulator } from '../physics/spring_simulation/RelativeSpringSimulator';
@@ -33,14 +33,16 @@ import { CameraOperator } from '../core/CameraOperator';
 import { IDamageable } from '../interfaces/IDamageable';
 import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
+import { CharacterService } from './character.service';
+import { WeaponType } from '../weapons/weapon-type';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
-  public updateOrder: number = 1;
+  public updateOrder = 1;
   public entityType: EntityType = EntityType.Character;
 
   public isPlayer: boolean;
 
-  public height: number = 0;
+  public height = 0;
   public tiltContainer: THREE.Group;
   public modelContainer: THREE.Group;
   public materials: THREE.Material[] = [];
@@ -51,22 +53,24 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public cameraPos: THREE.Vector3 = new THREE.Vector3();
   public cameraOperator: CameraOperator;
 
+  public hasWeaponLoaded = false;
+
   // Movement
   public acceleration: THREE.Vector3 = new THREE.Vector3();
   public velocity: THREE.Vector3 = new THREE.Vector3();
   public arcadeVelocityInfluence: THREE.Vector3 = new THREE.Vector3();
   public velocityTarget: THREE.Vector3 = new THREE.Vector3();
-  public arcadeVelocityIsAdditive: boolean = false;
+  public arcadeVelocityIsAdditive = false;
 
-  public defaultVelocitySimulatorDamping: number = 0.8;
-  public defaultVelocitySimulatorMass: number = 50;
+  public defaultVelocitySimulatorDamping = 0.8;
+  public defaultVelocitySimulatorMass = 50;
   public velocitySimulator: VectorSpringSimulator;
-  public moveSpeed: number = 4;
-  public angularVelocity: number = 0;
+  public moveSpeed = 4;
+  public angularVelocity = 0;
   public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
   public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
-  public defaultRotationSimulatorDamping: number = 0.5;
-  public defaultRotationSimulatorMass: number = 10;
+  public defaultRotationSimulatorDamping = 0.5;
+  public defaultRotationSimulatorMass = 10;
   public rotationSimulator: RelativeSpringSimulator;
   public viewVector: THREE.Vector3;
   public actions: { [action: string]: KeyBinding };
@@ -74,11 +78,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   // Ray casting
   public rayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
-  public rayHasHit: boolean = false;
-  public rayCastLength: number = 0.57;
-  public raySafeOffset: number = 0.03;
-  public wantsToJump: boolean = false;
-  public initJumpSpeed: number = -1;
+  public rayHasHit = false;
+  public rayCastLength = 0.57;
+  public raySafeOffset = 0.03;
+  public wantsToJump = false;
+  public initJumpSpeed = -1;
   public groundImpactData: GroundImpactData = new GroundImpactData();
   public raycastBox: THREE.Mesh;
 
@@ -96,19 +100,17 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public vehicleEntryInstance: VehicleEntryInstance = null;
 
 
-  private physicsEnabled: boolean = true;
+  private physicsEnabled = true;
 
-  public hasWeapon: boolean = false;
-  public isAiming: boolean = false;
-  public isGettingShot: boolean = false;
-  public health: number = 100;
+  public isAiming = false;
+  public health = 100;
   public isDead: boolean;
 
   private clip: THREE.AnimationClip;
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
 
-  constructor(gltf: any) {
+  constructor(gltf: any, public characterService?: CharacterService) {
     super();
     this.readCharacterData(gltf);
     this.setAnimations(gltf.animations);
@@ -453,6 +455,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public update(timeStep: number): void {
+    if (this.characterService?.currentWeapon !== WeaponType.Fist && !this.hasWeaponLoaded) {
+      this.loadWeapon(this.characterService?.currentWeapon);
+    }
+    if (this.characterService?.currentWeapon === WeaponType.Fist && this.hasWeaponLoaded) {
+      this.unloadWeapon();
+    }
     this.behaviour?.update(timeStep);
     this.vehicleEntryInstance?.update(timeStep);
     this.charState?.update(timeStep);
@@ -995,34 +1003,36 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   // TODO: make something cleaner
-  public loadWeapon(character: Character): void {
+  public loadWeapon(weapon: WeaponType): void {
+    console.log('load', weapon);
     const loader = new GLTFLoader();
-    const rightHand = character.getObjectByName(BodyPart.RightHand);
-    const modelContainer = this.modelContainer;
-    loader.load('../../assets/weapons/1911.glb', function (gltf) {
+    const rightHand = this.getObjectByName(BodyPart.RightHand);
+    loader.load('../../assets/weapons/1911.glb', gltf => {
       gltf.scene.name = 'gun';
-      gltf.scene.scale.set(3, 3, 3);
-      gltf.scene.rotation.set(1.62, 0, 4.52);
-      gltf.scene.position.set(1.68, 16.48, 2.6)
+      gltf.scene.scale.set(0.05, 0.05, 0.05);
+      gltf.scene.rotation.set(1.38, 0, 0);
+      gltf.scene.position.set(0, 0.25, 0);
       rightHand.add(gltf.scene);
       /*const gui = new GUI.GUI();
       const gunGUIFolder = gui.addFolder('Gun');
-      gunGUIFolder.add(gltf.scene.rotation, "x", 0, Math.PI * 2, 0.01)
-      gunGUIFolder.add(gltf.scene.rotation, "y", 0, Math.PI * 2, 0.01)
-      gunGUIFolder.add(gltf.scene.rotation, "z", 0, Math.PI * 2, 0.01)
+      gunGUIFolder.add(gltf.scene.rotation, 'x', 0, Math.PI * 2, 0.01);
+      gunGUIFolder.add(gltf.scene.rotation, 'y', 0, Math.PI * 2, 0.01);
+      gunGUIFolder.add(gltf.scene.rotation, 'z', 0, Math.PI * 2, 0.01);
 
-      gunGUIFolder.add(gltf.scene.position, "x", 0, 100, 0.01)
-      gunGUIFolder.add(gltf.scene.position, "y", 0, 100, 0.01)
-      gunGUIFolder.add(gltf.scene.position, "z", 0, 100, 0.01)*/
-    }, undefined, function (error) {
+      gunGUIFolder.add(gltf.scene.position, 'x', 0, 100, 0.01);
+      gunGUIFolder.add(gltf.scene.position, 'y', 0, 100, 0.01);
+      gunGUIFolder.add(gltf.scene.position, 'z', 0, 100, 0.01);*/
+    }, undefined, error => {
       console.error(error);
     });
+    this.hasWeaponLoaded = true;
   }
 
-  public unloadWeapon(character: Character): void {
-    const rightHand = character.getObjectByName(BodyPart.RightHand);
-    const guns = character.getObjectByName('gun');
-    rightHand.remove(guns);
+  public unloadWeapon(): void {
+    const rightHand = this.getObjectByName(BodyPart.RightHand);
+    const gun = this.getObjectByName('gun');
+    rightHand.remove(gun);
+    this.hasWeaponLoaded = false;
   }
 
   lockAiming(character: Character): void {
