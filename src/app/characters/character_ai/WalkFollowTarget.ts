@@ -9,9 +9,11 @@ export class WalkFollowTarget implements ICharacterAI {
 
     public target: THREE.Object3D;
     private stopDistance: number;
+    private wantToPunch: boolean;
 
-    constructor(target: THREE.Object3D, stopDistance: number = 1.3) {
+    constructor(target: THREE.Object3D, stopDistance: number = 1.3, wantToPunch?: boolean) {
         this.target = target;
+        this.wantToPunch = wantToPunch;
         this.stopDistance = stopDistance;
     }
 
@@ -21,19 +23,25 @@ export class WalkFollowTarget implements ICharacterAI {
 
     public update(timeStep: number): void {
 
-        let x = new THREE.Vector3();
-        let y = new THREE.Vector3();
-        let viewVector = new THREE.Vector3().subVectors(this.target.getWorldPosition(x), this.character.getWorldPosition(y));
+        const x = new THREE.Vector3();
+        const y = new THREE.Vector3();
+        const viewVector = new THREE.Vector3().subVectors(this.target.getWorldPosition(x), this.character.getWorldPosition(y));
         this.character.setViewVector(viewVector);
 
         // Follow character
         if (viewVector.length() > this.stopDistance) {
+            if (this.wantToPunch) {
+                this.character.triggerAction('punch', false);
+            }
             this.isTargetReached = false;
             this.character.triggerAction('up', true);
         }
         // Stand still
         else {
             this.isTargetReached = true;
+            if (this.wantToPunch) {
+                this.character.triggerAction('punch', true);
+            }
             this.character.triggerAction('up', false);
             // Look at character
             this.character.setOrientation(viewVector);

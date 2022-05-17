@@ -38,12 +38,12 @@ export class Npc extends Character implements IDamageable, IDieable {
         }
     }
 
-    initNpc(node: PathNode) { // When an NPC is init, it walks on its path by default
+    initNpc(node: PathNode): void { // When an NPC is init, it walks on its path by default
         this.walkOnPath = new WalkOnPath(node, 1);
         this.setBehaviour(this.walkOnPath);
     }
 
-    takeDamage(damage: number) {
+    takeDamage(damage: number): void {
         super.takeDamage(damage);
         this.shotTaken += 1;
         if (!this.isDead && this.shotTaken === 1) {
@@ -59,7 +59,7 @@ export class Npc extends Character implements IDamageable, IDieable {
     private initDebug(): void {
         const gui = new GUI.GUI();
         const gunGUIFolder = gui.addFolder('Npc Debug');
-        let statesDropDownDebug =
+        const statesDropDownDebug =
             {
                 states: 'states'
             };
@@ -68,6 +68,7 @@ export class Npc extends Character implements IDamageable, IDieable {
                 Scared: 'scared',
                 Follow: 'follow',
                 Run: 'run',
+                Attack: 'attack',
                 Idle: 'idle'
             }).listen()
             .onChange((value) => {
@@ -76,9 +77,13 @@ export class Npc extends Character implements IDamageable, IDieable {
                 } else if (value === 'run') {
                     this.setState(new ScaredRun(this));
                 } else if (value === 'follow') {
-                    this.setBehaviour(new WalkFollowTarget(this.world.characters[1], 1));
+                    const player = this.world.characters.find((character) => character.isPlayer === true);
+                    this.setBehaviour(new WalkFollowTarget(player, 1));
                 } else if (value === 'idle') {
                     this.setBehaviour(new Idle(this));
+                } else if (value === 'attack') {
+                    const player = this.world.characters.find((character) => character.isPlayer === true);
+                    this.setBehaviour(new WalkFollowTarget(player, 1, true));
                 }
             });
     }
