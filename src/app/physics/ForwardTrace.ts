@@ -6,6 +6,8 @@ export class ForwardTrace {
     origin: Character;
     mesh: THREE.Mesh;
     boundingBox: THREE.Box3;
+    rayCaster: THREE.Raycaster;
+    targetMesh: THREE.Mesh;
 
     constructor(origin: Character, world: World) {
         this.boundingBox = new THREE.Box3();
@@ -21,5 +23,22 @@ export class ForwardTrace {
         world.graphicsWorld.add(helper);
 
         origin.add(this.mesh);
+        this.setTargetMesh(world);
+    }
+
+    setTargetMesh(world: World): void {
+        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        this.targetMesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshBasicMaterial({color: 0xff0000})
+        );
+        const vec = new THREE.Vector3();
+        const pos = this.mesh.getWorldPosition(vec);
+        this.targetMesh.position.set(pos.x, pos.y, pos.z);
+        world.graphicsWorld.add(this.targetMesh);
+    }
+
+    setRayCaster(): void {
+        this.rayCaster = new THREE.Raycaster(this.mesh.position);
     }
 }

@@ -21,7 +21,7 @@ export class Wall implements IUpdatable {
         this.boundingBox.copy(this.mesh.geometry.boundingBox).applyMatrix4(this.mesh.matrixWorld);
     }
 
-    public getHeight(): number {
-        return this.box.setFromObject(this.mesh).getSize(this.vector).y;
+    public getScale(): THREE.Vector3 {
+        return this.boundingBox.max;
     }
 }
