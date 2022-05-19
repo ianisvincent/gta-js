@@ -35,6 +35,8 @@ import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
 import { CharacterService } from './character.service';
 import { WeaponType } from '../weapons/weapon-type';
+import { ForwardTrace } from '../physics/ForwardTrace';
+import { Wall } from '../world/Wall';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder = 1;
@@ -109,6 +111,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   private clip: THREE.AnimationClip;
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
+  private forwardTrace: ForwardTrace;
+  private isInFrontOfWall: boolean;
 
   constructor(gltf: any, public characterService?: CharacterService) {
     super();
@@ -414,7 +418,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public triggerAction(actionName: string, value: boolean): void {
-    // Get action and set it's parameters
+    // Get action and set its parameters
     let action = this.actions[actionName];
 
     if (action.isPressed !== value) {
@@ -458,6 +462,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     if (this.characterService?.currentWeapon !== WeaponType.Fist && !this.hasWeaponLoaded) {
       this.loadWeapon(this.characterService?.currentWeapon);
     }
+    if (this.forwardTrace) {
+      // Compute the forwardTrace bounding box with the world matrix
+      this.forwardTrace.boundingBox.copy(this.forwardTrace.mesh.geometry.boundingBox).applyMatrix4(this.forwardTrace.mesh.matrixWorld);
+      this.world.updatables.forEach((wall) => {
+        if (wall instanceof Wall) {
+          this.isInFrontOfWall = this.forwardTrace.boundingBox.intersectsBox(wall.boundingBox);
+          if (this.isInFrontOfWall) {
+            console.log(this.isInFrontOfWall, wall.mesh.name);
+          }
+        }
+      });
+    }
+
     if (this.characterService?.currentWeapon === WeaponType.Fist && this.hasWeaponLoaded) {
       this.unloadWeapon();
     }
@@ -962,6 +979,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     } else {
       // Set world
       this.world = world;
+
+      this.forwardTrace = new ForwardTrace(this, this.world);
 
       // Register character
       world.characters.push(this);
