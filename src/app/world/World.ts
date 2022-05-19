@@ -34,6 +34,7 @@ import { Vector3 } from 'three';
 import { UiManagerService } from '../ui/ui-manager.service';
 import { WorldService } from '../ui/word-controller/world.service';
 import { CharacterService } from '../characters/character.service';
+import { Wall } from './Wall';
 
 export class World {
   public renderer: THREE.WebGLRenderer;
@@ -313,6 +314,9 @@ export class World {
     gltf.scene.traverse((child) => {
       if (child.hasOwnProperty('userData')) {
         if (child.type === 'Mesh') {
+          if (child.userData.data === 'wall') {
+            this.registerUpdatable(new Wall(child, this));
+          }
           Utils.setupMeshProperties(child);
           this.sky.csm.setupMaterial(child.material);
 
