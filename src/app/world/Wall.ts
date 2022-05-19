@@ -6,6 +6,8 @@ export class Wall implements IUpdatable {
     public updateOrder = 11;
     boundingBox: THREE.Box3;
     mesh: THREE.Mesh;
+    vector = new THREE.Vector3();
+    box = new THREE.Box3();
 
     constructor(mesh: THREE.Mesh, world: World) {
         this.mesh = mesh;
@@ -17,5 +19,9 @@ export class Wall implements IUpdatable {
 
     public update(timeStep: number): void {
         this.boundingBox.copy(this.mesh.geometry.boundingBox).applyMatrix4(this.mesh.matrixWorld);
+    }
+
+    public getHeight(): number {
+        return this.box.setFromObject(this.mesh).getSize(this.vector).y;
     }
 }
