@@ -16,21 +16,22 @@ export class ForwardTrace {
             geometry,
             new THREE.MeshBasicMaterial()
         );
-        this.mesh.position.y = 0.4;
+        this.mesh.position.y = -0.3;
         this.mesh.position.z = 0.4;
         this.mesh.geometry.computeBoundingBox();
         const helper = new THREE.Box3Helper( this.boundingBox, new THREE.Color( 0xff0000));
         world.graphicsWorld.add(helper);
 
         origin.add(this.mesh);
+        this.mesh.visible = false;
         this.setTargetMesh(world);
     }
 
     setTargetMesh(world: World): void {
-        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+        const geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
         this.targetMesh = new THREE.Mesh(
             geometry,
-            new THREE.MeshBasicMaterial({color: 0xff0000})
+            new THREE.MeshBasicMaterial({color: 0xffe100})
         );
         const vec = new THREE.Vector3();
         const pos = this.mesh.getWorldPosition(vec);

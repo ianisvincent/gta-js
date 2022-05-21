@@ -112,7 +112,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
   private forwardTrace: ForwardTrace;
-  private isInFrontOfWall: boolean;
 
   constructor(gltf: any, public characterService?: CharacterService) {
     super();
@@ -467,9 +466,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       this.forwardTrace.boundingBox.copy(this.forwardTrace.mesh.geometry.boundingBox).applyMatrix4(this.forwardTrace.mesh.matrixWorld);
       this.world.updatables.forEach((wall) => {
         if (wall instanceof Wall) {
-          this.isInFrontOfWall = this.forwardTrace.boundingBox.intersectsBox(wall.boundingBox);
-          if (this.isInFrontOfWall) {
-            this.forwardTrace.targetMesh.position.set(wall.getScale().x, wall.getScale().y, wall.getScale().z);
+          const isInFrontOfWall = this.forwardTrace.boundingBox.intersectsBox(wall.boundingBox);
+          if (isInFrontOfWall) {
+            const vec = new THREE.Vector3();
+            const pos = this.forwardTrace.mesh.getWorldPosition(vec);
+            this.forwardTrace.targetMesh.position.set(pos.x, wall.getScale().y, pos.z);
             this.forwardTrace.targetMesh.updateMatrixWorld();
           }
         }
