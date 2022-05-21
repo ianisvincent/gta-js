@@ -469,8 +469,14 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
           const isInFrontOfWall = this.forwardTrace.boundingBox.intersectsBox(wall.boundingBox);
           if (isInFrontOfWall) {
             const vec = new THREE.Vector3();
-            const pos = this.forwardTrace.mesh.getWorldPosition(vec);
-            this.forwardTrace.targetMesh.position.set(pos.x, wall.getScale().y, pos.z);
+            const traceMeshWorldPosition = this.forwardTrace.mesh.getWorldPosition(vec);
+            const isClose = (traceMeshWorldPosition.x - wall.boundingBox.max.x) > -0.1;
+            if (!isClose) {
+              this.forwardTrace.targetMesh.position.set(wall.boundingBox.min.x, wall.getScale().y, traceMeshWorldPosition.z);
+            }
+            if (isClose) {
+              this.forwardTrace.targetMesh.position.set(wall.boundingBox.max.x, wall.getScale().y, traceMeshWorldPosition.z);
+            }
             this.forwardTrace.targetMesh.updateMatrixWorld();
           }
         }

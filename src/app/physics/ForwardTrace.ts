@@ -11,13 +11,13 @@ export class ForwardTrace {
 
     constructor(origin: Character, world: World) {
         this.boundingBox = new THREE.Box3();
-        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.7);
+        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         this.mesh = new THREE.Mesh(
             geometry,
             new THREE.MeshBasicMaterial()
         );
         this.mesh.position.y = -0.3;
-        this.mesh.position.z = 0.4;
+        this.mesh.position.z = 0.2;
         this.mesh.geometry.computeBoundingBox();
         const helper = new THREE.Box3Helper( this.boundingBox, new THREE.Color( 0xff0000));
         world.graphicsWorld.add(helper);
