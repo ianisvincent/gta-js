@@ -19,7 +19,7 @@ export class ForwardTrace {
         this.mesh.position.y = -0.3;
         this.mesh.position.z = 0.2;
         this.mesh.geometry.computeBoundingBox();
-        const helper = new THREE.Box3Helper( this.boundingBox, new THREE.Color( 0xff0000));
+        const helper = new THREE.Box3Helper( this.boundingBox, new THREE.Color( 0x7d0a91));
         world.graphicsWorld.add(helper);
 
         origin.add(this.mesh);
