@@ -4,7 +4,7 @@
 
 - Node.js
 - Angular 10
-- Blender
+- Three.js 0.113.0
 
 ### Quick start
 
