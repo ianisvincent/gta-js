@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  worldPath: '../assets/world.glb'
+  worldPath: '../assets/world-test.glb'
 };
 
 /*

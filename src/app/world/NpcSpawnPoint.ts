@@ -16,7 +16,7 @@ export class NpcSpawnPoint implements ISpawnPoint {
     }
 
     public spawn(loadingManager: LoadingManager, world: World): void {
-        loadingManager.loadGLTF('../../assets/low_poly.glb', (model) => {
+        loadingManager.loadGLTF('../../assets/brian.glb', (model) => {
             const npc = new Npc(model);
             npc.traverse( (object) => {
                 object.frustumCulled = false;
