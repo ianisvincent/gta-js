@@ -2,7 +2,7 @@
 
 ### Dependencies
 
-- Node.js
+- Node.js 16
 - Angular 10
 - Three.js 0.113.0
 
