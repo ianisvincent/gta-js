@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
-import * as GUI from '../../lib/utils/dat.gui';
 import { KeyBinding } from '../core/KeyBinding';
 import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
 import { RelativeSpringSimulator } from '../physics/spring_simulation/RelativeSpringSimulator';
@@ -35,12 +34,14 @@ import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
 import { CharacterService } from './character.service';
 import { WeaponType } from '../weapons/weapon-type';
+import * as GUI from '../../lib/utils/dat.gui';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder = 1;
   public entityType: EntityType = EntityType.Character;
 
   public isPlayer: boolean;
+  public isNpc: boolean;
 
   public height = 0;
   public tiltContainer: THREE.Group;
@@ -118,11 +119,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     // The visuals group is centered for easy character tilting
     this.tiltContainer = new THREE.Group();
     this.add(this.tiltContainer);
-    // GUI to debut aiming rotations
-    /*        const gui = new GUI.GUI();
-            const gunGUIFolder = gui.addFolder('aimingSettings');
-            gunGUIFolder.add(this.aimingSettings, "offSet", 0, 10, 0.01)
-            gunGUIFolder.add(this.aimingSettings, "amplitude", 0, 10, 0.01)*/
 
     // Model container is used to reliably ground the character, as animation can alter the position of the model itself
     this.modelContainer = new THREE.Group();
@@ -139,23 +135,23 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     // Actions
     this.actions = {
-      'up': new KeyBinding('KeyW'),
-      'down': new KeyBinding('KeyS'),
-      'left': new KeyBinding('KeyA'),
-      'right': new KeyBinding('KeyD'),
-      'run': new KeyBinding('ShiftLeft'),
-      'jump': new KeyBinding('Space'),
-      'spawn_gun': new KeyBinding('KeyT'),
-      'wheel': new KeyBinding('KeyC'),
-      'aim': new KeyBinding('KeyY'),
-      'shoot': new KeyBinding('KeyK'),
-      'punch': new KeyBinding('KeyP'),
-      'use': new KeyBinding('KeyE'),
-      'enter': new KeyBinding('KeyF'),
-      'enter_passenger': new KeyBinding('KeyG'),
-      'seat_switch': new KeyBinding('KeyX'),
-      'primary': new KeyBinding('Mouse0'),
-      'secondary': new KeyBinding('Mouse1'),
+      up: new KeyBinding('KeyW'),
+      down: new KeyBinding('KeyS'),
+      left: new KeyBinding('KeyA'),
+      right: new KeyBinding('KeyD'),
+      run: new KeyBinding('ShiftLeft'),
+      jump: new KeyBinding('Space'),
+      spawn_gun: new KeyBinding('KeyT'),
+      wheel: new KeyBinding('KeyC'),
+      aim: new KeyBinding('KeyY'),
+      shoot: new KeyBinding('KeyK'),
+      punch: new KeyBinding('KeyP'),
+      use: new KeyBinding('KeyE'),
+      enter: new KeyBinding('KeyF'),
+      enter_passenger: new KeyBinding('KeyG'),
+      seat_switch: new KeyBinding('KeyX'),
+      primary: new KeyBinding('Mouse0'),
+      secondary: new KeyBinding('Mouse1'),
     };
 
     // Physics
@@ -235,7 +231,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   public setRightHand(): void {
     this.children.forEach(children => {
-      this.rightHand = children.getObjectByName(BodyPart.RightHand)
+      this.rightHand = children.getObjectByName(BodyPart.RightHand);
     });
 /*    const points = [
       new THREE.Vector3(-0.1, 0.1, -0.1),//c
@@ -277,7 +273,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   /**
    * Set state to the player. Pass state class (function) name.
-   * @param {function} State
+   * @param {function} state
    */
   public setState(state: ICharacterState): void {
     this.charState = state;
@@ -315,7 +311,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public setOrientation(vector: THREE.Vector3, instantly: boolean = false): void {
-    let lookVector = new THREE.Vector3().copy(vector).setY(0).normalize();
+    const lookVector = new THREE.Vector3().copy(vector).setY(0).normalize();
     this.orientationTarget.copy(lookVector);
 
     if (instantly) {
@@ -415,7 +411,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   public triggerAction(actionName: string, value: boolean): void {
     // Get action and set it's parameters
-    let action = this.actions[actionName];
+    const action = this.actions[actionName];
 
     if (action.isPressed !== value) {
       // Set value
@@ -426,8 +422,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       action.justReleased = false;
 
       // Set the 'just' attributes
-      if (value) action.justPressed = true;
-      else action.justReleased = true;
+      if (value) { action.justPressed = true; }
+      else { action.justReleased = true; }
 
       // Tell player to handle states according to new input
       this.charState.onInputChange();
@@ -465,10 +461,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     this.vehicleEntryInstance?.update(timeStep);
     this.charState?.update(timeStep);
     // this.visuals.position.copy(this.modelOffset);
-    if (this.physicsEnabled) this.springMovement(timeStep);
-    if (this.physicsEnabled) this.springRotation(timeStep);
-    if (this.physicsEnabled) this.rotateModel();
-    if (this.mixer !== undefined) this.mixer.update(timeStep);
+    if (this.physicsEnabled) { this.springMovement(timeStep); }
+    if (this.physicsEnabled) { this.springRotation(timeStep); }
+    if (this.physicsEnabled) { this.rotateModel(); }
+    if (this.mixer !== undefined) { this.mixer.update(timeStep); }
 
     // Sync physics/graphics
     if (this.physicsEnabled) {
@@ -478,7 +474,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.characterCapsule.body.interpolatedPosition.z
       );
     } else {
-      let newPos = new THREE.Vector3();
+      const newPos = new THREE.Vector3();
       this.getWorldPosition(newPos);
       this.characterCapsule.body.position.copy(Utils.cannonVector(newPos));
       this.characterCapsule.body.interpolatedPosition.copy(Utils.cannonVector(newPos));
@@ -566,7 +562,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       // gltf
       this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
 
-      let action = this.mixer.clipAction(this.clip);
+      const action = this.mixer.clipAction(this.clip);
       if (action === null) {
         console.error(`Animation ${clipName} not found!`);
         return 0;
@@ -587,7 +583,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public updateAimAnimation(clipName: string, cameraRotation, vector): void {
     if (this.mixer !== undefined) {
       this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
-      let action = this.mixer.clipAction(this.clip);
+      const action = this.mixer.clipAction(this.clip);
       // pitch UP max: 2 - pitch DOWN min: 0
       action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
       action.paused = true;
@@ -611,12 +607,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public springRotation(timeStep: number): void {
     // Spring rotation
     // Figure out angle between current and target orientation
-    let angle = Utils.getSignedAngleBetweenVectors(this.orientation, this.orientationTarget);
+    const angle = Utils.getSignedAngleBetweenVectors(this.orientation, this.orientationTarget);
 
     // Simulator
     this.rotationSimulator.target = angle;
     this.rotationSimulator.simulate(timeStep);
-    let rot = this.rotationSimulator.position;
+    const rot = this.rotationSimulator.position;
 
     // Updating values
     this.orientation.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
@@ -641,7 +637,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   public setCameraRelativeOrientationTarget(): void {
     if (this.vehicleEntryInstance === null) {
-      let moveVector = this.getCameraRelativeMovementVector();
+      const moveVector = this.getCameraRelativeMovementVector();
 
       if (moveVector.x === 0 && moveVector.y === 0 && moveVector.z === 0) {
         this.setOrientation(this.orientation);
@@ -664,21 +660,21 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   public findVehicleToEnter(wantsToDrive: boolean): void {
     // reusable world position variable
-    let worldPos = new THREE.Vector3();
+    const worldPos = new THREE.Vector3();
 
     // Find best vehicle
-    let vehicleFinder = new ClosestObjectFinder<Vehicle>(this.position, 10);
+    const vehicleFinder = new ClosestObjectFinder<Vehicle>(this.position, 10);
     this.world.vehicles.forEach((vehicle) => {
       vehicleFinder.consider(vehicle, vehicle.position);
     });
 
     if (vehicleFinder.closestObject !== undefined) {
-      let vehicle = vehicleFinder.closestObject;
-      let vehicleEntryInstance = new VehicleEntryInstance(this);
+      const vehicle = vehicleFinder.closestObject;
+      const vehicleEntryInstance = new VehicleEntryInstance(this);
       vehicleEntryInstance.wantsToDrive = wantsToDrive;
 
       // Find best seat
-      let seatFinder = new ClosestObjectFinder<VehicleSeat>(this.position);
+      const seatFinder = new ClosestObjectFinder<VehicleSeat>(this.position);
       for (const seat of vehicle.seats) {
         if (wantsToDrive) {
           // Consider driver seats
@@ -706,10 +702,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       }
 
       if (seatFinder.closestObject !== undefined) {
-        let targetSeat = seatFinder.closestObject;
+        const targetSeat = seatFinder.closestObject;
         vehicleEntryInstance.targetSeat = targetSeat;
 
-        let entryPointFinder = new ClosestObjectFinder<Object3D>(this.position);
+        const entryPointFinder = new ClosestObjectFinder<Object3D>(this.position);
 
         for (const point of targetSeat.entryPoints) {
           point.getWorldPosition(worldPos);
@@ -773,8 +769,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         for (const action2 in entity.actions) {
           if (entity.actions.hasOwnProperty(action2)) {
 
-            let a1 = this.actions[action1];
-            let a2 = entity.actions[action2];
+            const a1 = this.actions[action1];
+            const a2 = entity.actions[action2];
 
             a1.eventCodes.forEach((code1) => {
               a2.eventCodes.forEach((code2) => {
@@ -837,7 +833,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       }
     } else {
       if (character.raycastBox.visible) {
-        character.raycastBox.position.set(body.position.x, body.position.y - character.rayCastLength - character.raySafeOffset, body.position.z);
+        character.raycastBox.position.set(body.position.x, body.position.y - character.rayCastLength -
+            character.raySafeOffset, body.position.z);
       }
     }
   }
@@ -845,7 +842,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public feetRaycast(): void {
     // Player ray casting
     // Create ray
-    let body = this.characterCapsule.body;
+    const body = this.characterCapsule.body;
     const start = new CANNON.Vec3(body.position.x, body.position.y, body.position.z);
     const end = new CANNON.Vec3(body.position.x, body.position.y - this.rayCastLength - this.raySafeOffset, body.position.z);
     // Raycast options
@@ -859,7 +856,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   public physicsPostStep(body: CANNON.Body, character: Character): void {
     // Get velocities
-    let simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
+    const simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
     // Take local velocity
     let arcadeVelocity = new THREE.Vector3().copy(character.velocity).multiplyScalar(character.moveSpeed);
     // Turn local into global
@@ -871,16 +868,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     if (character.arcadeVelocityIsAdditive) {
       newVelocity.copy(simulatedVelocity);
 
-      let globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.orientation, character.velocityTarget);
-      let add = new THREE.Vector3().copy(arcadeVelocity).multiply(character.arcadeVelocityInfluence);
+      const globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.orientation, character.velocityTarget);
+      const add = new THREE.Vector3().copy(arcadeVelocity).multiply(character.arcadeVelocityInfluence);
 
-      if (Math.abs(simulatedVelocity.x) < Math.abs(globalVelocityTarget.x * character.moveSpeed) || Utils.haveDifferentSigns(simulatedVelocity.x, arcadeVelocity.x)) {
+      if (Math.abs(simulatedVelocity.x) < Math.abs(globalVelocityTarget.x * character.moveSpeed)
+          || Utils.haveDifferentSigns(simulatedVelocity.x, arcadeVelocity.x)) {
         newVelocity.x += add.x;
       }
-      if (Math.abs(simulatedVelocity.y) < Math.abs(globalVelocityTarget.y * character.moveSpeed) || Utils.haveDifferentSigns(simulatedVelocity.y, arcadeVelocity.y)) {
+      if (Math.abs(simulatedVelocity.y) < Math.abs(globalVelocityTarget.y * character.moveSpeed)
+          || Utils.haveDifferentSigns(simulatedVelocity.y, arcadeVelocity.y)) {
         newVelocity.y += add.y;
       }
-      if (Math.abs(simulatedVelocity.z) < Math.abs(globalVelocityTarget.z * character.moveSpeed) || Utils.haveDifferentSigns(simulatedVelocity.z, arcadeVelocity.z)) {
+      if (Math.abs(simulatedVelocity.z) < Math.abs(globalVelocityTarget.z * character.moveSpeed)
+          || Utils.haveDifferentSigns(simulatedVelocity.z, arcadeVelocity.z)) {
         newVelocity.z += add.z;
       }
     } else {
@@ -897,17 +897,18 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
       // Move on top of moving objects
       if (character.rayResult.body.mass > 0) {
-        let pointVelocity = new CANNON.Vec3();
+        const pointVelocity = new CANNON.Vec3();
         character.rayResult.body.getVelocityAtWorldPoint(character.rayResult.hitPointWorld, pointVelocity);
         newVelocity.add(Utils.threeVector(pointVelocity));
       }
 
       // Measure the normal vector offset from direct "up" vector
       // and transform it into a matrix
-      let up = new THREE.Vector3(0, 1, 0);
-      let normal = new THREE.Vector3(character.rayResult.hitNormalWorld.x, character.rayResult.hitNormalWorld.y, character.rayResult.hitNormalWorld.z);
-      let q = new THREE.Quaternion().setFromUnitVectors(up, normal);
-      let m = new THREE.Matrix4().makeRotationFromQuaternion(q);
+      const up = new THREE.Vector3(0, 1, 0);
+      const normal = new THREE.Vector3(character.rayResult.hitNormalWorld.x, character.rayResult.hitNormalWorld.y,
+          character.rayResult.hitNormalWorld.z);
+      const q = new THREE.Quaternion().setFromUnitVectors(up, normal);
+      const m = new THREE.Matrix4().makeRotationFromQuaternion(q);
 
       // Rotate the velocity vector
       newVelocity.applyMatrix4(m);
@@ -938,11 +939,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       if (character.initJumpSpeed > -1) {
         // Flatten velocity
         body.velocity.y = 0;
-        let speed = Math.max(character.velocitySimulator.position.length() * 4, character.initJumpSpeed);
+        const speed = Math.max(character.velocitySimulator.position.length() * 4, character.initJumpSpeed);
         body.velocity = Utils.cannonVector(character.orientation.clone().multiplyScalar(speed));
       } else {
         // Moving objects compensation
-        let add = new CANNON.Vec3();
+        const add = new CANNON.Vec3();
         character.rayResult.body.getVelocityAtWorldPoint(character.rayResult.hitPointWorld, add);
         body.velocity.vsub(add, body.velocity);
       }
@@ -1003,15 +1004,14 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   // TODO: make something cleaner
-  public loadWeapon(weapon: WeaponType): void {
-    console.log('load', weapon);
+  public loadWeapon(weaponType: WeaponType): void {
     const loader = new GLTFLoader();
     const rightHand = this.getObjectByName(BodyPart.RightHand);
-    loader.load('../../assets/weapons/1911.glb', gltf => {
-      gltf.scene.name = 'gun';
-      gltf.scene.scale.set(0.05, 0.05, 0.05);
-      gltf.scene.rotation.set(1.38, 0, 0);
-      gltf.scene.position.set(0, 0.25, 0);
+    loader.load(`../../assets/weapons/${weaponType}.glb`, gltf => {
+      gltf.scene.name = weaponType;
+      gltf.scene.scale.set(2, 2, 2);
+      gltf.scene.rotation.set(1.62, 0.1, 5.05);
+      gltf.scene.position.set(0, 13.7, 2.59);
       rightHand.add(gltf.scene);
       /*const gui = new GUI.GUI();
       const gunGUIFolder = gui.addFolder('Gun');

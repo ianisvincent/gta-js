@@ -1,6 +1,6 @@
 export enum BodyPart {
     LeftHand = 'handL',
-    RightHand = 'handR',
+    RightHand = 'mixamorig12RightHand',
     LeftForeArm = 'mixamorig12LeftForeArm',
     RightForeArm = 'mixamorig12RightForeArm'
 }
