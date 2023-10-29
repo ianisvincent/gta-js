@@ -1,11 +1,11 @@
-import { Character } from './Character';
-import { CollisionGroups } from '../enums/CollisionGroups';
 import * as THREE from 'three';
-import * as Utils from '../core/FunctionLibrary';
 import * as CANNON from 'cannon';
-import { GroundImpactData } from './GroundImpactData';
+import { Character } from '../Character';
+import { CollisionGroups } from '../../enums/CollisionGroups';
+import { GroundImpactData } from '../GroundImpactData';
+import * as Utils from '../../core/FunctionLibrary';
 
-export class CharacterPhysics {
+export class CharacterPhysicsManager {
     private readonly character: Character;
     private rayCastLength = 0.57;
     private raySafeOffset = 0.03;

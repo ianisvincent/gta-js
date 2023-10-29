@@ -9,7 +9,7 @@ import { Wheel } from './Wheel';
 import { VehicleDoor } from './VehicleDoor';
 import * as Utils from '../core/FunctionLibrary';
 import { CollisionGroups } from '../enums/CollisionGroups';
-import { SwitchingSeats } from '../character/character_states/vehicles/SwitchingSeats';
+import { SwitchingSeats } from '../character/states/vehicles/SwitchingSeats';
 import { EntityType } from '../enums/EntityType';
 import { IWorldEntity } from '../interfaces/IWorldEntity';
 

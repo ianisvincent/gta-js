@@ -1,7 +1,7 @@
-import { Character } from './Character';
 import * as THREE from 'three';
+import { Character } from '../Character';
 
-export class CharacterAnimation {
+export class CharacterAnimationManager {
     private readonly character: Character;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
     public mixer: THREE.AnimationMixer;

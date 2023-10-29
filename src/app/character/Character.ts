@@ -3,7 +3,7 @@ import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
 import { KeyBinding } from '../core/KeyBinding';
-import { Idle } from './character_states/Idle';
+import { Idle } from './states/Idle';
 import { ICharacterAI } from '../interfaces/ICharacterAI';
 import { World } from '../world/World';
 import { IControllable } from '../interfaces/IControllable';
@@ -13,7 +13,6 @@ import { VehicleSeat } from '../vehicles/VehicleSeat';
 import { Vehicle } from '../vehicles/Vehicle';
 import { CollisionGroups } from '../enums/CollisionGroups';
 import { CapsuleCollider } from '../physics/colliders/CapsuleCollider';
-import { VehicleEntryInstance } from './VehicleEntryInstance';
 import { Object3D, Vector3 } from 'three';
 import { EntityType } from '../enums/EntityType';
 import { BodyPart } from '../enums/BodyPart';
@@ -23,20 +22,21 @@ import { IDieable } from '../interfaces/IDieable';
 import { Npc } from './Npc';
 import { CharacterService } from './character.service';
 import { WeaponType } from '../weapons/weapon-type';
-import { VehicleInteraction } from './VehicleInteraction';
-import { CharacterControls } from './CharacterControls';
-import { CharacterPhysics } from './CharacterPhysics';
-import { WeaponInteraction } from './WeaponInteraction';
-import { CharacterSimulation } from './CharacterSimulation';
-import { CharacterAnimation } from './CharacterAnimation';
+import { CharacterAnimationManager } from './animation/CharacterAnimationManager';
+import { CharacterControlsManager } from './controls/CharacterControlsManager';
+import { CharacterWeaponManager } from './weapon/CharacterWeaponManager';
+import { CharacterVehicleManager } from './vehicle/CharacterVehicleManager';
+import { CharacterSimulationManager } from './simulation/CharacterSimulationManager';
+import { CharacterPhysicsManager } from './physics/CharacterPhysicsManager';
+import { VehicleEntryInstance } from './vehicle/VehicleEntryInstance';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
-    private controls: CharacterControls;
-    private vehicleInteraction: VehicleInteraction;
-    private weaponInteraction: WeaponInteraction;
-    public physics: CharacterPhysics;
-    public simulation: CharacterSimulation;
-    public animationManager: CharacterAnimation;
+    private controls: CharacterControlsManager;
+    private vehicleInteraction: CharacterVehicleManager;
+    private weaponInteraction: CharacterWeaponManager;
+    public physics: CharacterPhysicsManager;
+    public simulation: CharacterSimulationManager;
+    public animationManager: CharacterAnimationManager;
 
     private rightHandGlobalPosition: Vector3;
 
@@ -92,12 +92,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     constructor(gltf: any, public characterService?: CharacterService) {
         super();
         this.readCharacterData(gltf);
-        this.vehicleInteraction = new VehicleInteraction(this);
-        this.controls = new CharacterControls(this);
-        this.physics = new CharacterPhysics(this);
-        this.weaponInteraction = new WeaponInteraction(this);
-        this.simulation = new CharacterSimulation(this);
-        this.animationManager = new CharacterAnimation(this);
+        this.vehicleInteraction = new CharacterVehicleManager(this);
+        this.controls = new CharacterControlsManager(this);
+        this.physics = new CharacterPhysicsManager(this);
+        this.weaponInteraction = new CharacterWeaponManager(this);
+        this.simulation = new CharacterSimulationManager(this);
+        this.animationManager = new CharacterAnimationManager(this);
         this.animationManager.setAnimations(gltf.animations);
 
         // The visuals group is centered for easy character tilting

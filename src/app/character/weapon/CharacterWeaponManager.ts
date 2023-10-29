@@ -1,9 +1,9 @@
-import { Character } from './Character';
-import { WeaponType } from '../weapons/weapon-type';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BodyPart } from '../enums/BodyPart';
+import { Character } from '../Character';
+import { WeaponType } from '../../weapons/weapon-type';
+import { BodyPart } from '../../enums/BodyPart';
 
-export class WeaponInteraction {
+export class CharacterWeaponManager {
     private readonly character: Character;
 
     constructor(character: Character) {

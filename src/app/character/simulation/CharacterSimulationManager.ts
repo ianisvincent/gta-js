@@ -1,10 +1,10 @@
-import { Character } from './Character';
-import * as Utils from '../core/FunctionLibrary';
 import * as THREE from 'three';
-import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
-import { RelativeSpringSimulator } from '../physics/spring_simulation/RelativeSpringSimulator';
+import { VectorSpringSimulator } from '../../physics/spring_simulation/VectorSpringSimulator';
+import { Character } from '../Character';
+import { RelativeSpringSimulator } from '../../physics/spring_simulation/RelativeSpringSimulator';
+import * as Utils from '../../core/FunctionLibrary';
 
-export class CharacterSimulation {
+export class CharacterSimulationManager {
     private readonly character: Character;
     public defaultVelocitySimulatorDamping = 0.8;
     public defaultVelocitySimulatorMass = 50;
