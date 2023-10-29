@@ -43,11 +43,11 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 
 			if (this.character.physics.rayResult.body.velocity.length() > 0)
 			{
-				this.character.setArcadeVelocityInfluence(0, 0, 0);
+				this.character.physics.setArcadeVelocityInfluence(0, 0, 0);
 			}
 			else
 			{
-				this.character.setArcadeVelocityInfluence(0.3, 0, 0.3);
+				this.character.physics.setArcadeVelocityInfluence(0.3, 0, 0.3);
 			}
 			
 		}
