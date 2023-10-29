@@ -41,9 +41,9 @@ export class Sitting extends CharacterStateBase
 		{
 			this.character.setState(new CloseVehicleDoorInside(this.character, this.seat));
 		}
-		else if (this.character.vehicleEntryInstance !== null)
+		else if (this.character.vehicleInteractionManager.vehicleEntryInstance !== null)
 		{
-			if (this.character.vehicleEntryInstance.wantsToDrive)
+			if (this.character.vehicleInteractionManager.vehicleEntryInstance.wantsToDrive)
 			{
 				for (const possibleDriverSeat of this.seat.connectedSeats)
 				{
@@ -57,7 +57,7 @@ export class Sitting extends CharacterStateBase
 			}
 			else
 			{
-				this.character.vehicleEntryInstance = null;
+				this.character.vehicleInteractionManager.vehicleEntryInstance = null;
 			}
 		}
 	}

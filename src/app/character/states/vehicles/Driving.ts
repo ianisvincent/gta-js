@@ -20,7 +20,7 @@ export class Driving extends CharacterStateBase
 
 		this.character.startControllingVehicle(seat.vehicle, this.seat);
 		this.seat.vehicle.onInputChange();
-		this.character.vehicleEntryInstance = null;
+		this.character.vehicleInteractionManager.vehicleEntryInstance = null;
 	}
 
 	public update(timeStep: number): void

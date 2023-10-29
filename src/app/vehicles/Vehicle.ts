@@ -125,14 +125,14 @@ export abstract class Vehicle extends THREE.Object3D implements IWorldEntity
 
 	public onInputChange(): void
 	{
-		if (this.actions.seat_switch.justPressed && this.controllingCharacter?.occupyingSeat?.connectedSeats.length > 0)
+		if (this.actions.seat_switch.justPressed && this.controllingCharacter?.vehicleInteractionManager.occupyingSeat?.connectedSeats.length > 0)
 		{
 			this.controllingCharacter.modelContainer.visible = true;
 			this.controllingCharacter.setState(
 				new SwitchingSeats(
 					this.controllingCharacter,
-					this.controllingCharacter.occupyingSeat,
-					this.controllingCharacter.occupyingSeat.connectedSeats[0]
+					this.controllingCharacter.vehicleInteractionManager.occupyingSeat,
+					this.controllingCharacter.vehicleInteractionManager.occupyingSeat.connectedSeats[0]
 				)
 			);
 			this.controllingCharacter.stopControllingVehicle();

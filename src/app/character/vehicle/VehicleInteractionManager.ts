@@ -16,6 +16,8 @@ import { SeatType } from '../../enums/SeatType';
 
 export class VehicleInteractionManager {
     private readonly character: Character;
+    public occupyingSeat: VehicleSeat = null;
+    public vehicleEntryInstance: VehicleEntryInstance = null;
 
     constructor(character: Character) {
         this.character = character;
@@ -78,7 +80,7 @@ export class VehicleInteractionManager {
                 if (entryPointFinder.closestObject !== undefined) {
                     vehicleEntryInstance.entryPoint = entryPointFinder.closestObject;
                     this.character.triggerAction('up', true);
-                    this.character.vehicleEntryInstance = vehicleEntryInstance;
+                    this.vehicleEntryInstance = vehicleEntryInstance;
                 }
             }
         }
@@ -133,11 +135,11 @@ export class VehicleInteractionManager {
     }
 
     public exitVehicle(): void {
-        if (this.character.occupyingSeat !== null) {
-            if (this.character.occupyingSeat.vehicle.entityType === EntityType.Airplane) {
-                this.character.setState(new ExitingAirplane(this.character, this.character.occupyingSeat));
+        if (this.occupyingSeat !== null) {
+            if (this.occupyingSeat.vehicle.entityType === EntityType.Airplane) {
+                this.character.setState(new ExitingAirplane(this.character, this.occupyingSeat));
             } else {
-                this.character.setState(new ExitingVehicle(this.character, this.character.occupyingSeat));
+                this.character.setState(new ExitingVehicle(this.character, this.occupyingSeat));
             }
 
             this.stopControllingVehicle();
@@ -146,14 +148,14 @@ export class VehicleInteractionManager {
 
     public occupySeat(seat: VehicleSeat): void {
         this.character.world.cameraOperator.drivingMode = true;
-        this.character.occupyingSeat = seat;
+        this.occupyingSeat = seat;
         seat.occupiedBy = this.character;
     }
 
     public leaveSeat(): void {
-        if (this.character.occupyingSeat !== null) {
-            this.character.occupyingSeat.occupiedBy = null;
-            this.character.occupyingSeat = null;
+        if (this.occupyingSeat !== null) {
+            this.occupyingSeat.occupiedBy = null;
+            this.occupyingSeat = null;
             this.character.world.cameraOperator.drivingMode = false;
         }
     }

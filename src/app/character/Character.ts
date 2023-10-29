@@ -28,15 +28,14 @@ import { WeaponInteractionManager } from './weapon/WeaponInteractionManager';
 import { VehicleInteractionManager } from './vehicle/VehicleInteractionManager';
 import { CharacterSimulation } from './simulation/CharacterSimulation';
 import { CharacterPhysics } from './physics/CharacterPhysics';
-import { VehicleEntryInstance } from './vehicle/VehicleEntryInstance';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
-    private vehicleInteractionManager: VehicleInteractionManager;
     private weaponInteractionManager: WeaponInteractionManager;
     private controls: CharacterControls;
     public physics: CharacterPhysics;
     public simulation: CharacterSimulation;
     public animationManager: CharacterAnimationManager;
+    public vehicleInteractionManager: VehicleInteractionManager;
 
     private rightHandGlobalPosition: Vector3;
 
@@ -56,8 +55,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public hasWeaponLoaded = false;
 
-    // Movement
-
     public moveSpeed = 4;
     public initJumpSpeed = -1;
     public wantsToJump = false;
@@ -75,8 +72,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     // Vehicles
     public controlledObject: IControllable;
-    public occupyingSeat: VehicleSeat = null;
-    public vehicleEntryInstance: VehicleEntryInstance = null;
 
     public isAiming = false;
     public health = 100;
@@ -288,7 +283,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             this.unloadWeapon();
         }
         this.behaviour?.update(timeStep);
-        this.vehicleEntryInstance?.update(timeStep);
+        this.vehicleInteractionManager.vehicleEntryInstance?.update(timeStep);
         this.charState?.update(timeStep);
         // this.visuals.position.copy(this.modelOffset);
         if (this.physics.isEnabled) {
@@ -359,7 +354,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     // Character camera
     public setCameraRelativeOrientationTarget(): void {
-        if (this.vehicleEntryInstance === null) {
+        if (this.vehicleInteractionManager.vehicleEntryInstance === null) {
             const moveVector = this.getCameraRelativeMovementVector();
 
             if (moveVector.x === 0 && moveVector.y === 0 && moveVector.z === 0) {
