@@ -37,8 +37,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public physics: CharacterPhysics;
     public simulation: CharacterSimulation;
     public animationManager: CharacterAnimation;
-    private clip: THREE.AnimationClip;
-    private aimingSettings = {offSet: 1.64, amplitude: 2.49};
+
     private rightHandGlobalPosition: Vector3;
 
     public updateOrder = 1;
@@ -51,8 +50,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public tiltContainer: THREE.Group;
     public modelContainer: THREE.Group;
     public materials: THREE.Material[] = [];
-    public mixer: THREE.AnimationMixer;
-    public animations: any[];
 
     // Custom Camera Pos
     public cameraPos: THREE.Vector3 = new THREE.Vector3();
@@ -102,7 +99,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.weaponInteraction = new WeaponInteraction(this);
         this.simulation = new CharacterSimulation(this);
         this.animationManager = new CharacterAnimation(this);
-        this.setAnimations(gltf.animations);
+        this.animationManager.setAnimations(gltf.animations);
 
         // The visuals group is centered for easy character tilting
         this.tiltContainer = new THREE.Group();
@@ -200,11 +197,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.weaponInteraction.setRightHand();
     }
 
-    // Character animation
-    public setAnimations(animations: []): void {
-        this.animations = animations;
-    }
-
     public setArcadeVelocityInfluence(x: number, y: number = x, z: number = x): void {
         this.arcadeVelocityInfluence.set(x, y, z);
     }
@@ -260,7 +252,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public readCharacterData(gltf: any): void {
         gltf.scene.traverse((child) => {
-
             if (child.isMesh) {
                 Utils.setupMeshProperties(child);
 
@@ -359,43 +350,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.controls.inputReceiverUpdate(timeStep);
     }
 
-    // Character animation
     public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
-        if (this.animationManager.mixer !== undefined) {
-            // gltf
-            this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
-
-            const action = this.animationManager.mixer.clipAction(this.clip);
-            if (action === null) {
-                console.error(`Animation ${clipName} not found!`);
-                return 0;
-            }
-            if (runOnlyOnce) {
-                action.setLoop(THREE.LoopOnce, 1);
-            }
-            if (lockWhenFinished) {
-                action.clampWhenFinished = true;
-            }
-            this.animationManager.mixer.stopAllAction();
-            action.fadeIn(fadeIn);
-            action.play();
-            return action.getClip().duration;
-        }
+        return this.animationManager.setAnimation(clipName, fadeIn, runOnlyOnce, lockWhenFinished);
     }
 
-    // Character animation
     public updateAimAnimation(clipName: string, cameraRotation, vector): void {
-        if (this.animationManager.mixer !== undefined) {
-            this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
-            const action = this.animationManager.mixer.clipAction(this.clip);
-            // pitch UP max: 2 - pitch DOWN min: 0
-            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
-            action.paused = true;
-            action.stopWarping();
-            /*action.zeroSlopeAtStart = true;
-            action.zeroSlopeAtEnd = true;
-            action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;*/
-        }
+        this.animationManager.updateAimAnimation(clipName, cameraRotation, vector);
     }
 
     public getLocalMovementDirection(): THREE.Vector3 {
