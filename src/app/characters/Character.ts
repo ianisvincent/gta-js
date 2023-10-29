@@ -29,6 +29,7 @@ import { CharacterService } from './character.service';
 import { WeaponType } from '../weapons/weapon-type';
 import * as GUI from '../../lib/utils/dat.gui';
 import { VehicleInteraction } from './VehicleInteraction';
+import { CharacterControls } from './CharacterControls';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder = 1;
@@ -106,11 +107,13 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public isPunching: boolean;
 
   private vehicleInteraction: VehicleInteraction;
+  private characterControls: CharacterControls;
 
   constructor(gltf: any, public characterService?: CharacterService) {
     super();
     this.readCharacterData(gltf);
     this.vehicleInteraction = new VehicleInteraction(this);
+    this.characterControls = new CharacterControls(this);
     this.setAnimations(gltf.animations);
 
     // The visuals group is centered for easy character tilting
@@ -350,85 +353,23 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public handleKeyboardEvent(event: KeyboardEvent, code: string, pressed: boolean): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.handleKeyboardEvent(event, code, pressed);
-    } else {
-      // Free camera
-      if (code === 'KeyC' && pressed === true && event.shiftKey === true) {
-        this.resetControls();
-        this.world.cameraOperator.targetedCharacter = this;
-        this.world.inputManager.setInputReceiver(this.world.cameraOperator);
-      } else if (code === 'KeyR' && pressed === true && event.shiftKey === true) {
-        this.world.restartScenario();
-      } else {
-        for (const action in this.actions) {
-          if (this.actions.hasOwnProperty(action)) {
-            const binding = this.actions[action];
-
-            if (_.includes(binding.eventCodes, code)) {
-              this.triggerAction(action, pressed);
-            }
-          }
-        }
-      }
-    }
+    this.characterControls.handleKeyboardEvent(event, code, pressed);
   }
 
   public handleMouseButton(event: MouseEvent, code: string, pressed: boolean): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.handleMouseButton(event, code, pressed);
-    } else {
-      for (const action in this.actions) {
-        if (this.actions.hasOwnProperty(action)) {
-          const binding = this.actions[action];
-
-          if (_.includes(binding.eventCodes, code)) {
-            this.triggerAction(action, pressed);
-          }
-        }
-      }
-    }
+    this.characterControls.handleMouseButton(event, code, pressed);
   }
 
   public handleMouseMove(event: MouseEvent, deltaX: number, deltaY: number): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.handleMouseMove(event, deltaX, deltaY);
-    } else {
-      this.world.cameraOperator.move(deltaX, deltaY);
-    }
+   this.characterControls.handleMouseMove(event, deltaX, deltaY);
   }
 
   public handleMouseWheel(event: WheelEvent, value: number): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.handleMouseWheel(event, value);
-    } else {
-      this.world.scrollTheTimeScale(value);
-    }
+   this.characterControls.handleMouseWheel(event, value);
   }
 
   public triggerAction(actionName: string, value: boolean): void {
-    // Get action and set it's parameters
-    const action = this.actions[actionName];
-
-    if (action.isPressed !== value) {
-      // Set value
-      action.isPressed = value;
-
-      // Reset the 'just' attributes
-      action.justPressed = false;
-      action.justReleased = false;
-
-      // Set the 'just' attributes
-      if (value) { action.justPressed = true; }
-      else { action.justReleased = true; }
-
-      // Tell player to handle states according to new input
-      this.charState.onInputChange();
-
-      // Reset the 'just' attributes
-      action.justPressed = false;
-      action.justReleased = false;
-    }
+    this.characterControls.triggerAction(actionName, value);
   }
 
   public takeControl(): void {
@@ -436,14 +377,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
       this.world.inputManager.setInputReceiver(this);
     } else {
       console.warn('Attempting to take control of a character that doesn\'t belong to a world.');
-    }
-  }
-
-  public resetControls(): void {
-    for (const action in this.actions) {
-      if (this.actions.hasOwnProperty(action)) {
-        this.triggerAction(action, false);
-      }
     }
   }
 
@@ -484,74 +417,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public inputReceiverInit(): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.inputReceiverInit();
-      return;
-    }
-
-    this.world.cameraOperator.setRadius(2.0, true);
-    this.world.cameraOperator.followMode = false;
-    // this.world.dirLight.target = this;
-
-    this.displayControls();
+    this.characterControls.inputReceiverInit();
   }
 
   public displayControls(): void {
-    this.world.updateControls([
-      {
-        keys: ['W', 'A', 'S', 'D'],
-        desc: 'Movement'
-      },
-      {
-        keys: ['Shift'],
-        desc: 'Sprint'
-      },
-      {
-        keys: ['Space'],
-        desc: 'Jump'
-      },
-      {
-        keys: ['P'],
-        desc: 'Punch'
-      },
-      {
-        keys: ['T'],
-        desc: 'Spawn gun'
-      },
-      {
-        keys: ['Y'],
-        desc: 'Aim'
-      },
-      {
-        keys: ['K'],
-        desc: 'Shoot'
-      },
-      {
-        keys: ['F', 'or', 'G'],
-        desc: 'Enter vehicle'
-      },
-      {
-        keys: ['Shift', '+', 'R'],
-        desc: 'Respawn'
-      },
-      {
-        keys: ['Shift', '+', 'C'],
-        desc: 'Free camera'
-      },
-    ]);
+    this.characterControls.displayControls();
+  }
+
+  public resetControls(): void {
+    this.characterControls.resetControls();
   }
 
   public inputReceiverUpdate(timeStep: number): void {
-    if (this.controlledObject !== undefined) {
-      this.controlledObject.inputReceiverUpdate(timeStep);
-    } else {
-      // Look in camera's direction
-      this.viewVector = new THREE.Vector3().subVectors(this.position, this.world.camera.position);
-      this.getWorldPosition(this.cameraPos);
-      this.cameraPos.y += 0.7;
-      this.world.cameraOperator.target = this.cameraPos;
-    }
-
+    this.characterControls.inputReceiverUpdate(timeStep);
   }
 
   public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
@@ -672,29 +550,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   }
 
   public transferControls(entity: IControllable): void {
-    // Currently running through all actions of this character and the vehicle,
-    // comparing keycodes of actions and based on that triggering vehicle's actions
-    // Maybe we should ask input manager what's the current state of the keyboard
-    // and read those values... TODO
-    for (const action1 in this.actions) {
-      if (this.actions.hasOwnProperty(action1)) {
-        for (const action2 in entity.actions) {
-          if (entity.actions.hasOwnProperty(action2)) {
-
-            const a1 = this.actions[action1];
-            const a2 = entity.actions[action2];
-
-            a1.eventCodes.forEach((code1) => {
-              a2.eventCodes.forEach((code2) => {
-                if (code1 === code2) {
-                  entity.triggerAction(action2, a1.isPressed);
-                }
-              });
-            });
-          }
-        }
-      }
-    }
+    this.characterControls.transferControls(entity);
   }
 
   public stopControllingVehicle(): void {
