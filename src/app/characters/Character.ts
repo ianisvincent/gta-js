@@ -350,14 +350,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.controls.inputReceiverUpdate(timeStep);
     }
 
-    public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
-        return this.animationManager.setAnimation(clipName, fadeIn, runOnlyOnce, lockWhenFinished);
-    }
-
-    public updateAimAnimation(clipName: string, cameraRotation, vector): void {
-        this.animationManager.updateAimAnimation(clipName, cameraRotation, vector);
-    }
-
     public getLocalMovementDirection(): THREE.Vector3 {
         const positiveX = this.actions.right.isPressed ? -1 : 0;
         const negativeX = this.actions.left.isPressed ? 1 : 0;

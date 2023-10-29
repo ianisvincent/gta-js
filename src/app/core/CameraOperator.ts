@@ -106,7 +106,7 @@ export class CameraOperator implements IInputReceiver, IUpdatable {
         if (this.aimingMode && this.targetedCharacter.isAiming) {
             this.setAimingCameraMode();
             this.targetedCharacter.cameraOperator = this;
-            this.targetedCharacter.updateAimAnimation('aim_pistol_idle', this.camera, this.vector)
+            this.targetedCharacter.animationManager.updateAimAnimation('aim_pistol_idle', this.camera, this.vector)
         } else {
             // Zoom out to set default radius
             this.setRadius(2, true);
