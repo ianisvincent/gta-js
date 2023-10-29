@@ -4,7 +4,7 @@ import { Character } from '../Character';
 import { KeyBinding } from '../../core/KeyBinding';
 import { IControllable } from '../../interfaces/IControllable';
 
-export class CharacterControlsManager {
+export class CharacterControls {
     private readonly character: Character;
 
     constructor(character: Character) {

@@ -3,7 +3,7 @@ import { Character } from '../Character';
 import { WeaponType } from '../../weapons/weapon-type';
 import { BodyPart } from '../../enums/BodyPart';
 
-export class CharacterWeaponManager {
+export class WeaponInteractionManager {
     private readonly character: Character;
 
     constructor(character: Character) {

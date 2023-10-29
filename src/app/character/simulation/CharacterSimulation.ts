@@ -4,7 +4,7 @@ import { Character } from '../Character';
 import { RelativeSpringSimulator } from '../../physics/spring_simulation/RelativeSpringSimulator';
 import * as Utils from '../../core/FunctionLibrary';
 
-export class CharacterSimulationManager {
+export class CharacterSimulation {
     private readonly character: Character;
     private acceleration: THREE.Vector3 = new THREE.Vector3();
     public defaultVelocitySimulatorDamping = 0.8;
