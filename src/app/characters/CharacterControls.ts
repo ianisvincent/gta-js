@@ -2,12 +2,35 @@ import { Character } from './Character';
 import * as THREE from 'three';
 import * as _ from 'lodash';
 import { IControllable } from '../interfaces/IControllable';
+import { KeyBinding } from '../core/KeyBinding';
 
 export class CharacterControls {
     private readonly character: Character;
 
     constructor(character: Character) {
         this.character = character;
+    }
+
+    public initActions(): { [action: string]: KeyBinding } {
+        return {
+            up: new KeyBinding('KeyW'),
+            down: new KeyBinding('KeyS'),
+            left: new KeyBinding('KeyA'),
+            right: new KeyBinding('KeyD'),
+            run: new KeyBinding('ShiftLeft'),
+            jump: new KeyBinding('Space'),
+            spawn_gun: new KeyBinding('KeyT'),
+            wheel: new KeyBinding('KeyC'),
+            aim: new KeyBinding('KeyY'),
+            shoot: new KeyBinding('KeyK'),
+            punch: new KeyBinding('KeyP'),
+            use: new KeyBinding('KeyE'),
+            enter: new KeyBinding('KeyF'),
+            enter_passenger: new KeyBinding('KeyG'),
+            seat_switch: new KeyBinding('KeyX'),
+            primary: new KeyBinding('Mouse0'),
+            secondary: new KeyBinding('Mouse1'),
+        };
     }
 
     public handleKeyboardEvent(event: KeyboardEvent, code: string, pressed: boolean): void {
