@@ -43,7 +43,7 @@ export class ExitingVehicle extends ExitingStateBase
 
 			this.seat.door.physicsEnabled = true;
 
-			if (!this.character.rayHasHit)
+			if (!this.character.physics.rayHasHit)
 			{
 				this.character.setState(new Falling(this.character));
 				this.character.leaveSeat();

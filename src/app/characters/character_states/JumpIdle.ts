@@ -41,7 +41,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 			this.character.velocitySimulator.mass = 100;
 			this.character.rotationSimulator.damping = 0.3;
 
-			if (this.character.rayResult.body.velocity.length() > 0)
+			if (this.character.physics.rayResult.body.velocity.length() > 0)
 			{
 				this.character.setArcadeVelocityInfluence(0, 0, 0);
 			}
@@ -51,7 +51,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 			}
 			
 		}
-		else if (this.timer > 0.3 && this.character.rayHasHit)
+		else if (this.timer > 0.3 && this.character.physics.rayHasHit)
 		{
 			this.setAppropriateDropState();
 		}

@@ -27,7 +27,7 @@ export class Falling extends CharacterStateBase implements ICharacterState
 		this.character.setCameraRelativeOrientationTarget();
 		this.character.setArcadeVelocityTarget(this.anyDirection() ? 0.8 : 0);
 
-		if (this.character.rayHasHit)
+		if (this.character.physics.rayHasHit)
 		{
 			this.setAppropriateDropState();
 		}

@@ -3,18 +3,24 @@ import { CollisionGroups } from '../enums/CollisionGroups';
 import * as THREE from 'three';
 import * as Utils from '../core/FunctionLibrary';
 import * as CANNON from 'cannon';
+import { GroundImpactData } from './GroundImpactData';
 
 export class CharacterPhysics {
-    physicsEnabled = true;
     private readonly character: Character;
+    private rayCastLength = 0.57;
+    private raySafeOffset = 0.03;
+    isEnabled = true;
+    public rayResult: CANNON.RaycastResult = new CANNON.RaycastResult();
+    public rayHasHit = false;
+    public groundImpactData: GroundImpactData = new GroundImpactData();
+    public raycastBox: THREE.Mesh;
 
     constructor(character: Character) {
         this.character = character;
     }
 
     public setPhysicsEnabled(value: boolean): void {
-        this.physicsEnabled = value;
-
+        this.isEnabled = value;
         if (value === true) {
             this.character.world.physicsWorld.addBody(this.character.characterCapsule.body);
         } else {
@@ -22,21 +28,19 @@ export class CharacterPhysics {
         }
     }
 
-
     public physicsPreStep(body: CANNON.Body, character: Character): void {
         character.feetRaycast();
-
         // Raycast debug
-        if (character.rayHasHit) {
-            if (character.raycastBox.visible) {
-                character.raycastBox.position.x = character.rayResult.hitPointWorld.x;
-                character.raycastBox.position.y = character.rayResult.hitPointWorld.y;
-                character.raycastBox.position.z = character.rayResult.hitPointWorld.z;
+        if (this.rayHasHit) {
+            if (this.raycastBox.visible) {
+                this.raycastBox.position.x = this.rayResult.hitPointWorld.x;
+                this.raycastBox.position.y = this.rayResult.hitPointWorld.y;
+                this.raycastBox.position.z = this.rayResult.hitPointWorld.z;
             }
         } else {
-            if (character.raycastBox.visible) {
-                character.raycastBox.position.set(body.position.x, body.position.y - character.rayCastLength -
-                    character.raySafeOffset, body.position.z);
+            if (this.raycastBox.visible) {
+                this.raycastBox.position.set(body.position.x, body.position.y - this.rayCastLength -
+                    this.raySafeOffset, body.position.z);
             }
         }
     }
@@ -47,14 +51,14 @@ export class CharacterPhysics {
         const body = this.character.characterCapsule.body;
         const start = new CANNON.Vec3(body.position.x, body.position.y, body.position.z);
         const end = new CANNON.Vec3(body.position.x, body.position.y -
-            this.character.rayCastLength - this.character.raySafeOffset, body.position.z);
+            this.rayCastLength - this.raySafeOffset, body.position.z);
         // Raycast options
         const rayCastOptions = {
             collisionFilterMask: CollisionGroups.Default,
             skipBackfaces: true      /* ignore back faces */
         };
         // Cast the ray
-        this.character.rayHasHit = this.character.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.character.rayResult);
+        this.rayHasHit = this.character.world.physicsWorld.raycastClosest(start, end, rayCastOptions, this.rayResult);
     }
 
     public physicsPostStep(body: CANNON.Body, character: Character): void {
@@ -94,22 +98,22 @@ export class CharacterPhysics {
             );
         }
         // If we're hitting the ground, stick to ground
-        if (character.rayHasHit) {
+        if (this.rayHasHit) {
             // Flatten velocity
             newVelocity.y = 0;
 
             // Move on top of moving objects
-            if (character.rayResult.body.mass > 0) {
+            if (this.rayResult.body.mass > 0) {
                 const pointVelocity = new CANNON.Vec3();
-                character.rayResult.body.getVelocityAtWorldPoint(character.rayResult.hitPointWorld, pointVelocity);
+                this.rayResult.body.getVelocityAtWorldPoint(this.rayResult.hitPointWorld, pointVelocity);
                 newVelocity.add(Utils.threeVector(pointVelocity));
             }
 
             // Measure the normal vector offset from direct "up" vector
             // and transform it into a matrix
             const up = new THREE.Vector3(0, 1, 0);
-            const normal = new THREE.Vector3(character.rayResult.hitNormalWorld.x, character.rayResult.hitNormalWorld.y,
-                character.rayResult.hitNormalWorld.z);
+            const normal = new THREE.Vector3(this.rayResult.hitNormalWorld.x, this.rayResult.hitNormalWorld.y,
+                this.rayResult.hitNormalWorld.z);
             const q = new THREE.Quaternion().setFromUnitVectors(up, normal);
             const m = new THREE.Matrix4().makeRotationFromQuaternion(q);
 
@@ -124,8 +128,8 @@ export class CharacterPhysics {
             body.velocity.y = newVelocity.y;
             body.velocity.z = newVelocity.z;
             // Ground character
-            body.position.y = character.rayResult.hitPointWorld.y +
-                character.rayCastLength + (newVelocity.y / character.world.physicsFrameRate);
+            body.position.y = this.rayResult.hitPointWorld.y +
+                this.rayCastLength + (newVelocity.y / character.world.physicsFrameRate);
         } else {
             // If we're in air
             body.velocity.x = newVelocity.x;
@@ -133,9 +137,9 @@ export class CharacterPhysics {
             body.velocity.z = newVelocity.z;
 
             // Save last in-air information
-            character.groundImpactData.velocity.x = body.velocity.x;
-            character.groundImpactData.velocity.y = body.velocity.y;
-            character.groundImpactData.velocity.z = body.velocity.z;
+            this.groundImpactData.velocity.x = body.velocity.x;
+            this.groundImpactData.velocity.y = body.velocity.y;
+            this.groundImpactData.velocity.z = body.velocity.z;
         }
         // Jumping
         if (character.wantsToJump) {
@@ -148,14 +152,14 @@ export class CharacterPhysics {
             } else {
                 // Moving objects compensation
                 const add = new CANNON.Vec3();
-                character.rayResult.body.getVelocityAtWorldPoint(character.rayResult.hitPointWorld, add);
+                this.rayResult.body.getVelocityAtWorldPoint(this.rayResult.hitPointWorld, add);
                 body.velocity.vsub(add, body.velocity);
             }
 
             // Add positive vertical velocity
             body.velocity.y += 4;
             // Move above ground by 2x safe offset value
-            body.position.y += character.raySafeOffset * 2;
+            body.position.y += this.raySafeOffset * 2;
             // Reset flag
             character.wantsToJump = false;
         }
