@@ -23,8 +23,8 @@ export class StartWalkBase extends CharacterStateBase
 		this.character.rotationSimulator.damping = 0.7;
 
 		this.character.setArcadeVelocityTarget(0.8);
-		// this.character.velocitySimulator.damping = 0.5;
-		// this.character.velocitySimulator.mass = 1;
+		// this.character.simulation.velocitySimulator.damping = 0.5;
+		// this.character.simulation.velocitySimulator.mass = 1;
 	}
 
 	public update(timeStep: number): void

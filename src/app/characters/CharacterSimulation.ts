@@ -11,13 +11,14 @@ export class CharacterSimulation {
     public defaultRotationSimulatorMass = 10;
     public defaultRotationSimulatorDamping = 0.5;
     public angularVelocity = 0;
+    public velocitySimulator: VectorSpringSimulator;
 
     constructor(character: Character) {
         this.character = character;
     }
 
     public initSpringSimulators(): void {
-        this.character.velocitySimulator = new VectorSpringSimulator(60, this.defaultVelocitySimulatorMass,
+        this.velocitySimulator = new VectorSpringSimulator(60, this.defaultVelocitySimulatorMass,
             this.defaultVelocitySimulatorDamping);
         this.character.rotationSimulator = new RelativeSpringSimulator(60, this.defaultRotationSimulatorMass,
             this.defaultRotationSimulatorDamping);
@@ -32,17 +33,17 @@ export class CharacterSimulation {
         this.character.characterCapsule.body.velocity.y = 0;
         this.character.characterCapsule.body.velocity.z = 0;
 
-        this.character.velocitySimulator.init();
+        this.velocitySimulator.init();
     }
 
     public springMovement(timeStep: number): void {
         // Simulator
-        this.character.velocitySimulator.target.copy(this.character.velocityTarget);
-        this.character.velocitySimulator.simulate(timeStep);
+        this.velocitySimulator.target.copy(this.character.velocityTarget);
+        this.velocitySimulator.simulate(timeStep);
 
         // Update values
-        this.character.velocity.copy(this.character.velocitySimulator.position);
-        this.character.acceleration.copy(this.character.velocitySimulator.velocity);
+        this.character.velocity.copy(this.velocitySimulator.position);
+        this.character.acceleration.copy(this.velocitySimulator.velocity);
     }
 
     public springRotation(timeStep: number): void {

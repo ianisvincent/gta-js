@@ -17,8 +17,8 @@ export class IdleRotateRight extends CharacterStateBase implements ICharacterSta
 		this.character.rotationSimulator.mass = 30;
 		this.character.rotationSimulator.damping = 0.6;
 
-		this.character.velocitySimulator.damping = 0.6;
-		this.character.velocitySimulator.mass = 10;
+		this.character.simulation.velocitySimulator.damping = 0.6;
+		this.character.simulation.velocitySimulator.mass = 10;
 
 		this.character.setArcadeVelocityTarget(0);
 		this.playAnimation('rotate_right', 0.1);

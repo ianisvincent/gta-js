@@ -147,7 +147,7 @@ export class CharacterPhysics {
             if (character.initJumpSpeed > -1) {
                 // Flatten velocity
                 body.velocity.y = 0;
-                const speed = Math.max(character.velocitySimulator.position.length() * 4, character.initJumpSpeed);
+                const speed = Math.max(character.simulation.velocitySimulator.position.length() * 4, character.initJumpSpeed);
                 body.velocity = Utils.cannonVector(character.orientation.clone().multiplyScalar(speed));
             } else {
                 // Moving objects compensation

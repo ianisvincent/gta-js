@@ -3,7 +3,6 @@ import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
 import { KeyBinding } from '../core/KeyBinding';
-import { VectorSpringSimulator } from '../physics/spring_simulation/VectorSpringSimulator';
 import { RelativeSpringSimulator } from '../physics/spring_simulation/RelativeSpringSimulator';
 import { Idle } from './character_states/Idle';
 import { ICharacterAI } from '../interfaces/ICharacterAI';
@@ -68,18 +67,16 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public arcadeVelocityIsAdditive = false;
 
     public moveSpeed = 4;
+    public initJumpSpeed = -1;
+    public wantsToJump = false;
 
     // Simulation
-    public velocitySimulator: VectorSpringSimulator;
     public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
     public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
     public rotationSimulator: RelativeSpringSimulator;
     public viewVector: THREE.Vector3;
     public actions: { [action: string]: KeyBinding };
     public characterCapsule: CapsuleCollider;
-
-    public wantsToJump = false;
-    public initJumpSpeed = -1;
 
     // Right-Hand Ray casting
     public rightHand: Object3D;
@@ -248,7 +245,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.characterCapsule.body.velocity.y = 0;
         this.characterCapsule.body.velocity.z = 0;
 
-        this.velocitySimulator.init();
+        this.simulation.velocitySimulator.init();
     }
 
     public setArcadeVelocityTarget(velZ: number, velX: number = 0, velY: number = 0): void {

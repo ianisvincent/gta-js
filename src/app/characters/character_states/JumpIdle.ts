@@ -14,7 +14,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 	{
 		super(character);
 
-		this.character.velocitySimulator.mass = 50;
+		this.character.simulation.velocitySimulator.mass = 50;
 
 		this.character.setArcadeVelocityTarget(0);
 		this.playAnimation('jump_idle', 0.1);
@@ -38,7 +38,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 			this.character.jump();
 			this.alreadyJumped = true;
 
-			this.character.velocitySimulator.mass = 100;
+			this.character.simulation.velocitySimulator.mass = 100;
 			this.character.rotationSimulator.damping = 0.3;
 
 			if (this.character.physics.rayResult.body.velocity.length() > 0)
