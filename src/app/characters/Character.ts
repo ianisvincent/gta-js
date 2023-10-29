@@ -31,6 +31,7 @@ import * as GUI from '../../lib/utils/dat.gui';
 import { VehicleInteraction } from './VehicleInteraction';
 import { CharacterControls } from './CharacterControls';
 import { CharacterPhysics } from './CharacterPhysics';
+import { WeaponInteraction } from "./WeaponInteraction";
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
   public updateOrder = 1;
@@ -84,7 +85,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public raycastBox: THREE.Mesh;
 
   // Right-Hand Ray casting
-  private rightHand: Object3D;
+  public rightHand: Object3D;
   private rightHandGlobalPosition: Vector3;
 
   public world: World;
@@ -107,6 +108,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public isPunching: boolean;
 
   private vehicleInteraction: VehicleInteraction;
+  private weaponInteraction: WeaponInteraction;
   private characterControls: CharacterControls;
   private characterPhysics: CharacterPhysics;
 
@@ -116,6 +118,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     this.vehicleInteraction = new VehicleInteraction(this);
     this.characterControls = new CharacterControls(this);
     this.characterPhysics = new CharacterPhysics(this);
+    this.weaponInteraction = new WeaponInteraction(this);
     this.setAnimations(gltf.animations);
 
     // The visuals group is centered for easy character tilting
@@ -230,35 +233,9 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public onDie(): void {
     this.isDead = true;
   }
-  // Character weapon interaction
+
   public setRightHand(): void {
-    this.children.forEach(children => {
-      this.rightHand = children.getObjectByName(BodyPart.RightHand);
-    });
-/*    const points = [
-      new THREE.Vector3(-0.1, 0.1, -0.1),//c
-      new THREE.Vector3(-0.1, -0.1, 0.1),//b
-      new THREE.Vector3(0.1, 0.1, 0.1),//a
-
-      new THREE.Vector3(0.1, 0.1, 0.1),//a
-      new THREE.Vector3(0.1, -0.1, -0.1),//d
-      new THREE.Vector3(-0.1, 0.1, -0.1),//c
-
-      new THREE.Vector3(-0.1, -0.1, 0.1),//b
-      new THREE.Vector3(0.1, -0.1, -0.1),//d
-      new THREE.Vector3(0.1, 0.1, 0.1),//a
-
-      new THREE.Vector3(-0.1, 0.1, -0.1),//c
-      new THREE.Vector3(0.1, -0.1, -0.1),//d
-      new THREE.Vector3(-0.1, -0.1, 0.1),//b
-    ]
-    let geometry = new THREE.BufferGeometry().setFromPoints(points);
-    geometry.computeVertexNormals();
-    geometry.computeBoundingBox();
-    const material = new THREE.MeshPhongMaterial({color: 0xffff00})
-    const mesh = new THREE.Mesh(geometry, material)
-
-    this.rightHand.add(mesh);*/
+    this.weaponInteraction.setRightHand();
   }
   // Character animation
   public setAnimations(animations: []): void {
@@ -623,45 +600,20 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
   }
 
-  // Character weapon interaction
   public loadWeapon(weaponType: WeaponType): void {
-    const loader = new GLTFLoader();
-    const rightHand = this.getObjectByName(BodyPart.RightHand);
-    loader.load(`../../assets/weapons/${weaponType}.glb`, gltf => {
-      gltf.scene.name = weaponType;
-      gltf.scene.scale.set(2, 2, 2);
-      gltf.scene.rotation.set(1.62, 0.1, 5.05);
-      gltf.scene.position.set(0, 13.7, 2.59);
-      rightHand.add(gltf.scene);
-      /*const gui = new GUI.GUI();
-      const gunGUIFolder = gui.addFolder('Gun');
-      gunGUIFolder.add(gltf.scene.rotation, 'x', 0, Math.PI * 2, 0.01);
-      gunGUIFolder.add(gltf.scene.rotation, 'y', 0, Math.PI * 2, 0.01);
-      gunGUIFolder.add(gltf.scene.rotation, 'z', 0, Math.PI * 2, 0.01);
+    this.weaponInteraction.loadWeapon(weaponType);
+  }
 
-      gunGUIFolder.add(gltf.scene.position, 'x', 0, 100, 0.01);
-      gunGUIFolder.add(gltf.scene.position, 'y', 0, 100, 0.01);
-      gunGUIFolder.add(gltf.scene.position, 'z', 0, 100, 0.01);*/
-    }, undefined, error => {
-      console.error(error);
-    });
-    this.hasWeaponLoaded = true;
-  }
-  // Character weapon interaction
   public unloadWeapon(): void {
-    const rightHand = this.getObjectByName(BodyPart.RightHand);
-    const gun = this.getObjectByName('gun');
-    rightHand.remove(gun);
-    this.hasWeaponLoaded = false;
+    this.weaponInteraction.unloadWeapon();
   }
-  // Character weapon interaction
-  lockAiming(character: Character): void {
-    this.world.cameraOperator.aimingMode = true;
-    this.world.cameraOperator.targetedCharacter = character;
+
+  public lockAiming(character: Character): void {
+    this.weaponInteraction.lockAiming(character);
   }
-  // Character weapon interaction
-  unlockAiming(): void {
-    this.world.cameraOperator.aimingMode = false;
+
+  public unlockAiming(): void {
+    this.weaponInteraction.unlockAiming();
   }
 
   private updatePlayerHealthBar(damage: number): void {
