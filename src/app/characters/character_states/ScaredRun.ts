@@ -10,8 +10,8 @@ export class ScaredRun extends NpcStateBase implements ICharacterState {
         this.character.setArcadeVelocityTarget(0);
         this.playAnimation('scared_run', 0.1, false, false);
         this.character.simulation.velocitySimulator.mass = 10;
-        this.character.rotationSimulator.damping = 0.8;
-        this.character.rotationSimulator.mass = 50;
+        this.character.simulation.rotationSimulator.damping = 0.8;
+        this.character.simulation.rotationSimulator.mass = 50;
         this.character.setArcadeVelocityTarget(1.1);
     }
 

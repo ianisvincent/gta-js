@@ -32,8 +32,8 @@ export abstract class CharacterStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.damping = this.character.simulation.defaultVelocitySimulatorDamping;
         this.character.simulation.velocitySimulator.mass = this.character.simulation.defaultVelocitySimulatorMass;
 
-        this.character.rotationSimulator.damping = this.character.simulation.defaultRotationSimulatorDamping;
-        this.character.rotationSimulator.mass = this.character.simulation.defaultRotationSimulatorMass;
+        this.character.simulation.rotationSimulator.damping = this.character.simulation.defaultRotationSimulatorDamping;
+        this.character.simulation.rotationSimulator.mass = this.character.simulation.defaultRotationSimulatorMass;
 
         this.character.arcadeVelocityIsAdditive = false;
         this.character.setArcadeVelocityInfluence(1, 0, 1);
@@ -135,7 +135,7 @@ export abstract class CharacterStateBase implements ICharacterState {
 
     public setAppropriateStartWalkState(): void {
         let range = Math.PI;
-        let angle = Utils.getSignedAngleBetweenVectors(this.character.orientation, this.character.getCameraRelativeMovementVector());
+        let angle = Utils.getSignedAngleBetweenVectors(this.character.simulation.orientation, this.character.getCameraRelativeMovementVector());
 
         if (angle > range * 0.8) {
             this.character.setState(new StartWalkBackLeft(this.character));

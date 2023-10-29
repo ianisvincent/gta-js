@@ -12,7 +12,7 @@ export class Falling extends CharacterStateBase implements ICharacterState
 		super(character);
 
 		this.character.simulation.velocitySimulator.mass = 100;
-		this.character.rotationSimulator.damping = 0.3;
+		this.character.simulation.rotationSimulator.damping = 0.3;
 
 		this.character.arcadeVelocityIsAdditive = true;
 		this.character.setArcadeVelocityInfluence(0.05, 0, 0.05);

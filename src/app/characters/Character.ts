@@ -3,7 +3,6 @@ import * as CANNON from 'cannon';
 import * as _ from 'lodash';
 import * as Utils from '../core/FunctionLibrary';
 import { KeyBinding } from '../core/KeyBinding';
-import { RelativeSpringSimulator } from '../physics/spring_simulation/RelativeSpringSimulator';
 import { Idle } from './character_states/Idle';
 import { ICharacterAI } from '../interfaces/ICharacterAI';
 import { World } from '../world/World';
@@ -70,10 +69,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public initJumpSpeed = -1;
     public wantsToJump = false;
 
-    // Simulation
-    public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
-    public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
-    public rotationSimulator: RelativeSpringSimulator;
     public viewVector: THREE.Vector3;
     public actions: { [action: string]: KeyBinding };
     public characterCapsule: CapsuleCollider;
@@ -256,10 +251,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public setOrientation(vector: THREE.Vector3, instantly: boolean = false): void {
         const lookVector = new THREE.Vector3().copy(vector).setY(0).normalize();
-        this.orientationTarget.copy(lookVector);
+        this.simulation.orientationTarget.copy(lookVector);
 
         if (instantly) {
-            this.orientation.copy(lookVector);
+            this.simulation.orientation.copy(lookVector);
         }
     }
 
@@ -441,7 +436,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             const moveVector = this.getCameraRelativeMovementVector();
 
             if (moveVector.x === 0 && moveVector.y === 0 && moveVector.z === 0) {
-                this.setOrientation(this.orientation);
+                this.setOrientation(this.simulation.orientation);
             } else {
                 this.setOrientation(moveVector);
             }
@@ -449,7 +444,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public rotateModel(): void {
-        this.lookAt(this.position.x + this.orientation.x, this.position.y + this.orientation.y, this.position.z + this.orientation.z);
+        this.lookAt(this.position.x + this.simulation.orientation.x, this.position.y + this.simulation.orientation.y, this.position.z + this.simulation.orientation.z);
         this.tiltContainer.rotation.z = (-this.simulation.angularVelocity * 2.3 * this.velocity.length());
         this.tiltContainer.position.setY((Math.cos(Math.abs(this.simulation.angularVelocity * 2.3 * this.velocity.length())) / 2) - 0.5);
     }

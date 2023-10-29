@@ -12,6 +12,9 @@ export class CharacterSimulation {
     public defaultRotationSimulatorDamping = 0.5;
     public angularVelocity = 0;
     public velocitySimulator: VectorSpringSimulator;
+    public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
+    public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
+    public rotationSimulator: RelativeSpringSimulator;
 
     constructor(character: Character) {
         this.character = character;
@@ -20,7 +23,7 @@ export class CharacterSimulation {
     public initSpringSimulators(): void {
         this.velocitySimulator = new VectorSpringSimulator(60, this.defaultVelocitySimulatorMass,
             this.defaultVelocitySimulatorDamping);
-        this.character.rotationSimulator = new RelativeSpringSimulator(60, this.defaultRotationSimulatorMass,
+        this.rotationSimulator = new RelativeSpringSimulator(60, this.defaultRotationSimulatorMass,
             this.defaultRotationSimulatorDamping);
     }
 
@@ -49,15 +52,15 @@ export class CharacterSimulation {
     public springRotation(timeStep: number): void {
         // Spring rotation
         // Figure out angle between current and target orientation
-        const angle = Utils.getSignedAngleBetweenVectors(this.character.orientation, this.character.orientationTarget);
+        const angle = Utils.getSignedAngleBetweenVectors(this.orientation, this.orientationTarget);
 
         // Simulator
-        this.character.rotationSimulator.target = angle;
-        this.character.rotationSimulator.simulate(timeStep);
-        const rot = this.character.rotationSimulator.position;
+        this.rotationSimulator.target = angle;
+        this.rotationSimulator.simulate(timeStep);
+        const rot = this.rotationSimulator.position;
 
         // Updating values
-        this.character.orientation.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
-        this.angularVelocity = this.character.rotationSimulator.velocity;
+        this.orientation.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
+        this.angularVelocity = this.rotationSimulator.velocity;
     }
 }

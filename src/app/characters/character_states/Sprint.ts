@@ -16,8 +16,8 @@ export class Sprint extends CharacterStateBase
 		this.canEnterVehicles = true;
 
 		this.character.simulation.velocitySimulator.mass = 10;
-		this.character.rotationSimulator.damping = 0.8;
-		this.character.rotationSimulator.mass = 50;
+		this.character.simulation.rotationSimulator.damping = 0.8;
+		this.character.simulation.rotationSimulator.mass = 50;
 
 		this.character.setArcadeVelocityTarget(1.1);
 		this.playAnimation('run', 0.1);

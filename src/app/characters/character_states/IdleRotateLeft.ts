@@ -14,8 +14,8 @@ export class IdleRotateLeft extends CharacterStateBase implements ICharacterStat
 	{
 		super(character);
 
-		this.character.rotationSimulator.mass = 30;
-		this.character.rotationSimulator.damping = 0.6;
+		this.character.simulation.rotationSimulator.mass = 30;
+		this.character.simulation.rotationSimulator.damping = 0.6;
 
 		this.character.simulation.velocitySimulator.damping = 0.6;
 		this.character.simulation.velocitySimulator.mass = 10;

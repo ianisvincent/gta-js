@@ -67,7 +67,7 @@ export class CharacterPhysics {
         // Take local velocity
         let arcadeVelocity = new THREE.Vector3().copy(character.velocity).multiplyScalar(character.moveSpeed);
         // Turn local into global
-        arcadeVelocity = Utils.appplyVectorMatrixXZ(character.orientation, arcadeVelocity);
+        arcadeVelocity = Utils.appplyVectorMatrixXZ(character.simulation.orientation, arcadeVelocity);
 
         let newVelocity = new THREE.Vector3();
 
@@ -75,7 +75,7 @@ export class CharacterPhysics {
         if (character.arcadeVelocityIsAdditive) {
             newVelocity.copy(simulatedVelocity);
 
-            const globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.orientation, character.velocityTarget);
+            const globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.simulation.orientation, character.velocityTarget);
             const add = new THREE.Vector3().copy(arcadeVelocity).multiply(character.arcadeVelocityInfluence);
 
             if (Math.abs(simulatedVelocity.x) < Math.abs(globalVelocityTarget.x * character.moveSpeed)
@@ -148,7 +148,7 @@ export class CharacterPhysics {
                 // Flatten velocity
                 body.velocity.y = 0;
                 const speed = Math.max(character.simulation.velocitySimulator.position.length() * 4, character.initJumpSpeed);
-                body.velocity = Utils.cannonVector(character.orientation.clone().multiplyScalar(speed));
+                body.velocity = Utils.cannonVector(character.simulation.orientation.clone().multiplyScalar(speed));
             } else {
                 // Moving objects compensation
                 const add = new CANNON.Vec3();

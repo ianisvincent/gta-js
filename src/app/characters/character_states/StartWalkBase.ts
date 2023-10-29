@@ -19,8 +19,8 @@ export class StartWalkBase extends CharacterStateBase
 		super(character);
 
 		this.canEnterVehicles = true;
-		this.character.rotationSimulator.mass = 20;
-		this.character.rotationSimulator.damping = 0.7;
+		this.character.simulation.rotationSimulator.mass = 20;
+		this.character.simulation.rotationSimulator.damping = 0.7;
 
 		this.character.setArcadeVelocityTarget(0.8);
 		// this.character.simulation.velocitySimulator.damping = 0.5;
@@ -70,7 +70,7 @@ export class StartWalkBase extends CharacterStateBase
 		{
 			if (this.timer < 0.1)
 			{
-				let angle = Utils.getSignedAngleBetweenVectors(this.character.orientation, this.character.orientationTarget);
+				let angle = Utils.getSignedAngleBetweenVectors(this.character.simulation.orientation, this.character.simulation.orientationTarget);
 
 				if (angle > Math.PI * 0.4)
 				{

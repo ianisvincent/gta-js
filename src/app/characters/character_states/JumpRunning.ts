@@ -36,7 +36,7 @@ export class JumpRunning extends CharacterStateBase implements ICharacterState
 			this.character.jump(4);
 			this.alreadyJumped = true;
 
-			this.character.rotationSimulator.damping = 0.3;
+			this.character.simulation.rotationSimulator.damping = 0.3;
 			this.character.arcadeVelocityIsAdditive = true;
 			this.character.setArcadeVelocityInfluence(0.05, 0, 0.05);
 		}
