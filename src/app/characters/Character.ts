@@ -19,7 +19,6 @@ import { VehicleEntryInstance } from './VehicleEntryInstance';
 import { GroundImpactData } from './GroundImpactData';
 import { Object3D, Vector3 } from 'three';
 import { EntityType } from '../enums/EntityType';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { BodyPart } from '../enums/BodyPart';
 import { CameraOperator } from '../core/CameraOperator';
 import { IDamageable } from '../interfaces/IDamageable';
@@ -31,9 +30,17 @@ import * as GUI from '../../lib/utils/dat.gui';
 import { VehicleInteraction } from './VehicleInteraction';
 import { CharacterControls } from './CharacterControls';
 import { CharacterPhysics } from './CharacterPhysics';
-import { WeaponInteraction } from "./WeaponInteraction";
+import { WeaponInteraction } from './WeaponInteraction';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
+  private characterControls: CharacterControls;
+  private vehicleInteraction: VehicleInteraction;
+  private weaponInteraction: WeaponInteraction;
+  private characterPhysics: CharacterPhysics;
+  private clip: THREE.AnimationClip;
+  private aimingSettings = {offSet: 1.64, amplitude: 2.49};
+  private rightHandGlobalPosition: Vector3;
+
   public updateOrder = 1;
   public entityType: EntityType = EntityType.Character;
 
@@ -86,7 +93,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
   // Right-Hand Ray casting
   public rightHand: Object3D;
-  private rightHandGlobalPosition: Vector3;
 
   public world: World;
   public charState: ICharacterState;
@@ -97,20 +103,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
   public occupyingSeat: VehicleSeat = null;
   public vehicleEntryInstance: VehicleEntryInstance = null;
 
-
-
   public isAiming = false;
   public health = 100;
   public isDead: boolean;
 
-  private clip: THREE.AnimationClip;
-  private aimingSettings = {offSet: 1.64, amplitude: 2.49};
   public isPunching: boolean;
-
-  private vehicleInteraction: VehicleInteraction;
-  private weaponInteraction: WeaponInteraction;
-  private characterControls: CharacterControls;
-  private characterPhysics: CharacterPhysics;
 
   constructor(gltf: any, public characterService?: CharacterService) {
     super();
