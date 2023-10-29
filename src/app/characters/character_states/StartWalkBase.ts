@@ -22,7 +22,7 @@ export class StartWalkBase extends CharacterStateBase
 		this.character.simulation.rotationSimulator.mass = 20;
 		this.character.simulation.rotationSimulator.damping = 0.7;
 
-		this.character.setArcadeVelocityTarget(0.8);
+		this.character.simulation.setArcadeVelocityTarget(0.8);
 		// this.character.simulation.velocitySimulator.damping = 0.5;
 		// this.character.simulation.velocitySimulator.mass = 1;
 	}

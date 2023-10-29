@@ -231,24 +231,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         }
     }
 
-    public resetVelocity(): void {
-        this.velocity.x = 0;
-        this.velocity.y = 0;
-        this.velocity.z = 0;
-
-        this.characterCapsule.body.velocity.x = 0;
-        this.characterCapsule.body.velocity.y = 0;
-        this.characterCapsule.body.velocity.z = 0;
-
-        this.simulation.velocitySimulator.init();
-    }
-
-    public setArcadeVelocityTarget(velZ: number, velX: number = 0, velY: number = 0): void {
-        this.velocityTarget.z = velZ;
-        this.velocityTarget.x = velX;
-        this.velocityTarget.y = velY;
-    }
-
     public setOrientation(vector: THREE.Vector3, instantly: boolean = false): void {
         const lookVector = new THREE.Vector3().copy(vector).setY(0).normalize();
         this.simulation.orientationTarget.copy(lookVector);

@@ -27,6 +27,12 @@ export class CharacterSimulation {
             this.defaultRotationSimulatorDamping);
     }
 
+    public setArcadeVelocityTarget(velZ: number, velX: number = 0, velY: number = 0): void {
+        this.character.velocityTarget.z = velZ;
+        this.character.velocityTarget.x = velX;
+        this.character.velocityTarget.y = velY;
+    }
+
     public resetVelocity(): void {
         this.character.velocity.x = 0;
         this.character.velocity.y = 0;

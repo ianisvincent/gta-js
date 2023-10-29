@@ -15,7 +15,7 @@ export class DropRunning extends CharacterStateBase implements ICharacterState
 	{
 		super(character);
 
-		this.character.setArcadeVelocityTarget(0.8);
+		this.character.simulation.setArcadeVelocityTarget(0.8);
 		this.playAnimation('drop_running', 0.1);
 	}
 

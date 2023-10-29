@@ -16,7 +16,7 @@ export class DropRolling extends CharacterStateBase implements ICharacterState
 		this.character.simulation.velocitySimulator.mass = 1;
 		this.character.simulation.velocitySimulator.damping = 0.6;
 
-		this.character.setArcadeVelocityTarget(0.8);
+		this.character.simulation.setArcadeVelocityTarget(0.8);
 		this.playAnimation('drop_running_roll', 0.03);
 	}
 

@@ -28,7 +28,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.damping = 0.6;
         this.character.simulation.velocitySimulator.mass = 10;
         this.character.isAiming = true;
-        this.character.setArcadeVelocityTarget(0);
+        this.character.simulation.setArcadeVelocityTarget(0);
         this.playAnimation('aim_pistol_idle', 0.1, true, true);
         this.spawnObjectOnPoint();
     }

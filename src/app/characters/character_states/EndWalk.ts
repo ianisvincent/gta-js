@@ -15,7 +15,7 @@ export class EndWalk extends CharacterStateBase implements ICharacterState
 	{
 		super(character);
 
-		this.character.setArcadeVelocityTarget(0);
+		this.character.simulation.setArcadeVelocityTarget(0);
 		this.animationLength = character.setAnimation('stop', 0.1);
 	}
 

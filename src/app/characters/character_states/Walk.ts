@@ -16,7 +16,7 @@ export class Walk extends CharacterStateBase
 	{
 		super(character);
 		this.canEnterVehicles = true;
-		this.character.setArcadeVelocityTarget(0.5);
+		this.character.simulation.setArcadeVelocityTarget(0.5);
 		this.playAnimation('walk', 0.1);
 	}
 

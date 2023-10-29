@@ -28,7 +28,7 @@ export class JumpRunning extends CharacterStateBase implements ICharacterState
 		// Move in air
 		if (this.alreadyJumped)
 		{
-			this.character.setArcadeVelocityTarget(this.anyDirection() ? 0.8 : 0);
+			this.character.simulation.setArcadeVelocityTarget(this.anyDirection() ? 0.8 : 0);
 		}
 		// Physically jump
 		if (this.timer > 0.13 && !this.alreadyJumped)

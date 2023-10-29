@@ -7,7 +7,7 @@ export class Die extends CharacterStateBase implements ICharacterState {
         super(character);
         this.character.simulation.velocitySimulator.damping = 0.6;
         this.character.simulation.velocitySimulator.mass = 10;
-        this.character.setArcadeVelocityTarget(0);
+        this.character.simulation.setArcadeVelocityTarget(0);
         this.playAnimation('die', 0.1, true, true);
     }
 
