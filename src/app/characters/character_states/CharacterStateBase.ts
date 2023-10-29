@@ -29,11 +29,11 @@ export abstract class CharacterStateBase implements ICharacterState {
     constructor(character: Character) {
         this.character = character;
 
-        this.character.velocitySimulator.damping = this.character.defaultVelocitySimulatorDamping;
-        this.character.velocitySimulator.mass = this.character.defaultVelocitySimulatorMass;
+        this.character.velocitySimulator.damping = this.character.simulation.defaultVelocitySimulatorDamping;
+        this.character.velocitySimulator.mass = this.character.simulation.defaultVelocitySimulatorMass;
 
-        this.character.rotationSimulator.damping = this.character.defaultRotationSimulatorDamping;
-        this.character.rotationSimulator.mass = this.character.defaultRotationSimulatorMass;
+        this.character.rotationSimulator.damping = this.character.simulation.defaultRotationSimulatorDamping;
+        this.character.rotationSimulator.mass = this.character.simulation.defaultRotationSimulatorMass;
 
         this.character.arcadeVelocityIsAdditive = false;
         this.character.setArcadeVelocityInfluence(1, 0, 1);

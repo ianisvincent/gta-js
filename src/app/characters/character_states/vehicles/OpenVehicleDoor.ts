@@ -42,7 +42,7 @@ export class OpenVehicleDoor extends CharacterStateBase
 			this.playAnimation('open_door_standing_right', 0.1);
 		}
 
-		this.character.resetVelocity();
+		this.character.simulation.resetVelocity();
 		this.character.rotateModel();
 		this.character.setPhysicsEnabled(false);
 

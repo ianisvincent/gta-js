@@ -95,7 +95,7 @@ export class VehicleInteraction {
     }
 
     public teleportToVehicle(vehicle: Vehicle, seat: VehicleSeat): void {
-        this.character.resetVelocity();
+        this.character.simulation.resetVelocity();
         this.character.rotateModel();
         this.character.setPhysicsEnabled(false);
         (vehicle as unknown as THREE.Object3D).attach(this.character);

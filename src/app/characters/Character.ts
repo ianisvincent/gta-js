@@ -29,12 +29,14 @@ import { VehicleInteraction } from './VehicleInteraction';
 import { CharacterControls } from './CharacterControls';
 import { CharacterPhysics } from './CharacterPhysics';
 import { WeaponInteraction } from './WeaponInteraction';
+import { CharacterSimulation } from './CharacterSimulation';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     private controls: CharacterControls;
     private vehicleInteraction: VehicleInteraction;
     private weaponInteraction: WeaponInteraction;
     public physics: CharacterPhysics;
+    public simulation: CharacterSimulation;
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
     private rightHandGlobalPosition: Vector3;
@@ -65,15 +67,12 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public velocityTarget: THREE.Vector3 = new THREE.Vector3();
     public arcadeVelocityIsAdditive = false;
 
-    public defaultVelocitySimulatorDamping = 0.8;
-    public defaultVelocitySimulatorMass = 50;
-    public velocitySimulator: VectorSpringSimulator;
     public moveSpeed = 4;
-    public angularVelocity = 0;
+
+    // Simulation
+    public velocitySimulator: VectorSpringSimulator;
     public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
     public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
-    public defaultRotationSimulatorDamping = 0.5;
-    public defaultRotationSimulatorMass = 10;
     public rotationSimulator: RelativeSpringSimulator;
     public viewVector: THREE.Vector3;
     public actions: { [action: string]: KeyBinding };
@@ -107,6 +106,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.controls = new CharacterControls(this);
         this.physics = new CharacterPhysics(this);
         this.weaponInteraction = new WeaponInteraction(this);
+        this.simulation = new CharacterSimulation(this);
         this.setAnimations(gltf.animations);
 
         // The visuals group is centered for easy character tilting
@@ -121,15 +121,13 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
         this.mixer = new THREE.AnimationMixer(gltf.scene);
 
-        this.velocitySimulator = new VectorSpringSimulator(60, this.defaultVelocitySimulatorMass, this.defaultVelocitySimulatorDamping);
-        this.rotationSimulator = new RelativeSpringSimulator(60, this.defaultRotationSimulatorMass, this.defaultRotationSimulatorDamping);
+        this.simulation.initSpringSimulators();
 
         this.viewVector = new THREE.Vector3();
 
         // Actions
         this.actions = this.controls.initActions();
 
-        // Physics
         // Player Capsule
         this.characterCapsule = new CapsuleCollider({
             mass: 1,
@@ -163,12 +161,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
         // Physics pre/post step callback bindings
         this.characterCapsule.body.preStep = (body: CANNON.Body) => {
-            this.physicsPreStep(body, this);
+            this.physics.physicsPreStep(body);
         };
         this.characterCapsule.body.postStep = (body: CANNON.Body) => {
-            this.physicsPostStep(body, this);
+            this.physics.physicsPostStep(body, this);
         };
-
 
         // States
         this.setState(new Idle(this));
@@ -337,10 +334,10 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.charState?.update(timeStep);
         // this.visuals.position.copy(this.modelOffset);
         if (this.physics.isEnabled) {
-            this.springMovement(timeStep);
+            this.simulation.springMovement(timeStep);
         }
         if (this.physics.isEnabled) {
-            this.springRotation(timeStep);
+            this.simulation.springRotation(timeStep);
         }
         if (this.physics.isEnabled) {
             this.rotateModel();
@@ -424,31 +421,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         }
     }
 
-    public springMovement(timeStep: number): void {
-        // Simulator
-        this.velocitySimulator.target.copy(this.velocityTarget);
-        this.velocitySimulator.simulate(timeStep);
-
-        // Update values
-        this.velocity.copy(this.velocitySimulator.position);
-        this.acceleration.copy(this.velocitySimulator.velocity);
-    }
-
-    public springRotation(timeStep: number): void {
-        // Spring rotation
-        // Figure out angle between current and target orientation
-        const angle = Utils.getSignedAngleBetweenVectors(this.orientation, this.orientationTarget);
-
-        // Simulator
-        this.rotationSimulator.target = angle;
-        this.rotationSimulator.simulate(timeStep);
-        const rot = this.rotationSimulator.position;
-
-        // Updating values
-        this.orientation.applyAxisAngle(new THREE.Vector3(0, 1, 0), rot);
-        this.angularVelocity = this.rotationSimulator.velocity;
-    }
-
     public getLocalMovementDirection(): THREE.Vector3 {
         const positiveX = this.actions.right.isPressed ? -1 : 0;
         const negativeX = this.actions.left.isPressed ? 1 : 0;
@@ -481,8 +453,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public rotateModel(): void {
         this.lookAt(this.position.x + this.orientation.x, this.position.y + this.orientation.y, this.position.z + this.orientation.z);
-        this.tiltContainer.rotation.z = (-this.angularVelocity * 2.3 * this.velocity.length());
-        this.tiltContainer.position.setY((Math.cos(Math.abs(this.angularVelocity * 2.3 * this.velocity.length())) / 2) - 0.5);
+        this.tiltContainer.rotation.z = (-this.simulation.angularVelocity * 2.3 * this.velocity.length());
+        this.tiltContainer.position.setY((Math.cos(Math.abs(this.simulation.angularVelocity * 2.3 * this.velocity.length())) / 2) - 0.5);
     }
 
     public jump(initJumpSpeed: number = -1): void {
@@ -524,18 +496,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public leaveSeat(): void {
         this.vehicleInteraction.leaveSeat();
-    }
-
-    public physicsPreStep(body: CANNON.Body, character: Character): void {
-        this.physics.physicsPreStep(body, character);
-    }
-
-    public feetRaycast(): void {
-        this.physics.feetRaycast();
-    }
-
-    public physicsPostStep(body: CANNON.Body, character: Character): void {
-        this.physics.physicsPostStep(body, character);
     }
 
     public addToWorld(world: World): void {

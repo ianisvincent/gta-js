@@ -41,7 +41,7 @@ export class EnteringVehicle extends CharacterStateBase
 		this.animData = this.getEntryAnimations(seat.vehicle.entityType);
 		this.playAnimation(this.animData[side], 0.1);
 
-		this.character.resetVelocity();
+		this.character.simulation.resetVelocity();
 		this.character.tiltContainer.rotation.z = 0;
 		this.character.setPhysicsEnabled(false);
 		(this.seat.vehicle as unknown as THREE.Object3D).attach(this.character);

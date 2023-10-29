@@ -28,8 +28,8 @@ export class CharacterPhysics {
         }
     }
 
-    public physicsPreStep(body: CANNON.Body, character: Character): void {
-        character.feetRaycast();
+    public physicsPreStep(body: CANNON.Body): void {
+        this.feetRaycast();
         // Raycast debug
         if (this.rayHasHit) {
             if (this.raycastBox.visible) {
