@@ -49,7 +49,7 @@ export class EndWalk extends CharacterStateBase implements ICharacterState
 			}
 			else
 			{
-				if (this.character.velocity.length() > 0.5)
+				if (this.character.simulation.velocity.length() > 0.5)
 				{
 					this.character.setState(new Walk(this.character));
 				}

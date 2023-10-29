@@ -6,6 +6,7 @@ import * as Utils from '../../core/FunctionLibrary';
 
 export class CharacterSimulationManager {
     private readonly character: Character;
+    private acceleration: THREE.Vector3 = new THREE.Vector3();
     public defaultVelocitySimulatorDamping = 0.8;
     public defaultVelocitySimulatorMass = 50;
     public defaultRotationSimulatorMass = 10;
@@ -15,6 +16,8 @@ export class CharacterSimulationManager {
     public orientation: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
     public orientationTarget: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
     public rotationSimulator: RelativeSpringSimulator;
+    public velocityTarget: THREE.Vector3 = new THREE.Vector3();
+    public velocity: THREE.Vector3 = new THREE.Vector3();
 
     constructor(character: Character) {
         this.character = character;
@@ -28,15 +31,15 @@ export class CharacterSimulationManager {
     }
 
     public setArcadeVelocityTarget(velZ: number, velX: number = 0, velY: number = 0): void {
-        this.character.velocityTarget.z = velZ;
-        this.character.velocityTarget.x = velX;
-        this.character.velocityTarget.y = velY;
+        this.velocityTarget.z = velZ;
+        this.velocityTarget.x = velX;
+        this.velocityTarget.y = velY;
     }
 
     public resetVelocity(): void {
-        this.character.velocity.x = 0;
-        this.character.velocity.y = 0;
-        this.character.velocity.z = 0;
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+        this.velocity.z = 0;
 
         this.character.characterCapsule.body.velocity.x = 0;
         this.character.characterCapsule.body.velocity.y = 0;
@@ -47,12 +50,12 @@ export class CharacterSimulationManager {
 
     public springMovement(timeStep: number): void {
         // Simulator
-        this.velocitySimulator.target.copy(this.character.velocityTarget);
+        this.velocitySimulator.target.copy(this.velocityTarget);
         this.velocitySimulator.simulate(timeStep);
 
         // Update values
-        this.character.velocity.copy(this.velocitySimulator.position);
-        this.character.acceleration.copy(this.velocitySimulator.velocity);
+        this.velocity.copy(this.velocitySimulator.position);
+        this.acceleration.copy(this.velocitySimulator.velocity);
     }
 
     public springRotation(timeStep: number): void {

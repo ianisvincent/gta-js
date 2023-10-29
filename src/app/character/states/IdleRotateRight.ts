@@ -47,7 +47,7 @@ export class IdleRotateRight extends CharacterStateBase implements ICharacterSta
 
 		if (this.anyDirection())
 		{
-			if (this.character.velocity.length() > 0.5)
+			if (this.character.simulation.velocity.length() > 0.5)
 			{
 				this.character.setState(new Walk(this.character));
 			}

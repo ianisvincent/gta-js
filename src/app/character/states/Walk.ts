@@ -62,7 +62,7 @@ export class Walk extends CharacterStateBase
 
 		if (this.noDirection())
 		{
-			if (this.character.velocity.length() > 1)
+			if (this.character.simulation.velocity.length() > 1)
 			{
 				this.character.setState(new EndWalk(this.character));
 			}

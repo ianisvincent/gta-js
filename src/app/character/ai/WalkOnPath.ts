@@ -28,7 +28,7 @@ export class WalkOnPath extends WalkFollowTarget implements ICharacterAI {
         let targetToNextNode = this.targetNode.nextNode.object.position.clone().sub(this.targetNode.object.position);
         targetToNextNode.normalize();
         let slowDownAngle = viewVector.clone().normalize().dot(targetToNextNode);
-        let speed = this.character.velocity.length();
+        let speed = this.character.simulation.velocity.length();
 
         if ((slowDownAngle < 0.7 && viewVector.length() < 50 && speed > 10)) {
             this.character.triggerAction('down', true);

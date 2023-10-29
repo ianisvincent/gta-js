@@ -14,6 +14,8 @@ export class CharacterPhysicsManager {
     public rayHasHit = false;
     public groundImpactData: GroundImpactData = new GroundImpactData();
     public raycastBox: THREE.Mesh;
+    public arcadeVelocityInfluence: THREE.Vector3 = new THREE.Vector3();
+    public arcadeVelocityIsAdditive = false;
 
     constructor(character: Character) {
         this.character = character;
@@ -65,18 +67,18 @@ export class CharacterPhysicsManager {
         // Get velocities
         const simulatedVelocity = new THREE.Vector3(body.velocity.x, body.velocity.y, body.velocity.z);
         // Take local velocity
-        let arcadeVelocity = new THREE.Vector3().copy(character.velocity).multiplyScalar(character.moveSpeed);
+        let arcadeVelocity = new THREE.Vector3().copy(character.simulation.velocity).multiplyScalar(character.moveSpeed);
         // Turn local into global
         arcadeVelocity = Utils.appplyVectorMatrixXZ(character.simulation.orientation, arcadeVelocity);
 
         let newVelocity = new THREE.Vector3();
 
         // Additive velocity mode
-        if (character.arcadeVelocityIsAdditive) {
+        if (this.arcadeVelocityIsAdditive) {
             newVelocity.copy(simulatedVelocity);
 
-            const globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.simulation.orientation, character.velocityTarget);
-            const add = new THREE.Vector3().copy(arcadeVelocity).multiply(character.arcadeVelocityInfluence);
+            const globalVelocityTarget = Utils.appplyVectorMatrixXZ(character.simulation.orientation, character.simulation.velocityTarget);
+            const add = new THREE.Vector3().copy(arcadeVelocity).multiply(this.arcadeVelocityInfluence);
 
             if (Math.abs(simulatedVelocity.x) < Math.abs(globalVelocityTarget.x * character.moveSpeed)
                 || Utils.haveDifferentSigns(simulatedVelocity.x, arcadeVelocity.x)) {
@@ -92,9 +94,9 @@ export class CharacterPhysicsManager {
             }
         } else {
             newVelocity = new THREE.Vector3(
-                THREE.MathUtils.lerp(simulatedVelocity.x, arcadeVelocity.x, character.arcadeVelocityInfluence.x),
-                THREE.MathUtils.lerp(simulatedVelocity.y, arcadeVelocity.y, character.arcadeVelocityInfluence.y),
-                THREE.MathUtils.lerp(simulatedVelocity.z, arcadeVelocity.z, character.arcadeVelocityInfluence.z),
+                THREE.MathUtils.lerp(simulatedVelocity.x, arcadeVelocity.x, this.arcadeVelocityInfluence.x),
+                THREE.MathUtils.lerp(simulatedVelocity.y, arcadeVelocity.y, this.arcadeVelocityInfluence.y),
+                THREE.MathUtils.lerp(simulatedVelocity.z, arcadeVelocity.z, this.arcadeVelocityInfluence.z),
             );
         }
         // If we're hitting the ground, stick to ground
@@ -165,4 +167,7 @@ export class CharacterPhysicsManager {
         }
     }
 
+    public setArcadeVelocityInfluence(x: number, y: number = x, z: number = x): void {
+        this.arcadeVelocityInfluence.set(x, y, z);
+    }
 }

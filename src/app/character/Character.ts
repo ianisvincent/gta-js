@@ -57,11 +57,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public hasWeaponLoaded = false;
 
     // Movement
-    public acceleration: THREE.Vector3 = new THREE.Vector3();
-    public velocity: THREE.Vector3 = new THREE.Vector3();
-    public arcadeVelocityInfluence: THREE.Vector3 = new THREE.Vector3();
-    public velocityTarget: THREE.Vector3 = new THREE.Vector3();
-    public arcadeVelocityIsAdditive = false;
 
     public moveSpeed = 4;
     public initJumpSpeed = -1;
@@ -194,10 +189,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public setRightHand(): void {
         this.weaponInteraction.setRightHand();
-    }
-
-    public setArcadeVelocityInfluence(x: number, y: number = x, z: number = x): void {
-        this.arcadeVelocityInfluence.set(x, y, z);
     }
 
     public setViewVector(vector: THREE.Vector3): void {
@@ -381,8 +372,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public rotateModel(): void {
         this.lookAt(this.position.x + this.simulation.orientation.x, this.position.y + this.simulation.orientation.y, this.position.z + this.simulation.orientation.z);
-        this.tiltContainer.rotation.z = (-this.simulation.angularVelocity * 2.3 * this.velocity.length());
-        this.tiltContainer.position.setY((Math.cos(Math.abs(this.simulation.angularVelocity * 2.3 * this.velocity.length())) / 2) - 0.5);
+        this.tiltContainer.rotation.z = (-this.simulation.angularVelocity * 2.3 * this.simulation.velocity.length());
+        this.tiltContainer.position.setY((Math.cos(Math.abs(this.simulation.angularVelocity * 2.3 * this.simulation.velocity.length())) / 2) - 0.5);
     }
 
     public jump(initJumpSpeed: number = -1): void {
