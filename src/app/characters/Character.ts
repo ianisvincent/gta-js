@@ -28,6 +28,7 @@ import { CharacterControls } from './CharacterControls';
 import { CharacterPhysics } from './CharacterPhysics';
 import { WeaponInteraction } from './WeaponInteraction';
 import { CharacterSimulation } from './CharacterSimulation';
+import { CharacterAnimation } from './CharacterAnimation';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     private controls: CharacterControls;
@@ -35,6 +36,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     private weaponInteraction: WeaponInteraction;
     public physics: CharacterPhysics;
     public simulation: CharacterSimulation;
+    public animationManager: CharacterAnimation;
     private clip: THREE.AnimationClip;
     private aimingSettings = {offSet: 1.64, amplitude: 2.49};
     private rightHandGlobalPosition: Vector3;
@@ -99,6 +101,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.physics = new CharacterPhysics(this);
         this.weaponInteraction = new WeaponInteraction(this);
         this.simulation = new CharacterSimulation(this);
+        this.animationManager = new CharacterAnimation(this);
         this.setAnimations(gltf.animations);
 
         // The visuals group is centered for easy character tilting
@@ -111,7 +114,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         this.tiltContainer.add(this.modelContainer);
         this.modelContainer.add(gltf.scene);
 
-        this.mixer = new THREE.AnimationMixer(gltf.scene);
+        this.animationManager.initMixer(gltf);
 
         this.simulation.initSpringSimulators();
 
@@ -316,8 +319,8 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
         if (this.physics.isEnabled) {
             this.rotateModel();
         }
-        if (this.mixer !== undefined) {
-            this.mixer.update(timeStep);
+        if (this.animationManager.mixer !== undefined) {
+            this.animationManager.mixer.update(timeStep);
         }
 
         // Sync physics/graphics
@@ -358,11 +361,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     // Character animation
     public setAnimation(clipName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): number {
-        if (this.mixer !== undefined) {
+        if (this.animationManager.mixer !== undefined) {
             // gltf
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
 
-            const action = this.mixer.clipAction(this.clip);
+            const action = this.animationManager.mixer.clipAction(this.clip);
             if (action === null) {
                 console.error(`Animation ${clipName} not found!`);
                 return 0;
@@ -373,7 +376,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
             if (lockWhenFinished) {
                 action.clampWhenFinished = true;
             }
-            this.mixer.stopAllAction();
+            this.animationManager.mixer.stopAllAction();
             action.fadeIn(fadeIn);
             action.play();
             return action.getClip().duration;
@@ -382,9 +385,9 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     // Character animation
     public updateAimAnimation(clipName: string, cameraRotation, vector): void {
-        if (this.mixer !== undefined) {
+        if (this.animationManager.mixer !== undefined) {
             this.clip = THREE.AnimationClip.findByName(this.animations, clipName);
-            const action = this.mixer.clipAction(this.clip);
+            const action = this.animationManager.mixer.clipAction(this.clip);
             // pitch UP max: 2 - pitch DOWN min: 0
             action.time = (cameraRotation.getWorldDirection(vector).y + this.aimingSettings.offSet) / this.aimingSettings.amplitude;
             action.paused = true;
