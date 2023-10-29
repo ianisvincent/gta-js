@@ -1,16 +1,16 @@
 import { Character } from './Character';
-import { WalkOnPath } from './character_ai/WalkOnPath';
+import { WalkOnPath } from './ai/WalkOnPath';
 import { PathNode } from '../world/PathNode';
 import { IDamageable } from '../interfaces/IDamageable';
 import { IDieable } from '../interfaces/IDieable';
-import { Die } from './character_states/Die';
-import { Scared } from './character_states/Scared';
+import { Die } from './states/Die';
+import { Scared } from './states/Scared';
 import * as GUI from '../../lib/utils/dat.gui';
-import { ScaredRun } from './character_states/ScaredRun';
-import { WalkFollowTarget } from './character_ai/WalkFollowTarget';
-import { Idle } from './character_states/Idle';
+import { ScaredRun } from './states/ScaredRun';
+import { WalkFollowTarget } from './ai/WalkFollowTarget';
+import { Idle } from './states/Idle';
 import * as THREE from 'three';
-import { Hurt } from './character_states/Hurt';
+import { Hurt } from './states/Hurt';
 
 export class Npc extends Character implements IDamageable, IDieable {
     private shotTaken = 0;

@@ -1,10 +1,10 @@
-import { Character } from './Character';
 import * as THREE from 'three';
 import * as _ from 'lodash';
-import { IControllable } from '../interfaces/IControllable';
-import { KeyBinding } from '../core/KeyBinding';
+import { Character } from '../Character';
+import { KeyBinding } from '../../core/KeyBinding';
+import { IControllable } from '../../interfaces/IControllable';
 
-export class CharacterControls {
+export class CharacterControlsManager {
     private readonly character: Character;
 
     constructor(character: Character) {

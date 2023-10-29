@@ -1,20 +1,20 @@
-import { Character } from './Character';
-import { VehicleSeat } from '../vehicles/VehicleSeat';
 import * as THREE from 'three';
-import { Vehicle } from '../vehicles/Vehicle';
-import { Driving } from './character_states/vehicles/Driving';
-import { IControllable } from '../interfaces/IControllable';
-import { EntityType } from '../enums/EntityType';
-import { ExitingAirplane } from './character_states/vehicles/ExitingAirplane';
-import { ExitingVehicle } from './character_states/vehicles/ExitingVehicle';
-import { ClosestObjectFinder } from '../core/ClosestObjectFinder';
 import { VehicleEntryInstance } from './VehicleEntryInstance';
-import { SeatType } from '../enums/SeatType';
 import { Object3D } from 'three';
-import { OpenVehicleDoor } from './character_states/vehicles/OpenVehicleDoor';
-import { EnteringVehicle } from './character_states/vehicles/EnteringVehicle';
+import { OpenVehicleDoor } from '../states/vehicles/OpenVehicleDoor';
+import { Character } from '../Character';
+import { VehicleSeat } from '../../vehicles/VehicleSeat';
+import { EnteringVehicle } from '../states/vehicles/EnteringVehicle';
+import { Vehicle } from '../../vehicles/Vehicle';
+import { IControllable } from '../../interfaces/IControllable';
+import { Driving } from '../states/vehicles/Driving';
+import { ExitingAirplane } from '../states/vehicles/ExitingAirplane';
+import { EntityType } from '../../enums/EntityType';
+import { ExitingVehicle } from '../states/vehicles/ExitingVehicle';
+import { ClosestObjectFinder } from '../../core/ClosestObjectFinder';
+import { SeatType } from '../../enums/SeatType';
 
-export class VehicleInteraction {
+export class CharacterVehicleManager {
     private readonly character: Character;
 
     constructor(character: Character) {
