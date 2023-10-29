@@ -21,7 +21,7 @@ import { LoadingManager } from '../core/LoadingManager';
 import { InfoStack } from '../core/InfoStack';
 import { IWorldEntity } from '../interfaces/IWorldEntity';
 import { IUpdatable } from '../interfaces/IUpdatable';
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 import { Path } from './Path';
 import { CollisionGroups } from '../enums/CollisionGroups';
 import { BoxCollider } from '../physics/colliders/BoxCollider';
@@ -33,7 +33,7 @@ import { Ocean } from './Ocean';
 import { Vector3 } from 'three';
 import { UiManagerService } from '../ui/ui-manager.service';
 import { WorldService } from '../ui/word-controller/world.service';
-import { CharacterService } from '../characters/character.service';
+import { CharacterService } from '../character/character.service';
 
 export class World {
   public renderer: THREE.WebGLRenderer;

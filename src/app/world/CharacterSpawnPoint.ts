@@ -1,10 +1,10 @@
 import { ISpawnPoint } from '../interfaces/ISpawnPoint';
 import * as THREE from 'three';
 import { World } from './World';
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
-import { CharacterService } from '../characters/character.service';
+import { CharacterService } from '../character/character.service';
 
 export class CharacterSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;

@@ -44,7 +44,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     public entityType: EntityType = EntityType.Character;
 
     public isPlayer: boolean;
-    public isNpc: boolean;
 
     public height = 0;
     public tiltContainer: THREE.Group;

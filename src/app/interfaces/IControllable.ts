@@ -1,4 +1,4 @@
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 import { IInputReceiver } from './IInputReceiver';
 import { VehicleSeat } from '../vehicles/VehicleSeat';
 import { EntityType } from '../enums/EntityType';
