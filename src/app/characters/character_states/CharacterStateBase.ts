@@ -103,7 +103,7 @@ export abstract class CharacterStateBase implements ICharacterState {
     }
 
     public animationEnded(timeStep: number): boolean {
-        if (this.character.mixer !== undefined) {
+        if (this.character.animationManager.mixer !== undefined) {
             if (this.animationLength === undefined) {
                 console.error(this.constructor.name + 'Error: Set this.animationLength in state constructor!');
                 return false;
