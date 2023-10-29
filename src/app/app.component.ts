@@ -3,7 +3,7 @@ import { World } from './world/World';
 import { UiManagerService } from './ui/ui-manager.service';
 import { WorldService } from './ui/word-controller/world.service';
 import { environment } from '../environments/environment';
-import { CharacterService } from './characters/character.service';
+import { CharacterService } from './character/character.service';
 
 @Component({
     selector: 'app-root',

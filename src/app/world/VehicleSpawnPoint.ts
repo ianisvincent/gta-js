@@ -6,8 +6,8 @@ import { Airplane } from '../vehicles/Airplane';
 import { Car } from '../vehicles/Car';
 import * as Utils from '../core/FunctionLibrary';
 import { Vehicle } from '../vehicles/Vehicle';
-import { Character } from '../characters/Character';
-import { FollowPath } from '../characters/character_ai/FollowPath';
+import { Character } from '../character/Character';
+import { FollowPath } from '../character/character_ai/FollowPath';
 import { LoadingManager } from '../core/LoadingManager';
 import { Driver } from '../enums/driver';
 

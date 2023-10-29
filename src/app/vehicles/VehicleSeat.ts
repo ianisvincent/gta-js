@@ -4,7 +4,7 @@ import { Side } from '../enums/Side';
 import { IControllable } from '../interfaces/IControllable';
 import { VehicleDoor } from './VehicleDoor';
 import { Vehicle } from './Vehicle';
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 
 export class VehicleSeat
 {

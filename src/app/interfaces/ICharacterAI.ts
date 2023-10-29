@@ -1,4 +1,4 @@
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 
 export interface ICharacterAI {
 	character: Character;

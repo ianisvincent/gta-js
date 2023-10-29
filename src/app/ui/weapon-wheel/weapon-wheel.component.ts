@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WeaponSlot } from './weapon-slot';
-import { CharacterService } from '../../characters/character.service';
+import { CharacterService } from '../../character/character.service';
 import { WeaponType } from '../../weapons/weapon-type';
 
 

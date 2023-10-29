@@ -1,4 +1,4 @@
-import { Character } from '../characters/Character';
+import { Character } from '../character/Character';
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
 import { World } from '../world/World';
@@ -9,7 +9,7 @@ import { Wheel } from './Wheel';
 import { VehicleDoor } from './VehicleDoor';
 import * as Utils from '../core/FunctionLibrary';
 import { CollisionGroups } from '../enums/CollisionGroups';
-import { SwitchingSeats } from '../characters/character_states/vehicles/SwitchingSeats';
+import { SwitchingSeats } from '../character/character_states/vehicles/SwitchingSeats';
 import { EntityType } from '../enums/EntityType';
 import { IWorldEntity } from '../interfaces/IWorldEntity';
 

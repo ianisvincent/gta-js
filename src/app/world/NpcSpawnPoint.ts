@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { World } from './World';
 import { LoadingManager } from '../core/LoadingManager';
 import * as Utils from '../core/FunctionLibrary';
-import { Npc } from '../characters/Npc';
+import { Npc } from '../character/Npc';
 
 export class NpcSpawnPoint implements ISpawnPoint {
     private object: THREE.Object3D;
