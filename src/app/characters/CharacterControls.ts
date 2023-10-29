@@ -1,7 +1,7 @@
 import { Character } from './Character';
 import * as THREE from 'three';
 import * as _ from 'lodash';
-import { IControllable } from "../interfaces/IControllable";
+import { IControllable } from '../interfaces/IControllable';
 
 export class CharacterControls {
     private readonly character: Character;
