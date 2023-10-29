@@ -5,7 +5,7 @@ import { CollisionGroups } from '../../enums/CollisionGroups';
 import { GroundImpactData } from '../GroundImpactData';
 import * as Utils from '../../core/FunctionLibrary';
 
-export class CharacterPhysicsManager {
+export class CharacterPhysics {
     private readonly character: Character;
     private rayCastLength = 0.57;
     private raySafeOffset = 0.03;

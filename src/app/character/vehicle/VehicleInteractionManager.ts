@@ -14,7 +14,7 @@ import { ExitingVehicle } from '../states/vehicles/ExitingVehicle';
 import { ClosestObjectFinder } from '../../core/ClosestObjectFinder';
 import { SeatType } from '../../enums/SeatType';
 
-export class CharacterVehicleManager {
+export class VehicleInteractionManager {
     private readonly character: Character;
 
     constructor(character: Character) {

@@ -23,19 +23,19 @@ import { Npc } from './Npc';
 import { CharacterService } from './character.service';
 import { WeaponType } from '../weapons/weapon-type';
 import { CharacterAnimationManager } from './animation/CharacterAnimationManager';
-import { CharacterControlsManager } from './controls/CharacterControlsManager';
-import { CharacterWeaponManager } from './weapon/CharacterWeaponManager';
-import { CharacterVehicleManager } from './vehicle/CharacterVehicleManager';
-import { CharacterSimulationManager } from './simulation/CharacterSimulationManager';
-import { CharacterPhysicsManager } from './physics/CharacterPhysicsManager';
+import { CharacterControls } from './controls/CharacterControls';
+import { WeaponInteractionManager } from './weapon/WeaponInteractionManager';
+import { VehicleInteractionManager } from './vehicle/VehicleInteractionManager';
+import { CharacterSimulation } from './simulation/CharacterSimulation';
+import { CharacterPhysics } from './physics/CharacterPhysics';
 import { VehicleEntryInstance } from './vehicle/VehicleEntryInstance';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
-    private controls: CharacterControlsManager;
-    private vehicleInteraction: CharacterVehicleManager;
-    private weaponInteraction: CharacterWeaponManager;
-    public physics: CharacterPhysicsManager;
-    public simulation: CharacterSimulationManager;
+    private vehicleInteractionManager: VehicleInteractionManager;
+    private weaponInteractionManager: WeaponInteractionManager;
+    private controls: CharacterControls;
+    public physics: CharacterPhysics;
+    public simulation: CharacterSimulation;
     public animationManager: CharacterAnimationManager;
 
     private rightHandGlobalPosition: Vector3;
@@ -87,11 +87,11 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     constructor(gltf: any, public characterService?: CharacterService) {
         super();
         this.readCharacterData(gltf);
-        this.vehicleInteraction = new CharacterVehicleManager(this);
-        this.controls = new CharacterControlsManager(this);
-        this.physics = new CharacterPhysicsManager(this);
-        this.weaponInteraction = new CharacterWeaponManager(this);
-        this.simulation = new CharacterSimulationManager(this);
+        this.vehicleInteractionManager = new VehicleInteractionManager(this);
+        this.controls = new CharacterControls(this);
+        this.physics = new CharacterPhysics(this);
+        this.weaponInteractionManager = new WeaponInteractionManager(this);
+        this.simulation = new CharacterSimulation(this);
         this.animationManager = new CharacterAnimationManager(this);
         this.animationManager.setAnimations(gltf.animations);
 
@@ -188,7 +188,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public setRightHand(): void {
-        this.weaponInteraction.setRightHand();
+        this.weaponInteractionManager.setRightHand();
     }
 
     public setViewVector(vector: THREE.Vector3): void {
@@ -382,19 +382,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public findVehicleToEnter(wantsToDrive: boolean): void {
-        this.vehicleInteraction.findVehicleToEnter(wantsToDrive);
+        this.vehicleInteractionManager.findVehicleToEnter(wantsToDrive);
     }
 
     public enterVehicle(seat: VehicleSeat, entryPoint: THREE.Object3D): void {
-        this.vehicleInteraction.enterVehicle(seat, entryPoint);
+        this.vehicleInteractionManager.enterVehicle(seat, entryPoint);
     }
 
     public teleportToVehicle(vehicle: Vehicle, seat: VehicleSeat): void {
-        this.vehicleInteraction.teleportToVehicle(vehicle, seat);
+        this.vehicleInteractionManager.teleportToVehicle(vehicle, seat);
     }
 
     public startControllingVehicle(vehicle: IControllable, seat: VehicleSeat): void {
-        this.vehicleInteraction.startControllingVehicle(vehicle, seat);
+        this.vehicleInteractionManager.startControllingVehicle(vehicle, seat);
     }
 
     public transferControls(entity: IControllable): void {
@@ -402,19 +402,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public stopControllingVehicle(): void {
-        this.vehicleInteraction.stopControllingVehicle();
+        this.vehicleInteractionManager.stopControllingVehicle();
     }
 
     public exitVehicle(): void {
-        this.vehicleInteraction.exitVehicle();
+        this.vehicleInteractionManager.exitVehicle();
     }
 
     public occupySeat(seat: VehicleSeat): void {
-        this.vehicleInteraction.occupySeat(seat);
+        this.vehicleInteractionManager.occupySeat(seat);
     }
 
     public leaveSeat(): void {
-        this.vehicleInteraction.leaveSeat();
+        this.vehicleInteractionManager.leaveSeat();
     }
 
     public addToWorld(world: World): void {
@@ -464,19 +464,19 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     }
 
     public loadWeapon(weaponType: WeaponType): void {
-        this.weaponInteraction.loadWeapon(weaponType);
+        this.weaponInteractionManager.loadWeapon(weaponType);
     }
 
     public unloadWeapon(): void {
-        this.weaponInteraction.unloadWeapon();
+        this.weaponInteractionManager.unloadWeapon();
     }
 
     public lockAiming(character: Character): void {
-        this.weaponInteraction.lockAiming(character);
+        this.weaponInteractionManager.lockAiming(character);
     }
 
     public unlockAiming(): void {
-        this.weaponInteraction.unlockAiming();
+        this.weaponInteractionManager.unlockAiming();
     }
 
     private updatePlayerHealthBar(damage: number): void {
