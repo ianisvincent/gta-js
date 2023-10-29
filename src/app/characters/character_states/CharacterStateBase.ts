@@ -91,7 +91,7 @@ export abstract class CharacterStateBase implements ICharacterState {
     }
 
     public fallInAir(): void {
-        if (!this.character.rayHasHit) {
+        if (!this.character.physics.rayHasHit) {
             this.character.setState(new Falling(this.character));
         }
     }
@@ -116,10 +116,10 @@ export abstract class CharacterStateBase implements ICharacterState {
     }
 
     public setAppropriateDropState(): void {
-        if (this.character.groundImpactData.velocity.y < -6) {
+        if (this.character.physics.groundImpactData.velocity.y < -6) {
             this.character.setState(new DropRolling(this.character));
         } else if (this.anyDirection()) {
-            if (this.character.groundImpactData.velocity.y < -2) {
+            if (this.character.physics.groundImpactData.velocity.y < -2) {
                 this.character.setState(new DropRunning(this.character));
             } else {
                 if (this.character.actions.run.isPressed) {

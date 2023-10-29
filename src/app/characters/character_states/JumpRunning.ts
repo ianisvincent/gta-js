@@ -40,7 +40,7 @@ export class JumpRunning extends CharacterStateBase implements ICharacterState
 			this.character.arcadeVelocityIsAdditive = true;
 			this.character.setArcadeVelocityInfluence(0.05, 0, 0.05);
 		}
-		else if (this.timer > 0.24 && this.character.rayHasHit)
+		else if (this.timer > 0.24 && this.character.physics.rayHasHit)
 		{
 			this.setAppropriateDropState();
 		}

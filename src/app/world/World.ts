@@ -515,8 +515,8 @@ export class World {
           this.cannonDebugRenderer = undefined;
         }
 
-        scope.characters.forEach((char) => {
-          char.raycastBox.visible = enabled;
+        scope.characters.forEach((character) => {
+          character.physics.raycastBox.visible = enabled;
         });
       });
     settingsFolder.add(this.params, 'Debug_FPS')
