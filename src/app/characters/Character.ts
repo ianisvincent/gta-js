@@ -136,25 +136,7 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
     this.viewVector = new THREE.Vector3();
 
     // Actions
-    this.actions = {
-      up: new KeyBinding('KeyW'),
-      down: new KeyBinding('KeyS'),
-      left: new KeyBinding('KeyA'),
-      right: new KeyBinding('KeyD'),
-      run: new KeyBinding('ShiftLeft'),
-      jump: new KeyBinding('Space'),
-      spawn_gun: new KeyBinding('KeyT'),
-      wheel: new KeyBinding('KeyC'),
-      aim: new KeyBinding('KeyY'),
-      shoot: new KeyBinding('KeyK'),
-      punch: new KeyBinding('KeyP'),
-      use: new KeyBinding('KeyE'),
-      enter: new KeyBinding('KeyF'),
-      enter_passenger: new KeyBinding('KeyG'),
-      seat_switch: new KeyBinding('KeyX'),
-      primary: new KeyBinding('Mouse0'),
-      secondary: new KeyBinding('Mouse1'),
-    };
+    this.actions = this.characterControls.initActions();
 
     // Physics
     // Player Capsule
