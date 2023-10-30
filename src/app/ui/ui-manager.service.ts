@@ -10,6 +10,8 @@ export class UiManagerService {
     isPlayerIsAiming = true;
     isWeaponWheelDisplayed = false;
     updateControlsSubject = new BehaviorSubject(undefined);
+    updateTargetVisibilitySubject = new BehaviorSubject(undefined);
+    isAimingTargetVisible: boolean;
 
     toggleWeaponWheel(isWeaponWheelDisplayed: boolean): void {
         this.isWeaponWheelDisplayed = isWeaponWheelDisplayed;
@@ -48,6 +50,10 @@ export class UiManagerService {
 
     updateControls(controls: any): void {
         this.updateControlsSubject.next(controls);
+    }
+
+    setTargetVisibility(isVisible: boolean): void {
+        this.updateTargetVisibilitySubject.next(isVisible);
     }
 
     initDefaultControls(): void {
