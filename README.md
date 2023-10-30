@@ -1,4 +1,15 @@
-## GTA Copycat
+## GTA.js
+
+### What's this?
+
+Copycat of GTA (more particularly GTA V) that runs on the browser.
+
+### Main components
+
+- Blender for 3D assets creation
+- Three.js for 3D integration
+- Cannon.js for physics
+- Angular for UI
 
 ### Dependencies
 
