@@ -1,4 +1,4 @@
 export enum WeaponType {
-    Pistol = 'Pistol',
-    Fist = 'Unarmed'
+    Pistol = 'pistol',
+    Fist = 'unarmed'
 }
