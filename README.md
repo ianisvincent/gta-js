@@ -17,6 +17,10 @@ Copycat of GTA (more particularly GTA V) that runs on the browser.
 - Angular 10
 - Three.js 0.113.0
 
+### Roadmap
+
+https://trello.com/b/MEE1t6Nt/gta-copycat-project
+
 ### Quick start
 
 ``npm install``
