@@ -30,6 +30,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         this.character.isAiming = true;
         this.character.simulation.setArcadeVelocityTarget(0);
         this.playAnimation('aim_pistol_idle', 0.1, true, true);
+        this.character.world.uiManagerService.setTargetVisibility(true);
         this.spawnObjectOnPoint();
     }
 
@@ -105,6 +106,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         super.onInputChange();
 
         if (this.character.actions.aim.justReleased) {
+            this.character.world.uiManagerService.setTargetVisibility(false);
             this.character.setState(new Idle(this.character));
         }
 
