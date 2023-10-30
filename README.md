@@ -1,5 +1,5 @@
 ## GTA.js
-
+![](src/assets/img/8097.png)
 ### What's this?
 
 Copycat of GTA (more particularly GTA V) that runs on the browser.
