@@ -20,7 +20,7 @@ export class Npc extends Character implements IDamageable, IDieable {
 
     constructor(gltf: any) {
         super(gltf);
-        this.initDebug();
+        // this.initDebug();
         this.name = 'npc';
     }
 
