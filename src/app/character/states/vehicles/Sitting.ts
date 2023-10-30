@@ -72,7 +72,8 @@ export class Sitting extends CharacterStateBase
 		if (this.character.actions.enter.justPressed)
 		{
 			this.character.exitVehicle();
-			this.character.displayControls();
+			console.log('exitting vehicle');
+			this.character.world.initDefaultControls();
 		}
 	}
 }

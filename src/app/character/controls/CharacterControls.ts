@@ -99,53 +99,6 @@ export class CharacterControls {
         this.character.world.cameraOperator.setRadius(2.0, true);
         this.character.world.cameraOperator.followMode = false;
         // this.world.dirLight.target = this;
-
-        this.displayControls();
-    }
-
-    public displayControls(): void {
-        this.character.world.updateControls([
-            {
-                keys: ['W', 'A', 'S', 'D'],
-                desc: 'Movement'
-            },
-            {
-                keys: ['Shift'],
-                desc: 'Sprint'
-            },
-            {
-                keys: ['Space'],
-                desc: 'Jump'
-            },
-            {
-                keys: ['P'],
-                desc: 'Punch'
-            },
-            {
-                keys: ['T'],
-                desc: 'Spawn gun'
-            },
-            {
-                keys: ['Y'],
-                desc: 'Aim'
-            },
-            {
-                keys: ['K'],
-                desc: 'Shoot'
-            },
-            {
-                keys: ['F', 'or', 'G'],
-                desc: 'Enter vehicle'
-            },
-            {
-                keys: ['Shift', '+', 'R'],
-                desc: 'Respawn'
-            },
-            {
-                keys: ['Shift', '+', 'C'],
-                desc: 'Free camera'
-            },
-        ]);
     }
 
     public inputReceiverUpdate(timeStep: number): void {

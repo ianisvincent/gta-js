@@ -31,7 +31,7 @@ import { CharacterPhysics } from './physics/CharacterPhysics';
 
 export class Character extends THREE.Object3D implements IWorldEntity, IDamageable, IDieable {
     private weaponInteractionManager: WeaponInteractionManager;
-    private controls: CharacterControls;
+    public controls: CharacterControls;
     public physics: CharacterPhysics;
     public simulation: CharacterSimulation;
     public animationManager: CharacterAnimationManager;
@@ -321,10 +321,6 @@ export class Character extends THREE.Object3D implements IWorldEntity, IDamageab
 
     public inputReceiverInit(): void {
         this.controls.inputReceiverInit();
-    }
-
-    public displayControls(): void {
-        this.controls.displayControls();
     }
 
     public resetControls(): void {
