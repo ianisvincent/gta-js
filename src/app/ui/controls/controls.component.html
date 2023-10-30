@@ -1,6 +1,10 @@
 <!-- Controls -->
 <div id="ui-container">
-    <div class="left-panel">
-        <div id="controls" class="panel-segment flex-bottom"></div>
+    <div class="wrapper">
+        <div class="controls-panel">
+            <div *ngFor="let control of controls">
+                <div> {{ control.keys }}: {{ control.desc}}</div>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { CONTROLS } from '../character/controls/Controls';
 
 @Injectable({
     providedIn: 'root'
@@ -7,9 +9,7 @@ export class UiManagerService {
     isDisplayed = true;
     isPlayerIsAiming = true;
     isWeaponWheelDisplayed = false;
-
-    constructor() {
-    }
+    updateControlsSubject = new BehaviorSubject(undefined);
 
     toggleWeaponWheel(isWeaponWheelDisplayed: boolean): void {
         this.isWeaponWheelDisplayed = isWeaponWheelDisplayed;
@@ -44,5 +44,13 @@ export class UiManagerService {
             hitElement.style.width = '0';
             barElement.style.width = barWidth + '%';
         }, 500);
+    }
+
+    updateControls(controls: any): void {
+        this.updateControlsSubject.next(controls);
+    }
+
+    initDefaultControls(): void {
+        this.updateControlsSubject.next(CONTROLS);
     }
 }

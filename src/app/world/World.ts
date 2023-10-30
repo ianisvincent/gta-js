@@ -419,23 +419,12 @@ export class World {
     }
   }
 
+  public initDefaultControls(): void {
+    this.uiManagerService.initDefaultControls();
+  }
+
   public updateControls(controls: any): void {
-    let html = '';
-    html += '<h2 class="controls-title">Controls:</h2>';
-
-    controls.forEach((row) => {
-      html += '<div class="ctrl-row">';
-      row.keys.forEach((key) => {
-        if (key === '+' || key === 'and' || key === 'or' || key === '&') {
-          html += '&nbsp;' + key + '&nbsp;';
-        } else {
-          html += '<span class="ctrl-key">' + key + '</span>';
-        }
-      });
-      html += '<span class="ctrl-desc">' + row.desc + '</span></div>';
-    });
-
-    document.getElementById('controls').innerHTML = html;
+    this.uiManagerService.updateControls(controls);
   }
 
   private generateHTML(): void {
