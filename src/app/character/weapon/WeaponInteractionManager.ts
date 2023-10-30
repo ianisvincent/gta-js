@@ -36,8 +36,8 @@ export class WeaponInteractionManager {
 
     public unloadWeapon(): void {
         const rightHand = this.character.getObjectByName(BodyPart.RightHand);
-        const gun = this.character.getObjectByName('gun');
-        rightHand.remove(gun);
+        const pistol = this.character.getObjectByName(WeaponType.Pistol);
+        rightHand.remove(pistol);
         this.character.hasWeaponLoaded = false;
     }
 
