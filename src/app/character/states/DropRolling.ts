@@ -6,6 +6,7 @@ import
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class DropRolling extends CharacterStateBase implements ICharacterState
 {
@@ -17,7 +18,7 @@ export class DropRolling extends CharacterStateBase implements ICharacterState
 		this.character.simulation.velocitySimulator.damping = 0.6;
 
 		this.character.simulation.setArcadeVelocityTarget(0.8);
-		this.playAnimation('drop_running_roll', 0.03);
+		this.playAnimation(CharacterAnimation.DropRunningRoll, 0.03);
 	}
 
 	public update(timeStep: number): void

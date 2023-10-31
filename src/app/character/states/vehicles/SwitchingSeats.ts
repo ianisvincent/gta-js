@@ -11,6 +11,7 @@ import { Driving } from './Driving';
 import { Sitting } from './Sitting';
 import * as Utils from '../../../core/FunctionLibrary';
 import { Space } from '../../../enums/Space';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class SwitchingSeats extends CharacterStateBase
 {
@@ -38,11 +39,11 @@ export class SwitchingSeats extends CharacterStateBase
 
 		if (side === Side.Left)
 		{
-			this.playAnimation('sitting_shift_left', 0.1);
+			this.playAnimation(CharacterAnimation.SittingShiftLeft, 0.1);
 		}
 		else if (side === Side.Right)
 		{
-			this.playAnimation('sitting_shift_right', 0.1);
+			this.playAnimation(CharacterAnimation.SittingShiftRight, 0.1);
 		}
 
 		this.startPosition.copy(fromSeat.seatPointObject.position);

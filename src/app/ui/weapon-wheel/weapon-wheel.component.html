@@ -1,7 +1,7 @@
 <div class="weapon-selector-wrapper">
     <svg height="620px" width="620px">
         <text text-anchor="middle" id="hovered-weapon-name" x="175" y="400" font-size="18"
-              stroke="none">{{ currentWeapon }}</text>
+              stroke="none">{{ currentWeapon | titlecase }}</text>
         <g [ngClass]="currentWeapon === weapon.type ? 'active-weapon':''"
            *ngFor="let weapon of weaponSlots">
             <path (click)="weapon.type && onSelectWeapon(weapon)"

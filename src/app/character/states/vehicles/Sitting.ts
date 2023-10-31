@@ -7,6 +7,7 @@ import { VehicleSeat } from 'src/app/vehicles/VehicleSeat';
 import { CloseVehicleDoorInside } from './CloseVehicleDoorInside';
 import { SeatType } from '../../../enums/SeatType';
 import { SwitchingSeats } from './SwitchingSeats';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class Sitting extends CharacterStateBase
 {
@@ -30,7 +31,7 @@ export class Sitting extends CharacterStateBase
 			}
 		]);
 
-		this.playAnimation('sitting', 0.1);
+		this.playAnimation(CharacterAnimation.Sitting, 0.1);
 	}
 
 	public update(timeStep: number): void

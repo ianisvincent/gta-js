@@ -1,6 +1,7 @@
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
-import { NpcStateBase } from "./NpcStateBase";
+import { NpcStateBase } from './NpcStateBase';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class ScaredRun extends NpcStateBase implements ICharacterState {
     constructor(character: Character) {
@@ -8,7 +9,7 @@ export class ScaredRun extends NpcStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.damping = 0.6;
         this.character.simulation.velocitySimulator.mass = 10;
         this.character.simulation.setArcadeVelocityTarget(0);
-        this.playAnimation('scared_run', 0.1, false, false);
+        this.playAnimation(CharacterAnimation.ScaredRun, 0.1, false, false);
         this.character.simulation.velocitySimulator.mass = 10;
         this.character.simulation.rotationSimulator.damping = 0.8;
         this.character.simulation.rotationSimulator.mass = 50;

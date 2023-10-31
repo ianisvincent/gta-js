@@ -5,6 +5,7 @@ import
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class JumpRunning extends CharacterStateBase implements ICharacterState
 {
@@ -15,7 +16,7 @@ export class JumpRunning extends CharacterStateBase implements ICharacterState
 		super(character);
 
 		this.character.simulation.velocitySimulator.mass = 100;
-		this.playAnimation('jump_running', 0.03);
+		this.playAnimation(CharacterAnimation.JumpRunning, 0.03);
 		this.alreadyJumped = false;
 	}
 

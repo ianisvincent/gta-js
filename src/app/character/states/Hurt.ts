@@ -2,6 +2,7 @@ import { ICharacterState } from '../../interfaces/ICharacterState';
 import { NpcStateBase } from './NpcStateBase';
 import { Npc } from '../Npc';
 import { Die } from './Die';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 
 export class Hurt extends NpcStateBase implements ICharacterState {
@@ -12,7 +13,7 @@ export class Hurt extends NpcStateBase implements ICharacterState {
         this.alreadyTookPunch = alreadyTookPunch;
         if (!this.npc.alreadyTookPunch) {
             this.npc.takeDamage(50);
-            this.playAnimation('hurt', 0.1, true, true);
+            this.playAnimation(CharacterAnimation.Hurt, 0.1, true, true);
         }
     }
     npc: Npc;
