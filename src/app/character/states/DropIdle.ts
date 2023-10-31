@@ -6,6 +6,7 @@ import {
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class DropIdle extends CharacterStateBase implements ICharacterState
 {
@@ -17,7 +18,7 @@ export class DropIdle extends CharacterStateBase implements ICharacterState
 		this.character.simulation.velocitySimulator.mass = 7;
 
 		this.character.simulation.setArcadeVelocityTarget(0);
-		this.playAnimation('drop_idle', 0.1);
+		this.playAnimation(CharacterAnimation.DropIdle, 0.1);
 
 		if (this.anyDirection())
 		{

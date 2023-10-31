@@ -1,7 +1,8 @@
-import {CharacterStateBase} from "./_stateLibrary";
-import {ICharacterState} from "../../interfaces/ICharacterState";
-import {Character} from "../Character";
-import {Idle} from "./Idle";
+import {CharacterStateBase} from './_stateLibrary';
+import {ICharacterState} from '../../interfaces/ICharacterState';
+import {Character} from '../Character';
+import {Idle} from './Idle';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class Punch extends CharacterStateBase implements ICharacterState {
 
@@ -11,7 +12,7 @@ export class Punch extends CharacterStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.mass = 10;
         this.character.isPunching = true;
         this.character.simulation.setArcadeVelocityTarget(0);
-        this.playAnimation('punch', 0.1, true);
+        this.playAnimation(CharacterAnimation.Punch, 0.1, true);
     }
 
     public update(timeStep: number): void {

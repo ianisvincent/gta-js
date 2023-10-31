@@ -5,6 +5,7 @@ import {
 } from './_stateLibrary';
 import {ICharacterState} from '../../interfaces/ICharacterState';
 import {Character} from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class Idle extends CharacterStateBase implements ICharacterState {
     constructor(character: Character) {
@@ -14,7 +15,7 @@ export class Idle extends CharacterStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.mass = 10;
 
         this.character.simulation.setArcadeVelocityTarget(0);
-        this.playAnimation('idle', 0.1);
+        this.playAnimation(CharacterAnimation.Idle, 0.1);
     }
 
     public update(timeStep: number): void {

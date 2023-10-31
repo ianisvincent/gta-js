@@ -1,10 +1,10 @@
-import
-{
+import {
 	CharacterStateBase,
 	Falling,
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class JumpIdle extends CharacterStateBase implements ICharacterState
 {
@@ -17,7 +17,7 @@ export class JumpIdle extends CharacterStateBase implements ICharacterState
 		this.character.simulation.velocitySimulator.mass = 50;
 
 		this.character.simulation.setArcadeVelocityTarget(0);
-		this.playAnimation('jump_idle', 0.1);
+		this.playAnimation(CharacterAnimation.JumpIdle, 0.1);
 		this.alreadyJumped = false;
 	}
 

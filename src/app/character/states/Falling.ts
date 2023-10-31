@@ -4,6 +4,7 @@ import
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class Falling extends CharacterStateBase implements ICharacterState
 {
@@ -17,7 +18,7 @@ export class Falling extends CharacterStateBase implements ICharacterState
 		this.character.physics.arcadeVelocityIsAdditive = true;
 		this.character.physics.setArcadeVelocityInfluence(0.05, 0, 0.05);
 
-		this.playAnimation('falling', 0.3);
+		this.playAnimation(CharacterAnimation.Falling, 0.3);
 	}
 
 	public update(timeStep: number): void

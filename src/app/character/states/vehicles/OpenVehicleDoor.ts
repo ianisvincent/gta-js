@@ -10,6 +10,7 @@ import { Idle } from '../Idle';
 import { EnteringVehicle } from './EnteringVehicle';
 import * as Utils from '../../../core/FunctionLibrary';
 import { SpringSimulator } from '../../../physics/spring_simulation/SpringSimulator';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class OpenVehicleDoor extends CharacterStateBase
 {
@@ -35,11 +36,11 @@ export class OpenVehicleDoor extends CharacterStateBase
 		const side = Utils.detectRelativeSide(entryPoint, seat.seatPointObject);
 		if (side === Side.Left)
 		{
-			this.playAnimation('open_door_standing_left', 0.1);
+			this.playAnimation(CharacterAnimation.OpenDoorStandingLeft, 0.1);
 		}
 		else if (side === Side.Right)
 		{
-			this.playAnimation('open_door_standing_right', 0.1);
+			this.playAnimation(CharacterAnimation.OpenDoorStandingRight, 0.1);
 		}
 
 		this.character.simulation.resetVelocity();

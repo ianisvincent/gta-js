@@ -16,6 +16,10 @@ export const CONTROLS = [
         desc: 'Punch'
     },
     {
+        keys: ['C'],
+        desc: 'Display Weapon Wheel'
+    },
+    {
         keys: ['T'],
         desc: 'Spawn gun'
     },

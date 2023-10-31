@@ -12,6 +12,8 @@ import { AimWalkLeft } from './AimWalkLeft';
 import { AimWalkRight } from './AimWalkRight';
 import * as TWEEN from '@tweenjs/tween.js';
 import { Npc } from '../Npc';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
+import { WeaponType } from '../../weapons/weapon-type';
 
 export class Aim extends CharacterStateBase implements ICharacterState {
     public rayCaster: THREE.Raycaster;
@@ -29,7 +31,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
         this.character.simulation.velocitySimulator.mass = 10;
         this.character.isAiming = true;
         this.character.simulation.setArcadeVelocityTarget(0);
-        this.playAnimation('aim_pistol_idle', 0.1, true, true);
+        this.playAnimation(CharacterAnimation.PistolIdle, 0.1, true, true);
         this.character.world.uiManagerService.setTargetVisibility(true);
         this.spawnObjectOnPoint();
     }
@@ -57,7 +59,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
                 if (this.shootingCount === 1) {
                     this.spawnImpactOnTarget(this.intersectedObject);
                     // this.setGunRecoilToForeArms();
-                    this.playAnimation('shoot', 0.1, true, true);
+                    this.playAnimation(CharacterAnimation.Shoot, 0.1, true, true);
                 }
             }
 
@@ -79,7 +81,7 @@ export class Aim extends CharacterStateBase implements ICharacterState {
 
     public setGunRecoilToForeArms(): void {
         const rightForeArm = this.character.getObjectByName(BodyPart.RightForeArm);
-        const gun = rightForeArm.getObjectByName('gun');
+        const gun = rightForeArm.getObjectByName(WeaponType.Pistol);
 
         const coords = {x: gun.rotation.x, y: gun.rotation.y, z: gun.rotation.z};
         const tween = new TWEEN.Tween(coords)

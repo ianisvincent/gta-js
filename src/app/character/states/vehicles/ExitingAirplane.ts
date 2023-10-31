@@ -6,6 +6,7 @@ import { VehicleSeat } from '../../../vehicles/VehicleSeat';
 import { Falling } from '../Falling';
 import { ExitingStateBase } from './ExitingStateBase';
 import { Vehicle } from '../../../vehicles/Vehicle';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class ExitingAirplane extends ExitingStateBase
 {
@@ -23,7 +24,7 @@ export class ExitingAirplane extends ExitingStateBase
 		this.exitPoint.lookAt(forward);
 		this.exitPoint.position.copy(this.endPosition);
 
-		this.playAnimation('jump_idle', 0.1);
+		this.playAnimation(CharacterAnimation.JumpIdle, 0.1);
 	}
 
 	public update(timeStep: number): void

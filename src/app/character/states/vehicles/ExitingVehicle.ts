@@ -10,6 +10,7 @@ import { Vehicle } from 'src/app/vehicles/Vehicle';
 import { Falling } from '../Falling';
 import { DropRolling } from '../DropRolling';
 import { ExitingStateBase } from './ExitingStateBase';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class ExitingVehicle extends ExitingStateBase
 {
@@ -25,11 +26,11 @@ export class ExitingVehicle extends ExitingStateBase
 		const side = Utils.detectRelativeSide(seat.seatPointObject, this.exitPoint);
 		if (side === Side.Left)
 		{
-			this.playAnimation('stand_up_left', 0.1);
+			this.playAnimation(CharacterAnimation.StandUpLeft, 0.1);
 		}
 		else if (side === Side.Right)
 		{
-			this.playAnimation('stand_up_right', 0.1);
+			this.playAnimation(CharacterAnimation.StandUpRight, 0.1);
 		}
 	}
 

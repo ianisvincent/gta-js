@@ -7,6 +7,7 @@ import
 } from './_stateLibrary';
 import { ICharacterState } from '../../interfaces/ICharacterState';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class IdleRotateLeft extends CharacterStateBase implements ICharacterState
 {
@@ -21,7 +22,7 @@ export class IdleRotateLeft extends CharacterStateBase implements ICharacterStat
 		this.character.simulation.velocitySimulator.mass = 10;
 
 		this.character.simulation.setArcadeVelocityTarget(0);
-		this.playAnimation('rotate_left', 0.1);
+		this.playAnimation(CharacterAnimation.RotateLeft, 0.1);
 	}
 
 	public update(timeStep: number): void

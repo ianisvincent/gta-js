@@ -16,6 +16,7 @@ import {
 } from './_stateLibrary';
 import { Character } from '../Character';
 import { ICharacterState } from '../../interfaces/ICharacterState';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export abstract class CharacterStateBase implements ICharacterState {
     public character: Character;
@@ -150,7 +151,7 @@ export abstract class CharacterStateBase implements ICharacterState {
         }
     }
 
-    protected playAnimation(animName: string, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): void {
+    protected playAnimation(animName: CharacterAnimation, fadeIn: number, runOnlyOnce?: boolean, lockWhenFinished?: boolean): void {
         this.animationLength = this.character.animationManager.setAnimation(animName, fadeIn, runOnlyOnce, lockWhenFinished);
     }
 }

@@ -6,6 +6,7 @@ import
 	Walk,
 } from './_stateLibrary';
 import { Character } from '../Character';
+import { CharacterAnimation } from '../../enums/CharacterAnimation';
 
 export class Sprint extends CharacterStateBase
 {
@@ -20,7 +21,7 @@ export class Sprint extends CharacterStateBase
 		this.character.simulation.rotationSimulator.mass = 50;
 
 		this.character.simulation.setArcadeVelocityTarget(1.1);
-		this.playAnimation('run', 0.1);
+		this.playAnimation(CharacterAnimation.Run, 0.1);
 	}
 
 	public update(timeStep: number): void

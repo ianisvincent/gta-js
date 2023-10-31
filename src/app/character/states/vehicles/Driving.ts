@@ -1,10 +1,10 @@
-import
-{
+import {
 	CharacterStateBase,
 } from '../_stateLibrary';
 import { Character } from '../../Character';
 import { VehicleSeat } from 'src/app/vehicles/VehicleSeat';
 import { CloseVehicleDoorInside } from './CloseVehicleDoorInside';
+import { CharacterAnimation } from '../../../enums/CharacterAnimation';
 
 export class Driving extends CharacterStateBase
 {
@@ -16,7 +16,7 @@ export class Driving extends CharacterStateBase
 
 		this.seat = seat;
 		this.canFindVehiclesToEnter = false;
-		this.playAnimation('driving', 0.1);
+		this.playAnimation(CharacterAnimation.Driving, 0.1);
 
 		this.character.startControllingVehicle(seat.vehicle, this.seat);
 		this.seat.vehicle.onInputChange();
