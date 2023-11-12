@@ -167,7 +167,7 @@ export class World {
     this.sky = new Sky(this);
     // Disable Shadows to Debug
     this.sky.csm.lights.forEach((light) => {
-      light.castShadow = false;
+      light.castShadow = true;
     });
     // Load scene if path is supplied
     if (worldScenePath !== undefined) {
