@@ -23,7 +23,7 @@ https://trello.com/b/MEE1t6Nt/gta-copycat-project
 
 ### World
 
-![](../../Desktop/w.png)
+![](src/assets/img/9831.png)
 
 The 3D world's components are custom-made in Blender, and are thought to be as modular, optimized and instantiable as possible.
 
