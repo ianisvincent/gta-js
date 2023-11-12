@@ -17,6 +17,7 @@ export class WeaponWheelComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.currentWeapon = this.characterService.getCurrentWeapon();
         this.weaponSlots = [
             {
                 containerSvgPath: `M 522.1320343559643 522.1320343559643 A 300 300 0 0 1 310 610  L 310 510 A 200 200 0 0 0 451.4213562373095 451.4213562373095  z`,

@@ -13,4 +13,8 @@ export class CharacterService {
     setCurrentWeapon(weapon: WeaponType): void {
         this.currentWeapon = weapon;
     }
+
+    getCurrentWeapon(): WeaponType {
+        return this.currentWeapon;
+    }
 }
