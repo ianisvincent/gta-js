@@ -5,14 +5,16 @@
         <g [ngClass]="currentWeapon === weapon.type ? 'active-weapon':''"
            *ngFor="let weapon of weaponSlots">
             <path (click)="weapon.type && onSelectWeapon(weapon)"
-                  (mouseover)="onMouseOverWeapon(weapon)"
-                  (mouseout)="onMouseOutWeapon(weapon)" [attr.d]="weapon.containerSvgPath"
+                  [attr.d]="weapon.containerSvgPath"
                   fill="rgba(255,255,255,0.3)"/>
             <image [attr.xlink:href]="weapon.image"
+                   [attr.type]="weapon.type"
                    [attr.x]="weapon.x"
                    [attr.y]="weapon.y"
                    [attr.height]="weapon.height"
-                   [attr.width]="weapon.width"/>
+                   [attr.width]="weapon.width"
+                   (click)="weapon.type && onSelectWeapon(weapon)"
+            />
         </g>
         <!--    <g (click)="onSelectWeapon($event)"
                (mouseover)="onMouseOverWeapon($event)"
