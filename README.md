@@ -2,7 +2,7 @@
 ![](src/assets/img/8097.png)
 ### What's this?
 
-Copycat of GTA (more particularly GTA V) that runs on the browser.
+Aims to be a copycat of GTA (more particularly GTA V) that runs on the browser.
 
 ### Main components
 
@@ -20,6 +20,12 @@ Copycat of GTA (more particularly GTA V) that runs on the browser.
 ### Roadmap
 
 https://trello.com/b/MEE1t6Nt/gta-copycat-project
+
+### World
+
+![](../../Desktop/w.png)
+
+The 3D world's components are custom-made in Blender, and are thought to be as modular, optimized and instantiable as possible.
 
 ### Quick start
 
